@@ -5,7 +5,6 @@ vetor:  .word 9,2,5,1,8,2,4,3,6,7,
 newl:	.asciiz "\n"
 tab:	.asciiz "\t"
 
-
 	.text
 
 MAIN:	la $a0,vetor
