@@ -7,7 +7,7 @@ tab:	.asciiz "\t"
 
 
 	.text
-	
+
 MAIN:	la $a0,vetor
 	li $a1,N
 	jal show
@@ -22,7 +22,7 @@ MAIN:	la $a0,vetor
 
 
 	li $v0,10
-	syscall	
+	syscall
 
 
 swap:	sll $t1,$a1,2
@@ -52,7 +52,7 @@ for2:	slti $t0,$s1,0
 	lw $t3,0($t2)
 	lw $t4,4($t2)
 	slt $t0,$t3,$t4
-	beq $t0,$zero,exit2
+	bne $t0,$zero,exit2
 	move $a0,$s2
 	move $a1,$s1
 	jal swap
