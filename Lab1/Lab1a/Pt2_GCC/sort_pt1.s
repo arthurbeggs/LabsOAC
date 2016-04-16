@@ -1,12 +1,12 @@
 	.file	1 "sort.c"				# Indica o início de um novo arquivo lógico chamado "sort.c"
-	.section .mdebug.abi32
-	.previous
-	.nan	legacy
-	.gnu_attribute 4, 1
+	.section .mdebug.abi32			# Define a saída de depuração para o estilo ECOFF (Extended Common Object File Format)
+	.previous						# Sai da seção .mdebug
+	.nan	legacy					# Define o encoding do NaN do ponto flutuante IEEE754 como o encoding original do MIPS
+	.gnu_attribute 4, 1				# Guarda um objeto GNU para o arquivo indicando o uso de hardware de ponto flutuante depreciado
 	.globl	v						# Declara que o label é global  e pode ser referenciado a partir de outros arquivos
 	.data							# Itens armazenados no segmento de dados
-	.align	2						# Alinha o próximo dado em um limite de 2^n bytes (no caso presente, em uma word)
-	.type	v, @object				# Adiciona v à tabela de símbolos
+	.align	2						# Alinha os dados em 2^2 bytes (em uma word)
+	.type	v, @object				# Adiciona v como um objeto na tabela de símbolos
 	.size	v, 40					# Adiciona o tamanho de v à sua entrada na tabela simbólica
 v:
 	.word	5						# Armazena o dado em uma word
@@ -20,22 +20,22 @@ v:
 	.word	1						# Armazena o dado em uma word
 	.word	9						# Armazena o dado em uma word
 	.rdata							# Dados read-only
-	.align	2						# Alinha o próximo dado em um limite de 2^n bytes (no caso presente, em uma word)
+	.align	2						# Alinha os dados em 2^2 bytes (em uma word)
 .LC0:
 	.ascii	"%d\011\000"			# Armazena a string na memória, mas não concatena o \0
 	.text							# Coloca os itens subsequentes no segmento de texto (instruções)
-	.align	2						# Alinha o próximo dado em um limite de 2^n bytes (no caso presente, em uma word)
+	.align	2						# Alinha os dados em 2^2 bytes (em uma word)
 	.globl	show					# Declara que o label é global  e pode ser referenciado a partir de outros arquivos
-	.set	nomips16
-	.set	nomicromips
-	.ent	show
-	.type	show, @function
+	.set	nomips16				# Desativa a geração de código para arquitetura MIPS16
+	.set	nomicromips				# Desativa a geração de código para arquitetura microMIPS
+	.ent	show					# Marca o início de uma função
+	.type	show, @function			# Adiciona show como uma função na tabela de símbolos
 show:
-	.frame	$fp,32,$31		# vars= 8, regs= 2/0, args= 16, gp= 0
-	.mask	0xc0000000,-4
-	.fmask	0x00000000,0
-	.set	noreorder
-	.set	nomacro
+	.frame	$fp,32,$31		# vars= 8, regs= 2/0, args= 16, gp= 0		# Descreve o formato do stack frame, onde o registrador do frame é $fp, o offset do frame é 32 bytes e o registrador de retorno é $ra
+	.mask	0xc0000000,-4			# Indica quais registradores do Coprocessador 0 serão salvos no stack frame atual ($ra e $fp, com offset de 4 bytes)
+	.fmask	0x00000000,0			# Indica quais registradores do Coprocessador 1 serão salvos no stack frame atual
+	.set	noreorder				# Impede que o montador reorganize as instruções
+	.set	nomacro					# O montador envia um warning se alguma instrução do montador gerar mais que uma instrução em linguagem de máquina
 	addiu	$sp,$sp,-32
 	sw	$31,28($sp)
 	sw	$fp,24($sp)
