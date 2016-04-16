@@ -1,31 +1,31 @@
-	.file	1 "sort.c"
+	.file	1 "sort.c"				# Indica o início de um novo arquivo lógico chamado "sort.c"
 	.section .mdebug.abi32
 	.previous
 	.nan	legacy
 	.gnu_attribute 4, 1
-	.globl	v
-	.data
-	.align	2
-	.type	v, @object
-	.size	v, 40
+	.globl	v						# Declara que o label é global  e pode ser referenciado a partir de outros arquivos
+	.data							# Itens armazenados no segmento de dados
+	.align	2						# Alinha o próximo dado em um limite de 2^n bytes (no caso presente, em uma word)
+	.type	v, @object				# Adiciona v à tabela de símbolos
+	.size	v, 40					# Adiciona o tamanho de v à sua entrada na tabela simbólica
 v:
-	.word	5
-	.word	8
-	.word	3
-	.word	4
-	.word	7
-	.word	6
-	.word	8
-	.word	0
-	.word	1
-	.word	9
-	.rdata
-	.align	2
+	.word	5						# Armazena o dado em uma word
+	.word	8						# Armazena o dado em uma word
+	.word	3						# Armazena o dado em uma word
+	.word	4						# Armazena o dado em uma word
+	.word	7						# Armazena o dado em uma word
+	.word	6						# Armazena o dado em uma word
+	.word	8						# Armazena o dado em uma word
+	.word	0						# Armazena o dado em uma word
+	.word	1						# Armazena o dado em uma word
+	.word	9						# Armazena o dado em uma word
+	.rdata							# Dados read-only
+	.align	2						# Alinha o próximo dado em um limite de 2^n bytes (no caso presente, em uma word)
 .LC0:
-	.ascii	"%d\011\000"
-	.text
-	.align	2
-	.globl	show
+	.ascii	"%d\011\000"			# Armazena a string na memória, mas não concatena o \0
+	.text							# Coloca os itens subsequentes no segmento de texto (instruções)
+	.align	2						# Alinha o próximo dado em um limite de 2^n bytes (no caso presente, em uma word)
+	.globl	show					# Declara que o label é global  e pode ser referenciado a partir de outros arquivos
 	.set	nomips16
 	.set	nomicromips
 	.ent	show
