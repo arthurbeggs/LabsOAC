@@ -48,8 +48,8 @@ main:
 	# .set	noreorder				# Impede que o montador reorganize as instruções
 	# .set	nomacro					# O montador envia um warning se alguma instrução do montador gerar mais que uma instrução em linguagem de máquina
 	addiu	$sp,$sp,-24										# Aloca 6 words no stack		#	#	#	#	#	#
-	sw	$31,20($sp)											# Salva $ra no stack			#	$ra	#	#	#	#
-	sw	$fp,16($sp)											# Salva $fp no stack			#	$ra	$sp	#	#	#
+	sw	$31,20($sp)											# Salva $ra no stack			$ra	#	#	#	#	#
+	sw	$fp,16($sp)											# Salva $fp no stack			$ra	$sp	#	#	#	#
 	move	$fp,$sp											# $fp recebe $sp
 	la $4, v												# $a0 recebe endereço de v
 	# lui	$2,%hi(v)	# addiu	$4,$2,%lo(v)
@@ -95,13 +95,13 @@ show:
 	# .set	noreorder				# Impede que o montador reorganize as instruções
 	# .set	nomacro					# O montador envia um warning se alguma instrução do montador gerar mais que uma instrução em linguagem de máquina
 	addiu	$sp,$sp,-32										# Aloca 8 words no stack		#	#	#	#	#	#	#	#
-	sw	$31,28($sp)											# Salva $ra no stack			#	$ra	#	#	#	#	#	#
-	sw	$fp,24($sp)											# Salva $fp no stack			#	$ra	$sp	#	#	#	#	#
+	sw	$31,28($sp)											# Salva $ra no stack			$ra	#	#	#	#	#	#	#
+	sw	$fp,24($sp)											# Salva $fp no stack			$ra	$sp	#	#	#	#	#	#
 	move	$fp,$sp											# $fp recebe $sp
-	sw	$4,32($fp)
-	sw	$5,36($fp)
-	sw	$0,16($fp)
-	j	.L2
+	sw	$4,32($fp)											# Salva $a0 no stack da main	$ra	$sp	#	#	#	$a0			(stack da main)
+	sw	$5,36($fp)											# Salva $a1 no stack da main	$ra	$sp	#	#	$a1	$a0			(stack da main)
+	sw	$0,16($fp)											# Salva $zero no stack 			$ra	$sp	#	$0	#	#	#	#
+	j	.L2													# Salto incondicional para .L2
 	nop
 
 .L3:
@@ -120,7 +120,7 @@ show:
 	addiu	$2,$2,1
 	sw	$2,16($fp)
 .L2:
-	lw	$3,16($fp)
+	lw	$3,16($fp)											# $v1 recebe
 	lw	$2,36($fp)
 	slt	$2,$3,$2
 	bne	$2,$0,.L3
