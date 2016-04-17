@@ -1,5 +1,5 @@
 ####		MODIFICAÇÕES
-####	- Diretivas .set, .end, .ident, .frame, .mask, .fmask, .rdata, .gnu_attribute, .nan, .previous, .section e .file retiradas (comentadas) por não serem reconhecidas pelo MARS
+####	- Diretivas .set, .ent, .end, .ident, .frame, .mask, .fmask, .rdata, .gnu_attribute, .nan, .previous, .section e .file retiradas (comentadas) por não serem reconhecidas pelo MARS
 ####	- Diretivas .align após início do bloco de texto removidas (comentadas) pois o MARS não aceita a diretiva .align no segmento de texto
 ####	- Blocos de instruções lui e addiu trocados por la, uma vez que as instruções lui e addiu só aceitam inteiros como argumento no imediato
 ####	- As instruções j foram trocadas pela instrução jr, uma vez que a instrução j não aceita um registrador como argumento
