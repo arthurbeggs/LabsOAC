@@ -48,8 +48,8 @@ main:
 	# .set	noreorder				# Impede que o montador reorganize as instruções
 	# .set	nomacro					# O montador envia um warning se alguma instrução do montador gerar mais que uma instrução em linguagem de máquina
 	addiu	$sp,$sp,-24										# Aloca 6 words no stack		#	#	#	#	#	#
-	sw	$31,20($sp)											# Salva $ra no stack			$ra	#	#	#	#	#
-	sw	$fp,16($sp)											# Salva $fp no stack			$ra	$sp	#	#	#	#
+	sw	$31,20($sp)											# Salva $ra no stack			#	$ra	#	#	#	#
+	sw	$fp,16($sp)											# Salva $fp no stack			#	$ra	$sp	#	#	#
 	move	$fp,$sp											# $fp recebe $sp
 	la $4, v												# $a0 recebe endereço de v
 	# lui	$2,%hi(v)	# addiu	$4,$2,%lo(v)
@@ -94,10 +94,10 @@ show:
 	# .fmask	0x00000000,0			# Indica quais registradores do Coprocessador 1 serão salvos no stack frame atual
 	# .set	noreorder				# Impede que o montador reorganize as instruções
 	# .set	nomacro					# O montador envia um warning se alguma instrução do montador gerar mais que uma instrução em linguagem de máquina
-	addiu	$sp,$sp,-32
-	sw	$31,28($sp)
-	sw	$fp,24($sp)
-	move	$fp,$sp
+	addiu	$sp,$sp,-32										# Aloca 8 words no stack		#	#	#	#	#	#	#	#
+	sw	$31,28($sp)											# Salva $ra no stack			#	$ra	#	#	#	#	#	#
+	sw	$fp,24($sp)											# Salva $fp no stack			#	$ra	$sp	#	#	#	#	#
+	move	$fp,$sp											# $fp recebe $sp
 	sw	$4,32($fp)
 	sw	$5,36($fp)
 	sw	$0,16($fp)
