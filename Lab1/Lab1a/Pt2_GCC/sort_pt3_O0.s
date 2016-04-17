@@ -1,13 +1,6 @@
-	.file	1 "sort.c"
-	.section .mdebug.abi32
-	.previous
-	.nan	legacy
-	.gnu_attribute 4, 1
 	.globl	v
 	.data
 	.align	2
-	.type	v, @object
-	.size	v, 40
 v:
 	.word	5
 	.word	8
@@ -19,23 +12,42 @@ v:
 	.word	0
 	.word	1
 	.word	9
-	.rdata
 	.align	2
 .LC0:
-	.ascii	"%d\011\000"
+	.asciiz	"\t"
 	.text
-	.align	2
+
+	.globl	main
+main:
+	addiu	$sp,$sp,-24
+	sw	$31,20($sp)
+	sw	$fp,16($sp)
+	move	$fp,$sp
+	la $4, v
+	li	$5,10			# 0xa
+	jal	show
+	nop
+
+	la $4, v
+	li	$5,10			# 0xa
+	jal	sort
+	nop
+
+	la $4, v
+	li	$5,10			# 0xa
+	jal	show
+	nop
+
+	move	$sp,$fp
+	lw	$31,20($sp)
+	lw	$fp,16($sp)
+	addiu	$sp,$sp,24
+	j exit
+	nop
+
+
 	.globl	show
-	.set	nomips16
-	.set	nomicromips
-	.ent	show
-	.type	show, @function
 show:
-	.frame	$fp,32,$31		# vars= 8, regs= 2/0, args= 16, gp= 0
-	.mask	0xc0000000,-4
-	.fmask	0x00000000,0
-	.set	noreorder
-	.set	nomacro
 	addiu	$sp,$sp,-32
 	sw	$31,28($sp)
 	sw	$fp,24($sp)
@@ -52,8 +64,7 @@ show:
 	lw	$3,32($fp)
 	addu	$2,$3,$2
 	lw	$2,0($2)
-	lui	$3,%hi(.LC0)
-	addiu	$4,$3,%lo(.LC0)
+	la $4, .LC0
 	move	$5,$2
 	jal	printf
 	nop
@@ -76,25 +87,11 @@ show:
 	lw	$31,28($sp)
 	lw	$fp,24($sp)
 	addiu	$sp,$sp,32
-	j	$31
+	jr	$31
 	nop
 
-	.set	macro
-	.set	reorder
-	.end	show
-	.size	show, .-show
-	.align	2
 	.globl	swap
-	.set	nomips16
-	.set	nomicromips
-	.ent	swap
-	.type	swap, @function
 swap:
-	.frame	$fp,16,$31		# vars= 8, regs= 1/0, args= 0, gp= 0
-	.mask	0x40000000,-4
-	.fmask	0x00000000,0
-	.set	noreorder
-	.set	nomacro
 	addiu	$sp,$sp,-16
 	sw	$fp,12($sp)
 	move	$fp,$sp
@@ -127,25 +124,11 @@ swap:
 	move	$sp,$fp
 	lw	$fp,12($sp)
 	addiu	$sp,$sp,16
-	j	$31
+	jr	$31
 	nop
 
-	.set	macro
-	.set	reorder
-	.end	swap
-	.size	swap, .-swap
-	.align	2
 	.globl	sort
-	.set	nomips16
-	.set	nomicromips
-	.ent	sort
-	.type	sort, @function
 sort:
-	.frame	$fp,32,$31		# vars= 8, regs= 2/0, args= 16, gp= 0
-	.mask	0xc0000000,-4
-	.fmask	0x00000000,0
-	.set	noreorder
-	.set	nomacro
 	addiu	$sp,$sp,-32
 	sw	$31,28($sp)
 	sw	$fp,24($sp)
@@ -207,56 +190,24 @@ sort:
 	lw	$31,28($sp)
 	lw	$fp,24($sp)
 	addiu	$sp,$sp,32
-	j	$31
+	jr	$31
 	nop
 
-	.set	macro
-	.set	reorder
-	.end	sort
-	.size	sort, .-sort
-	.align	2
-	.globl	main
-	.set	nomips16
-	.set	nomicromips
-	.ent	main
-	.type	main, @function
-main:
-	.frame	$fp,24,$31		# vars= 0, regs= 2/0, args= 16, gp= 0
-	.mask	0xc0000000,-4
-	.fmask	0x00000000,0
-	.set	noreorder
-	.set	nomacro
-	addiu	$sp,$sp,-24
-	sw	$31,20($sp)
-	sw	$fp,16($sp)
-	move	$fp,$sp
-	lui	$2,%hi(v)
-	addiu	$4,$2,%lo(v)
-	li	$5,10			# 0xa
-	jal	show
-	nop
 
-	lui	$2,%hi(v)
-	addiu	$4,$2,%lo(v)
-	li	$5,10			# 0xa
-	jal	sort
-	nop
 
-	lui	$2,%hi(v)
-	addiu	$4,$2,%lo(v)
-	li	$5,10			# 0xa
-	jal	show
-	nop
-
-	move	$sp,$fp
-	lw	$31,20($sp)
-	lw	$fp,16($sp)
-	addiu	$sp,$sp,24
-	j	$31
-	nop
-
-	.set	macro
-	.set	reorder
-	.end	main
-	.size	main, .-main
-	.ident	"GCC: (Sourcery CodeBench Lite 2013.11-37) 4.8.1"
+printf:
+	move $t0, $a0			# Salva endereço de "\t"
+	move $a0, $a1			# $a0 recebe v[iterador]
+	li $v0, 1				# print integer syscall
+	syscall
+	move $a0, $t0			# $a0 recebe "\t"
+	li $v0, 4				# print string syscall
+	syscall
+	jr $ra					# Retorna
+putchar:
+	li $v0, 11				# print char syscall
+	syscall
+	jr $ra					# Retorna
+exit:
+	li $v0, 10				# exit0 syscall
+	syscall
