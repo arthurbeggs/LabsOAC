@@ -6,6 +6,10 @@
 ####	- Rotina main transferida para o início do segmento de texto
 ####	- Criada a rotina printf
 ####	- .ascii "%d\011\000" alterado para .asciiz "\t" para facilitar a rotina printf
+####	- Criada a rotina putchar
+####	- jr $ra da rotina main substituido por j exit, pois não há endereço de retorno
+####	- Criada a rotina exit
+####
 ####
 ####
 ####
@@ -74,7 +78,8 @@ main:
 	lw	$31,20($sp)											# $ra recebe $ra salvo no stack
 	lw	$fp,16($sp)											# $fp recebe $fp salvo no stack
 	addiu	$sp,$sp,24										# Desaloca 6 words n ostack
-	jr	$31													# Salto incondicional para $ra
+	# jr	$31													# Salto incondicional para $ra
+	j exit
 	nop
 
 	# .set	macro					# Permite que o montador gere mais de uma instrução de máquina a cada instrução do montador
@@ -289,5 +294,9 @@ printf:
 	syscall
 	jr $ra					# Retorna
 putchar:
-
-	jr $ra
+	li $v0, 11				# print char syscall
+	syscall
+	jr $ra					# Retorna
+exit:
+	li $v0, 10				# exit0 syscall
+	syscall
