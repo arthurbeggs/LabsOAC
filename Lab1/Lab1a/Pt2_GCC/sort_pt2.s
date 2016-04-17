@@ -1,7 +1,7 @@
 ####		MODIFICAÇÕES
 ####	- Diretivas .set, .end, .ident, .frame, .mask, .fmask, .rdata, .gnu_attribute, .nan, .previous, .section e .file retiradas (comentadas) por não serem reconhecidas pelo MARS
-####	- Diretivas .align após início do bloco de texto removidas (comentada) pois o MARS não aceita a diretiva .align no segmento de texto
-####	- Conjunto de instruções lui e addiu trocados por la, uma vez que as instruções lui e addiu só aceitam inteiros como argumento no imediato
+####	- Diretivas .align após início do bloco de texto removidas (comentadas) pois o MARS não aceita a diretiva .align no segmento de texto
+####	- Blocos de instruções lui e addiu trocados por la, uma vez que as instruções lui e addiu só aceitam inteiros como argumento no imediato
 ####	- As instruções j foram trocadas pela instrução jr, uma vez que a instrução j não aceita um registrador como argumento
 ####	- Rotina main transferida para o início do segmento de texto
 ####	- Criada a rotina printf
@@ -10,9 +10,10 @@
 ####	- jr $ra da rotina main substituido por j exit, pois não há endereço de retorno
 ####	- Criada a rotina exit
 ####
-####
-####
-####
+
+
+
+
 	# .file	1 "sort.c"				# Indica o início de um novo arquivo lógico chamado "sort.c"
 	# .section .mdebug.abi32			# Define a saída de depuração para o estilo ECOFF (Extended Common Object File Format)
 	# .previous						# Sai da seção .mdebug
