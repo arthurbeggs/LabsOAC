@@ -5,7 +5,7 @@
 ####	- As instruções j foram trocadas pela instrução jr, uma vez que a instrução j não aceita um registrador como argumento
 ####	- Rotina main transferida para o início do segmento de texto
 ####	- Criada a rotina printf
-####
+####	- .ascii "%d\011\000" alterado para .asciiz "\t" para facilitar a rotina printf
 ####
 ####
 ####
@@ -33,7 +33,8 @@ v:
 	# .data							# Dados read-only
 	.align	2						# Alinha os dados em 2^2 bytes (em uma word)
 .LC0:
-	.ascii	"%d\011\000"			# Armazena a string na memória, mas não concatena o \0
+	# .ascii	"%d\011\000"			# Armazena a string na memória, mas não concatena o \0		# == "%d\t\0"
+	.asciiz "\t"					# Alterado para facilitar a rotina printf
 	.text							# Coloca os itens subsequentes no segmento de texto (instruções)
 	# .align	2						# Alinha os dados em 2^2 bytes (em uma word)
 	.globl	main					# Declara o label main como global
@@ -100,34 +101,34 @@ show:
 	move	$fp,$sp											# $fp recebe $sp
 	sw	$4,32($fp)											# Salva $a0 no stack da main	$ra	$sp	#	#	#	$a0			(stack da main)
 	sw	$5,36($fp)											# Salva $a1 no stack da main	$ra	$sp	#	#	$a1	$a0			(stack da main)
-	sw	$0,16($fp)											# Salva $zero no stack 			$ra	$sp	#	$0	#	#	#	#
+	sw	$0,16($fp)											# Salva zero no stack 			$ra	$sp	#	0	#	#	#	#		(16($fp) é um iterador)
 	j	.L2													# Salto incondicional para .L2
 	nop
 
 .L3:
-	lw	$2,16($fp)
-	sll	$2,$2,2
-	lw	$3,32($fp)
-	addu	$2,$3,$2
-	lw	$2,0($2)
-	la $4,.LC0
+	lw	$2,16($fp)											# $v0 recebe iterador do stack
+	sll	$2,$2,2												# $v0 = iterador * 4
+	lw	$3,32($fp)											# $v1 recebe &v do stack
+	addu	$2,$3,$2										# $v0 = &v + iterador * 4
+	lw	$2,0($2)											# $v0 recebe os dados do endereço armazenado em $v0
+	la $4,.LC0												# $a0 recebe o endereço .LC0 ("\t")
 	# lui	$3,%hi(.LC0)	#addiu	$4,$3,%lo(.LC0)
-	move	$5,$2
-	jal	printf
+	move	$5,$2											# $a1 recebe $v0
+	jal	printf												# Salto para a rotina de prntar na tela
 	nop
 
-	lw	$2,16($fp)
-	addiu	$2,$2,1
-	sw	$2,16($fp)
+	lw	$2,16($fp)											# $v0 recebe iterador do stack
+	addiu	$2,$2,1											# $v0 += 1
+	sw	$2,16($fp)											# Salva o novo valor do iterador		$ra	$sp	#	$v0	#	#	#	#
 .L2:
-	lw	$3,16($fp)											# $v1 recebe
-	lw	$2,36($fp)
-	slt	$2,$3,$2
-	bne	$2,$0,.L3
+	lw	$3,16($fp)											# $v1 recebe o iterador do stack
+	lw	$2,36($fp)											# $v0 recebe size(v) do stack
+	slt	$2,$3,$2											# $v0 = ($v1 < $v0) ? 1 : 0
+	bne	$2,$0,.L3											# Se $v0 != $zero, salto incondicional para .L3
 	nop
 
-	li	$4,10			# 0xa
-	jal	putchar
+	li	$4,10			# 0xa								# Se $v0 == $zero, $a0 recebe 10
+	jal	putchar												# Salto para rotina putchar
 	nop
 
 	move	$sp,$fp
@@ -279,9 +280,14 @@ sort:
 	# .ident	"GCC: (Sourcery CodeBench Lite 2013.11-37) 4.8.1"
 
 printf:
-	li $v0, 1
+	move $t0, $a0			# Salva endereço de "\t"
+	move $a0, $a1			# $a0 recebe v[iterador]
+	li $v0, 1				# print integer syscall
 	syscall
-	jr $ra
+	move $a0, $t0			# $a0 recebe "\t"
+	li $v0, 4				# print string syscall
+	syscall
+	jr $ra					# Retorna
 putchar:
 
 	jr $ra
