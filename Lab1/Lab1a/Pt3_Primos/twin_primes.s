@@ -2,6 +2,7 @@
 #  Lab1 - Calculo de Primos Gemeos
 # /version
 # /authors
+
 ##
 # Macros
 ##
@@ -25,6 +26,9 @@
     virgula: .asciiz ","
     newl: .asciiz "\n"
     tab: .asciiz "\t"
+
+    f_zero: .double 0.0
+    f_full: .double 4294967296.0
 ##
 # Code Segment
 ##
@@ -32,79 +36,93 @@
     addiu   $sp,$sp,-4 # Grava fp em sp e o valor de sp em fp
     sw      $fp,0($sp)
     move    $fp,$sp
-    
-    # $s0 = numero testando, $s1 = i, $s2 = registrador ultimo gêmeo encontrado, 
+
+    # $s0 = numero testando, $s1 = i, $s2 = registrador ultimo gêmeo encontrado,
     # $s3 = candidato a gêmeo, $s4 = ranking, $s5 = fase, $s6 = número maximo, $s7 = a
     #fase0 irá encontrar o i-ésimo par, fase1 irá encontrar o imax
-    
+
     la $a0, inicial # printf ("Digite o valor de i");
     li $v0, 4
     syscall
-    
+
     li $v0, 5
     syscall
     move I, $v0 # salva o valor de i em s1
-    
+
     addi $sp, $sp, -4 # aloca 3 na pilha teste
     addi $t0, $zero, 3
     sw $t0, 0($sp)
-    
-    addi A, $zero, -4
+
+    move A,$0
     add FASE, $zero, $zero #fase = 0
     add RANKING, $zero, $zero #ranking = 0
     addi $s3, $zero, 3 # candidato a gêmeo = 3
     add $s2, $zero, $zero # registrador ultimo gêmeo encontrado = 0
+    addi MAX_N,$zero,LIMITE_N
     addi NUM_TESTE, $zero, 3 # numero testando = 3
-    add $t8, $zero, $zero
+
+    l.d $f4, f_zero                # Copia double 0.0 para o registrador $f4
+    l.d $f6, f_full                # Copia 2^32 para $f6
+
     j procedimento
-    
+
 atualizanumero:
-    addi NUM_TESTE, NUM_TESTE, 2
+    move $t2, NUM_TESTE
+    addiu NUM_TESTE, NUM_TESTE, 2   # Incrementa NUM_TESTE
+    sltu $s7, $t2, NUM_TESTE        # Teste de overflow
+    beq $s7, $zero, fase1
     # Calcula Sqrt(NUM_TESTE)
     #addi $t8, $zero, 5
     #div NUM_TESTE, $t8
    #mflo $t8
     move $t8, NUM_TESTE          #$t0 recebe o inteiro que queremos a raiz
     mtc1 $t8, $f0
-    cvt.s.w $f2, $f0
-    sqrt.s $f0, $f2
-    cvt.w.s $f2, $f0
-    mfc1 $t8, $f2 
-    
+    cvt.d.w $f2, $f0
+    c.lt.d $f2, $f4                 # Se $f2 < 0, seta flag bc1 do Coprocessador como true
+    bc1t doublepositivo             # Se bc1 == True, salta para doublepositivo
+    sqrt.d $f0, $f2
+    cvt.w.d $f2, $f0
+    mfc1 $t8, $f2
+
 resetavetor:
     add A, $zero, $zero
 procedimento:
-    addi A, A, -4 
+    addi A, A, -4
     beq NUM_TESTE, MAX_N, fase1 # encontrado imax, ou seja, (n>2^32-1)==1
-    
+
     move $t0, $fp # endereço "vetor_de_teste"
     add $t0, $t0, A # endereço "vetor_de_teste+a"
     lw $t1, 0($t0) #t1 = vetor_de_teste[a]
-    
+
     div NUM_TESTE, $t1 # divide numero testado por elemento do vetor de teste
     mfhi $t3 # resto da divisão
     beq $t3, $zero, atualizanumero # numero testado não é primo reinicia teste
     #beq $t0, $sp, novoprimo
     bge $t1, $t8, novoprimo
     j procedimento
- 
+
+doublepositivo:
+    add.d $f2, $f2, $f6
+    jr $ra
+
 fase1:
     beq FASE, $zero, fase0error # Chegou no maior número e não encontrou i-ésimo
-    
-continuaFase1:    
+
+continuaFase1:
     la $a0, fase11 #printf ("O imax encontrado foi:\n");
     li $v0, 4
     syscall
     move I, RANKING
     j saida
+
 fase0error:
     la $a0, fase0erro #printf ("Não possivel encontrar o i-ésimo par desejado");
     li $v0, 4
     syscall
     j continuaFase1
-novoprimo: 
-    addi $t7, $t7, LIMITE_N #t7 = sqrt(2^32)
-    sltu $t5, NUM_TESTE, $t7 #testa [novo primo < sqrt (2^32)]
+
+novoprimo:
+    sltu $t5, NUM_TESTE, MAX_N #testa [novo primo < sqrt (2^32)]
     beq $t5, $zero, continuanp #se [novo primo < sqrt (2^32)] vai para novoElementoVetor
 novoElementoVetor:
     addi $sp, $sp, -4 # aloca novo elemento na pilha teste
@@ -113,7 +131,7 @@ continuanp:
     addi $t4, $s3, 2 #prepara teste de primo gemeo
     add $s3, $zero, NUM_TESTE #atualiza novo candidato, com ultimo primo encontrado
     bne NUM_TESTE, $t4, atualizanumero #novo gemeo encontrado
-    
+
 novogemeo:
     add $s2, $zero, $t4 #atualiza ultimo gemeo encontrado, primeiro elemento do par
     addi RANKING, RANKING, 1 #atualiza ranking
@@ -123,7 +141,7 @@ fimfase0: #impede verificação de ranking, para poder encontrar imax
 saida:
     la $a0, fase01 #printf ("Primos Gêmeos(");
     li $v0, 4
-    syscall    
+    syscall
     move $a0, I #imprimi i
     li $v0, 1
     syscall
@@ -135,14 +153,14 @@ saida:
     syscall
     la $a0, virgula #printf (",");
     li $v0, 4
-    syscall    
+    syscall
     move $a0, $s2 #imprimi P[i]
     li $v0, 1
     syscall
     la $a0, fase03 #printf (")\n");
     li $v0, 4
     syscall
-         
+
 main: #finaliza programa
     move    $sp,$fp
     lw    $fp,4($sp)
