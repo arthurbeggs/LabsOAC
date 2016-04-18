@@ -106,9 +106,8 @@ fase0error:
     syscall
     j continuaFase1
     
-novoprimo: 
-    addiu $t7, $0, LIMITE_N #t7 = sqrt(2^32)
-    sltu $t5, NUM_TESTE, $t7 #testa [novo primo < sqrt (2^32)]
+novoprimo:
+    sltu $t5, NUM_TESTE, MAX_N #testa [novo primo < sqrt (2^32)]
     beq $t5, $zero, continuanp #se [novo primo < sqrt (2^32)] vai para novoElementoVetor
 novoElementoVetor:
     addi $sp, $sp, -4 # aloca novo elemento na pilha teste
