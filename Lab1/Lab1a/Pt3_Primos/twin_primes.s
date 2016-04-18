@@ -59,12 +59,12 @@
     j procedimento
     
 atualizanumero:
+    move $t2, NUM_TESTE
     addi NUM_TESTE, NUM_TESTE, 2
+    sltu $s7, $t2, NUM_TESTE
+    beq $s7, $zero, fase1
     # Calcula Sqrt(NUM_TESTE)
-    #addi $t8, $zero, 5
-    #div NUM_TESTE, $t8
-   #mflo $t8
-    move $t8, NUM_TESTE          #$t0 recebe o inteiro que queremos a raiz
+    move $t8, NUM_TESTE #$t8 recebe o inteiro que queremos a raiz, no caso recebe NUM_TESTE
     mtc1 $t8, $f0
     cvt.s.w $f2, $f0
     sqrt.s $f0, $f2
@@ -84,13 +84,11 @@ procedimento:
     div NUM_TESTE, $t1 # divide numero testado por elemento do vetor de teste
     mfhi $t3 # resto da divisão
     beq $t3, $zero, atualizanumero # numero testado não é primo reinicia teste
-    #beq $t0, $sp, novoprimo
     bge $t1, $t8, novoprimo
     j procedimento
  
 fase1:
     beq FASE, $zero, fase0error # Chegou no maior número e não encontrou i-ésimo
-    
 continuaFase1:    
     la $a0, fase11 #printf ("O imax encontrado foi:\n");
     li $v0, 4
@@ -103,7 +101,7 @@ fase0error:
     syscall
     j continuaFase1
 novoprimo: 
-    addi $t7, $t7, LIMITE_N #t7 = sqrt(2^32)
+    addi $t7, $zero, LIMITE_N #t7 = sqrt(2^32)
     sltu $t5, NUM_TESTE, $t7 #testa [novo primo < sqrt (2^32)]
     beq $t5, $zero, continuanp #se [novo primo < sqrt (2^32)] vai para novoElementoVetor
 novoElementoVetor:
@@ -142,7 +140,7 @@ saida:
     la $a0, fase03 #printf (")\n");
     li $v0, 4
     syscall
-         
+    bne $s7, $zero, atualizanumero
 main: #finaliza programa
     move    $sp,$fp
     lw    $fp,4($sp)
