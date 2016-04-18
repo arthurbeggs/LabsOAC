@@ -50,7 +50,7 @@
     addi $t0, $zero, 3
     sw $t0, 0($sp)
     
-    addi A, $zero, -4
+    move A,$0
     add FASE, $zero, $zero #fase = 0
     add RANKING, $zero, $zero #ranking = 0
     addi $s3, $zero, 3 # candidato a gêmeo = 3
