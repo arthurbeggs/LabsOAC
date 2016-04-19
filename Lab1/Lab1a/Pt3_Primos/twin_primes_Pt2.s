@@ -1,6 +1,6 @@
 ##
 #  Lab1 - Calculo de Primos Gemeos
-# /version      refactoring1
+# /version      refactoring2
 # /authors      Gabriel Iduarte | Rafael Lima | Arthur Matos
 
 ####                            *** REFACTORING CHANGELOG ***
@@ -35,9 +35,6 @@
     li      $v0, 5
     syscall
     move    INDEX_PROCURADO, $v0
-    blt     $t8, INDEX_PROCURADO, erro      # Testa se INDEX_PROCURADO não é maior que imax. Caso seja, aborta programa.
-    li      $t7, 1                          # $t7 recebe 1
-    blt     INDEX_PROCURADO, $t7, erro      # Testa se INDEX_PROCURADO não é menor que 1. Caso seja, aborta programa.
 .end_macro
 
 .macro print_str (%string)                  # Printa string na tela
@@ -71,7 +68,6 @@
     move    INDEX_LISTA, $zero              # O índice da lista de primos recebe $zero
     l.d     $f18, d_zero                    # Salva o double 0.0 no registrador $f18
     l.d     $f20, d_full                    # Salva o double 4294967296.0 no registrador $f20
-    li      $t8, 1607344                    # Valor do index de par de gêmeos máximo para 32 bits unsigned.     //FIXME: Valor correto entre 1607342 e 1607345. Verificar e substituir
 .end_macro
 
 .macro get_primo_da_lista (%indice)         # $t1 recebe o valor do primo do índice %indice/4 da lista || Usados $t0 e $t1
@@ -99,6 +95,14 @@
         j       incrementaTeste             # Inicia teste de primalidade de NUM_EM_TESTE+2
     continuaTeste:
 .end_macro
+
+.macro overflow_primo_gemeo                 # Testa se NUM_EM_TESTE retornou para 0x00000000
+    move $t2, NUM_EM_TESTE                  # Passa o NUM_EM_TESTE anterior para $t2
+    addiu NUM_EM_TESTE, NUM_EM_TESTE, 2     # Incrementa NUM_EM_TESTE
+    sltu $t3, $t2, NUM_EM_TESTE             # Testa se NUM_EM_TESTE atual é maior que NUM_EM_TESTE anterior
+    beq $t3, $zero, erro                    # Se NUM_EM_TESTE atual for menor que o anterior, imax foi encontrado
+.end_macro
+
 ##
 # Data Segment
 ##
@@ -133,7 +137,7 @@ main:
     j exec                                  # Inicia a execução
 
 incrementaTeste:
-    addiu   NUM_EM_TESTE, NUM_EM_TESTE, 2   # Incrementa NUM_EM_TESTE
+    overflow_primo_gemeo                    # Incrementa NUM_EM_TESTE. Se ocorrer overflow, termina programa. Senão, continua.
     ignora_multiplo_de_tres                 # Se NUM_EM_TESTE for multiplo de três, passa para o próximo valor a ser testado
     sqroot                                  # Macro: Encontra raiz quadrada de NUM_EM_TESTE
     move    INDEX_LISTA, $zero              # Retorna o índice da lista de primos para a primeira posição

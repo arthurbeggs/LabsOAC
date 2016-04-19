@@ -1,6 +1,6 @@
 ##
 #  Lab1 - Calculo de Primos Gemeos
-# /version      refactoring1
+# /version      refactoring2
 # /authors      Gabriel Iduarte | Rafael Lima | Arthur Matos
 
 ####                            *** REFACTORING CHANGELOG ***
@@ -34,10 +34,6 @@
 .macro recebe_int                           # Lê do teclado o INDEX_PROCURADO
     li      $v0, 5
     syscall
-    move    INDEX_PROCURADO, $v0
-    blt     $t8, INDEX_PROCURADO, erro      # Testa se INDEX_PROCURADO não é maior que imax. Caso seja, aborta programa.
-    li      $t7, 1                          # $t7 recebe 1
-    blt     INDEX_PROCURADO, $t7, erro      # Testa se INDEX_PROCURADO não é menor que 1. Caso seja, aborta programa.
 .end_macro
 
 .macro print_str (%string)                  # Printa string na tela
@@ -71,7 +67,6 @@
     move    INDEX_LISTA, $zero              # O índice da lista de primos recebe $zero
     l.d     $f18, d_zero                    # Salva o double 0.0 no registrador $f18
     l.d     $f20, d_full                    # Salva o double 4294967296.0 no registrador $f20
-    li      $t8, 1607344                    # Valor do index de par de gêmeos máximo para 32 bits unsigned.     //FIXME: Valor correto entre 1607342 e 1607345. Verificar e substituir
 .end_macro
 
 .macro get_primo_da_lista (%indice)         # $t1 recebe o valor do primo do índice %indice/4 da lista || Usados $t0 e $t1
@@ -99,17 +94,19 @@
         j       incrementaTeste             # Inicia teste de primalidade de NUM_EM_TESTE+2
     continuaTeste:
 .end_macro
+
+.macro overflow_primo_gemeo                 # Testa se NUM_EM_TESTE retornou para 0x00000000
+    move $t2, NUM_EM_TESTE                  # Passa o NUM_EM_TESTE anterior para $t2
+    addiu NUM_EM_TESTE, NUM_EM_TESTE, 2     # Incrementa NUM_EM_TESTE
+    sltu $t3, $t2, NUM_EM_TESTE             # Testa se NUM_EM_TESTE atual é maior que NUM_EM_TESTE anterior
+    beq $t3, $zero, erro                    # Se NUM_EM_TESTE atual for menor que o anterior, imax foi encontrado
+.end_macro
 ##
 # Data Segment
 ##
 .data
-    str_input:      .asciiz "Digite o valor i: "
-    str_erro:       .asciiz "Nao e possivel encontrar o i-esimo par desejado.\n"
-    str_imax:       .asciiz "O imax encontrado foi:\n"
-    str_field1:     .asciiz "Primos Gemeos("
-    str_field2:     .asciiz ")=("
-    str_field3:     .asciiz ","
-    str_field4:     .asciiz ")\n"
+    str_erro:       .asciiz "Maior primo representavel em 32 bits alcancado.\n"
+    str_primos:     .asciiz "Primos Gemeos:\n"
     str_newl:       .asciiz "\n"
     str_tab:        .asciiz "\t"
     d_zero:         .double 0.0
@@ -124,8 +121,8 @@ main:
     sw      $fp, 0($sp)
     move    $fp, $sp
     inicia_registradores                    # Macro: Inicialização de registradores
-    print_str (str_input)                   # Macro: Pede input do usuário
-    recebe_int                              # Macro: Salva o inputo do usuário em INDEX_PROCURADO
+    print_str (str_primos)
+    li    INDEX_PROCURADO, 99999999         # Index procurado arbitrariamente grande. Ocorrerá overflow de primos representáveis antes de alcançar esse valor
     addi    $sp, $sp, -4                    # Aloca o primeiro primo (3) no stack
     li      $t0, 3
     sw      $t0, 0($sp)
@@ -133,7 +130,7 @@ main:
     j exec                                  # Inicia a execução
 
 incrementaTeste:
-    addiu   NUM_EM_TESTE, NUM_EM_TESTE, 2   # Incrementa NUM_EM_TESTE
+    overflow_primo_gemeo                    # Incrementa NUM_EM_TESTE. Se ocorrer overflow, termina programa. Senão, continua.
     ignora_multiplo_de_tres                 # Se NUM_EM_TESTE for multiplo de três, passa para o próximo valor a ser testado
     sqroot                                  # Macro: Encontra raiz quadrada de NUM_EM_TESTE
     move    INDEX_LISTA, $zero              # Retorna o índice da lista de primos para a primeira posição
@@ -160,19 +157,15 @@ testaGemeo:
 gemeoEncontrado:
     move    ULTIMO_GEMEO_ENCONTRADO, $t4    # Salva o segundo elemento do último gêmeo encontrado
     addi    INDEX_ATUAL, INDEX_ATUAL, 1     # Incrementa o índice de busca atual
+    jal exibeResultado
     bne     INDEX_PROCURADO, INDEX_ATUAL, incrementaTeste   # Se os índices atual e esperado não forem iguais, continua a iteração
 
 exibeResultado:
-    print_str (str_field1)                  # printf ("Primos Gêmeos(")
-    print_int (INDEX_PROCURADO)             # printf ("%d",INDEX_ATUAL)
-    print_str (str_field2)                  # printf ("\)=\(")
     addi    $t0, ULTIMO_GEMEO_ENCONTRADO, -2# Decrementa em 2 o último gêmeo encontrado
-    print_int ($t0)                         # printf ("%d",P[i-1])
-    print_str (str_field3)                  # printf (",")
-    print_int (ULTIMO_GEMEO_ENCONTRADO)     # printf ("%d",P[i])
-    print_str (str_field4)                  # printf ("\)\n")
+    print_int ($t0)                         # printf ("%d",ULTIMO_GEMEO_ENCONTRADO-2)
+    print_str (str_newl)                    # printf ("\n")
 
-    j fim
+    jr $ra
 
 erro:
     print_str(str_erro)                     # Exibe mensagem de erro
