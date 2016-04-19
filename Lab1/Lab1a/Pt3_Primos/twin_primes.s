@@ -1,6 +1,6 @@
 ##
 #  Lab1 - Calculo de Primos Gemeos
-# /version      refactoring0
+# /version      refactoring1
 # /authors      Gabriel Iduarte | Rafael Lima | Arthur Matos
 
 ####                            *** REFACTORING CHANGELOG ***
@@ -34,6 +34,8 @@
     syscall
     move    INDEX_PROCURADO, $v0
     blt     $t8, INDEX_PROCURADO, erro      # Testa se INDEX_PROCURADO não é maior que imax. Caso seja, aborta programa.
+    li      $t7, 1                          # $t7 recebe 1
+    blt     INDEX_PROCURADO, $t7, erro      # Testa se INDEX_PROCURADO não é menor que 1. Caso seja, aborta programa.
 .end_macro
 
 .macro print_str (%string)                  # Printa string na tela
