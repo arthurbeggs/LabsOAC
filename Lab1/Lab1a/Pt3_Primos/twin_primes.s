@@ -88,7 +88,7 @@
         bc1t    corrigeSinal                # Se bc1 == True, salta para doublepositivo
     continuaSqrt:
         sqrt.d  $f0, $f2                    # Tira raiz quadrada
-        cvt.w.d $f2, $f0                    # Converte parte inteira para word
+        ceil.w.d $f2, $f0                   # Converte parte inteira para word
         mfc1    $t8, $f2                    # $t8 recebe o resultado convertido
 .end_macro
 
