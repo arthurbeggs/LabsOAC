@@ -156,8 +156,8 @@ exibeResultado:
 
     j fim
 
-erro:
-    print_str(str_erro)                     # Exibe mensagem de erro
+# erro:
+#     print_str(str_erro)                     # Exibe mensagem de erro
 
 fim:
     done                                    # Finaliza o programa
