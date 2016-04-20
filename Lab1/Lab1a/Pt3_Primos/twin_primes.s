@@ -1,21 +1,7 @@
 ##
 #  Lab1 - Calculo de Primos Gemeos
-# /version      refactoring1
+# /version      Otimização 01
 # /authors      Gabriel Iduarte | Rafael Lima | Arthur Matos
-
-####                            *** REFACTORING CHANGELOG ***
-####
-####    - Nomes de macros trocados: LIMITE_N para MAX_DIV_POSSIVEL; NUM_TESTE para NUM_EM_TESTE;
-####            I para INDEX_PROCURADO; RANKING para INDEX_ATUAL; MAX_N para MAIOR_DIV; A para INDEX_LISTA;
-####    - Macros removidas: FASE (depreciado);
-####    - Macros adicionadas: POSSIVEL_GEMEO; ULTIMO_GEMEO_ENCONTRADO; recebe_int; print_str; print_int;
-####            inicia_registradores; get_primo_da_lista; incremento_com_teste_de_overflow;
-####    - Nomes dos dados alterados
-####    - Nomes de labels alterados: procedimento para exec; ??? para main; main para fim;
-####            atualizanumero para incrementaTeste; novoprimo para primoEncontrado; continuanp para testaGemeo;
-####            novogemeo para gemeoEncontrado; saida para exibeResultado; fase0error para erro;
-####    - Labels removidos: fimfase0; fase1; continuaFase1; resetavetor
-####
 
 ##
 # Macros
@@ -26,18 +12,16 @@
 .eqv ULTIMO_GEMEO_ENCONTRADO    $s2         # Guarda o valor do último gêmeo encontrado
 .eqv POSSIVEL_GEMEO             $s3         # Valor que possivelmente é gêmeo
 .eqv INDEX_ATUAL                $s4         # Índice do último conjunto de primos gêmeos encontrado
-.eqv MULTIPLO_COUNT             $s5         # Armazena quantos primos foram avaliados desde o último múltiplo de 3
 .eqv MAIOR_DIV                  $s6         # Divisor máximo do número atualmente em teste de primalidade
 .eqv INDEX_LISTA                $s7         # Índice de posição da lista de primos menores que MAIOR_DIVISOR_POSSIVEL
-.eqv VALOR_TRES                 $t9         # Guarda o número 3 no registador $t9. É uam constante.
+.eqv LIMITE_NUM_EM_TESTE        $s5         # Número em teste limite para 32 bits
+# Temporários não modificáveis: $t7, $t5
 
 .macro recebe_int                           # Lê do teclado o INDEX_PROCURADO
     li      $v0, 5
     syscall
     move    INDEX_PROCURADO, $v0
-    blt     $t8, INDEX_PROCURADO, erro      # Testa se INDEX_PROCURADO não é maior que imax. Caso seja, aborta programa.
-    li      $t7, 1                          # $t7 recebe 1
-    blt     INDEX_PROCURADO, $t7, erro      # Testa se INDEX_PROCURADO não é menor que 1. Caso seja, aborta programa.
+    beq     INDEX_PROCURADO, $zero, erro    # Se o índice digitado for zero, termina programa.
 .end_macro
 
 .macro print_str (%string)                  # Printa string na tela
@@ -61,27 +45,21 @@
 .end_macro
 
 .macro inicia_registradores                 # Coloca o valor inicial nos registradores
-    li      NUM_EM_TESTE, 3                 # O numero a ser testado recebe 3
-    li      POSSIVEL_GEMEO, 3               # POSSIVEL_GEMEO contém o candidato a gêmeo (3) que será testado.
-    li      MULTIPLO_COUNT, 0               # O contador de múltiplos começa com 0
+    li      NUM_EM_TESTE, 5                 # O numero a ser testado recebe 5
+    li      POSSIVEL_GEMEO, 3               # POSSIVEL_GEMEO contém o candidato a gêmeo (5) que será testado.
     li      MAIOR_DIV, MAX_DIV_POSSIVEL     # MAIOR_DIV recebe MAX_DIV_POSSIVEL
-    li      VALOR_TRES, 3                   # Armazena o valor 3. É uma constante
-    move    ULTIMO_GEMEO_ENCONTRADO, $zero  # ULTIMO_GEMEO_ENCONTRADO contém o último primo encontrado.
+    li      LIMITE_NUM_EM_TESTE, 4294967293 # Maior número ímpar, não múltiplo de 3 e não primo representável em 32 bits
     move    INDEX_ATUAL, $zero              # O índice atual do último conjunto de primos gêmeos encontrados recebe $zero
-    move    INDEX_LISTA, $zero              # O índice da lista de primos recebe $zero
+    move    ULTIMO_GEMEO_ENCONTRADO, $zero  # ULTIMO_GEMEO_ENCONTRADO contém o último primo encontrado.
     l.d     $f18, d_zero                    # Salva o double 0.0 no registrador $f18
     l.d     $f20, d_full                    # Salva o double 4294967296.0 no registrador $f20
-    li      $t8, 1607344                    # Valor do index de par de gêmeos máximo para 32 bits unsigned.     //FIXME: Valor correto entre 1607342 e 1607345. Verificar e substituir
-.end_macro
-
-.macro get_primo_da_lista (%indice)         # $t1 recebe o valor do primo do índice %indice/4 da lista || Usados $t0 e $t1
-    add     $t0, $fp, INDEX_LISTA           # $t0 recebe o endereço de $fp - %index
-    lw      $t1, 0($t0)                     # $t1 recebe o primo do endereço $t0
+    li      $t5, 2
+    li      $t7, 6
+    li      $t8, 2                          # Raiz de 5 inicializada
 .end_macro
 
 .macro sqroot                               # Calcula sqrt de NUM_EM_TESTE e retorna parte inteira do resultado em $t8
-        move    $t8, NUM_EM_TESTE           # $t8 recebe o inteiro que queremos a raiz
-        mtc1    $t8, $f0                    # Passa NUM_EM_TESTE para o Coprocessador 1
+        mtc1    NUM_EM_TESTE, $f0           # Passa NUM_EM_TESTE para o Coprocessador 1
         cvt.d.w $f2, $f0                    # Converte NUM_EM_TESTE de word para double
         c.lt.d  $f2, $f18                   # Se $f2 < 0, seta flag bc1 do Coprocessador como true
         bc1f    sinalCorreto                # Se bc1 == True, corrige o valor. Se == False, o sinal está correto
@@ -92,13 +70,15 @@
         mfc1    $t8, $f2                    # $t8 recebe o resultado convertido
 .end_macro
 
-.macro ignora_multiplo_de_tres              # Se NUM_EM_TESTE for múltiplo de 3, o teste é descartado e passa para o próximo numero
-        addi    MULTIPLO_COUNT, MULTIPLO_COUNT, 1           # Incrementa a contagem de números ímpares testados depois do último múltiplo de 3
-        bne     MULTIPLO_COUNT, VALOR_TRES, continuaTeste    # Se ainda não se passaram três números testados depois do último múltiplo de 3, continua análise de primalidade
-        li      MULTIPLO_COUNT, 0           # Se NUM_EM_TESTE for múltiplo de 3, reinicia o contador
-        j       incrementaTeste             # Inicia teste de primalidade de NUM_EM_TESTE+2
-    continuaTeste:
+.macro incrementa_num_em_teste              # Incrementa NUM_EM_TESTE pulando múltiplos de 3 e testando overflow
+        addu    NUM_EM_TESTE, NUM_EM_TESTE, $t5 # Incrementa NUM_EM_TESTE
+        beq     NUM_EM_TESTE, LIMITE_NUM_EM_TESTE, erro     # Testa se NUM_EM_TESTE chegou em 0xfffffffc
+        addi    $t5, $t5, 2                     # Incrementa $t5 em 2
+        bne     $t5, $t7, continua              # Se $t5 != 6, pula próxima instrução
+        li      $t5, 2                          # Seta $t5 como 2
+    continua:
 .end_macro
+
 ##
 # Data Segment
 ##
@@ -129,18 +109,18 @@ main:
     addi    $sp, $sp, -4                    # Aloca o primeiro primo (3) no stack
     li      $t0, 3
     sw      $t0, 0($sp)
+    move    INDEX_LISTA, $fp                # Define início da lista
 
     j exec                                  # Inicia a execução
 
 incrementaTeste:
-    addiu   NUM_EM_TESTE, NUM_EM_TESTE, 2   # Incrementa NUM_EM_TESTE
-    ignora_multiplo_de_tres                 # Se NUM_EM_TESTE for multiplo de três, passa para o próximo valor a ser testado
+    incrementa_num_em_teste                 # Incrementa NUM_EM_TESTE pulando múltiplos de 3 e testando overflow
     sqroot                                  # Macro: Encontra raiz quadrada de NUM_EM_TESTE
-    move    INDEX_LISTA, $zero              # Retorna o índice da lista de primos para a primeira posição
+    move    INDEX_LISTA, $fp                # Retorna o índice da lista de primos para a posição -1 (será incrementado na próxima instrução)
 
 exec:
     addi    INDEX_LISTA, INDEX_LISTA, -4    # Anda a posição da lista de primos em 1 word
-    get_primo_da_lista (INDEX_LISTA)        # $t1 recebe o primo da lista na posição INDEX_LISTA
+    lw      $t1, 0(INDEX_LISTA)             # $t1 recebe o primo do endereço $t0
     divu    NUM_EM_TESTE, $t1               # O NUM_EM_TESTE é dividido pelo primo pego da lista
     mfhi    $t3                             # $t3 recebe o resto da divisão
     beq     $t3, $zero, incrementaTeste     # Se NUM_EM_TESTE % $t1 == 0, NUM_EM_TESTE atual não é primo e é descartado
