@@ -81,7 +81,7 @@
 
 .macro get_primo_da_lista (%indice)         # $t1 recebe o valor do primo do índice %indice/4 da lista || Usados $t0 e $t1
     add     $t0, $fp, INDEX_LISTA           # $t0 recebe o endereço de $fp - %index
-    lw      $t1, 0($t0)                     # $t1 recebe o primo do endereço $t0
+    lw      $t1, -32($t0)                     # $t1 recebe o primo do endereço $t0
 .end_macro
 
 .macro sqroot                               # Calcula sqrt de NUM_EM_TESTE e retorna parte inteira do resultado em $t8
@@ -113,19 +113,17 @@
 .end_macro
 
 .macro empilha_registradores
-    addi    $sp, $sp, -4                    # Aloca 1 word no stack, armazena o $fp do caller e atualiza $fp para o frame atual
-    sw      $fp, 0($sp)
-    move    $fp, $sp
-    addi    $sp, $sp, -32                   # Aloca espaço na pilha para os registradores $sX
-    sw      $s0, 0($sp)
-    sw      $s1, 4($sp)
-    sw      $s2, 8($sp)
-    sw      $s3, 12($sp)
+    addi    $sp, $sp, -40                    # Aloca 1 word no stack, armazena o $fp do caller e atualiza $fp para o frame atual
+    sw      $fp, 36($sp)
+    addi    $fp, $sp, 36
+    sw      $s0, 32($sp)
+    sw      $s1, 28($sp)
+    sw      $s2, 24($sp)
+    sw      $s3, 20($sp)
     sw      $s4, 16($sp)
-    sw      $s5, 20($sp)
-    sw      $s6, 24($sp)
-    sw      $s7, 28($sp)
-    addi    $sp, $sp, -4                    # Aloca o primeiro primo (3) no stack
+    sw      $s5, 12($sp)
+    sw      $s6, 8($sp)
+    sw      $s7, 4($sp)
     li      $t0, 3
     sw      $t0, 0($sp)
 .end_macro
@@ -182,7 +180,7 @@ gemeoEncontrado:
     bne     INDEX_PROCURADO, INDEX_ATUAL, incrementaTeste   # Se os índices atual e esperado não forem iguais, continua a iteração
 
 exibeResultado:
-    addi    $v0, ULTIMO_GEMEO_ENCONTRADO, -2# Decrementa em 2 o último gêmeo encontrado
+    addi    $v1, ULTIMO_GEMEO_ENCONTRADO, -2# Decrementa em 2 o último gêmeo encontrado
 
     j fim
 
