@@ -60,8 +60,9 @@
     lw      $s6, 28($sp)
     lw      $s7, 32($sp)
     addiu   $sp, $sp, 4
-    li      $v0, 10
-    syscall
+    # li      $v0, 10
+    # syscall
+    jr $ra
 .end_macro
 
 .macro inicia_registradores                 # Coloca o valor inicial nos registradores
@@ -180,7 +181,7 @@ gemeoEncontrado:
     bne     INDEX_PROCURADO, INDEX_ATUAL, incrementaTeste   # Se os índices atual e esperado não forem iguais, continua a iteração
 
 exibeResultado:
-    addi    $v1, ULTIMO_GEMEO_ENCONTRADO, -2# Decrementa em 2 o último gêmeo encontrado
+    addi    $v0, ULTIMO_GEMEO_ENCONTRADO, -2# Decrementa em 2 o último gêmeo encontrado
 
     j fim
 
