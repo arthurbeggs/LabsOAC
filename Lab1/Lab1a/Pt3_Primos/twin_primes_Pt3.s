@@ -50,8 +50,8 @@
 
 .macro done                                 # Limpa o stack e faz a chamada de sistema exit(0)
     move    $sp, $fp
-    lw      $fp, 4($sp)
-    addiu   $sp, $sp, 0
+    lw      $fp, 0($sp)
+    addiu   $sp, $sp, 4
     li      $v0, 10
     syscall
 .end_macro

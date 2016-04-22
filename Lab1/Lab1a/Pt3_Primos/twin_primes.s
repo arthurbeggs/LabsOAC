@@ -8,12 +8,12 @@
 ##
 .eqv MAX_DIV_POSSIVEL           65534       # Divisor máximo limitado por sqrt(2^32)
 .eqv NUM_EM_TESTE               $s0         # Numero em avaliação de primalidade
-.eqv INDEX_PROCURADO            $s1         # Índice do conjunto desejado de primos gêmeos
+.eqv INDEX_PROCURADO            $s1         # �?ndice do conjunto desejado de primos gêmeos
 .eqv ULTIMO_GEMEO_ENCONTRADO    $s2         # Guarda o valor do último gêmeo encontrado
 .eqv POSSIVEL_GEMEO             $s3         # Valor que possivelmente é gêmeo
-.eqv INDEX_ATUAL                $s4         # Índice do último conjunto de primos gêmeos encontrado
+.eqv INDEX_ATUAL                $s4         # �?ndice do último conjunto de primos gêmeos encontrado
 .eqv MAIOR_DIV                  $s6         # Divisor máximo do número atualmente em teste de primalidade
-.eqv INDEX_LISTA                $s7         # Índice de posição da lista de primos menores que MAIOR_DIVISOR_POSSIVEL
+.eqv INDEX_LISTA                $s7         # �?ndice de posição da lista de primos menores que MAIOR_DIVISOR_POSSIVEL
 .eqv LIMITE_NUM_EM_TESTE        $s5         # Número em teste limite para 32 bits
 # Temporários não modificáveis: $t7, $t5
 
@@ -21,7 +21,7 @@
     li      $v0, 5
     syscall
     move    INDEX_PROCURADO, $v0
-    beq     INDEX_PROCURADO, $zero, erro    # Se o índice digitado for zero, termina programa.
+    ble     INDEX_PROCURADO, $zero, erro    # Se o índice digitado for zero, termina programa.
 .end_macro
 
 .macro print_str (%string)                  # Printa string na tela
@@ -38,8 +38,8 @@
 
 .macro done                                 # Limpa o stack e faz a chamada de sistema exit(0)
     move    $sp, $fp
-    lw      $fp, 4($sp)
-    addiu   $sp, $sp, 0
+    lw      $fp, 0($sp)
+    addiu   $sp, $sp, 4
     li      $v0, 10
     syscall
 .end_macro
