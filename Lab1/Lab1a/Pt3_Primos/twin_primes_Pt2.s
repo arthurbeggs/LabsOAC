@@ -1,21 +1,8 @@
 ##
 #  Lab1 - Calculo de Primos Gemeos
-# /version      refactoring2
+# /version      release v1
 # /authors      Gabriel Iduarte | Rafael Lima | Arthur Matos
 
-####                            *** REFACTORING CHANGELOG ***
-####
-####    - Nomes de macros trocados: LIMITE_N para MAX_DIV_POSSIVEL; NUM_TESTE para NUM_EM_TESTE;
-####            I para INDEX_PROCURADO; RANKING para INDEX_ATUAL; MAX_N para MAIOR_DIV; A para INDEX_LISTA;
-####    - Macros removidas: FASE (depreciado);
-####    - Macros adicionadas: POSSIVEL_GEMEO; ULTIMO_GEMEO_ENCONTRADO; recebe_int; print_str; print_int;
-####            inicia_registradores; get_primo_da_lista; incremento_com_teste_de_overflow;
-####    - Nomes dos dados alterados
-####    - Nomes de labels alterados: procedimento para exec; ??? para main; main para fim;
-####            atualizanumero para incrementaTeste; novoprimo para primoEncontrado; continuanp para testaGemeo;
-####            novogemeo para gemeoEncontrado; saida para exibeResultado; fase0error para erro;
-####    - Labels removidos: fimfase0; fase1; continuaFase1; resetavetor
-####
 
 ##
 # Macros
