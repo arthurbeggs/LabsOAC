@@ -1,21 +1,8 @@
 ##
 #  Lab1 - Calculo de Primos Gemeos
-# /version      refactoring2
+# /version      release v1
 # /authors      Gabriel Iduarte | Rafael Lima | Arthur Matos
 
-####                            *** REFACTORING CHANGELOG ***
-####
-####    - Nomes de macros trocados: LIMITE_N para MAX_DIV_POSSIVEL; NUM_TESTE para NUM_EM_TESTE;
-####            I para INDEX_PROCURADO; RANKING para INDEX_ATUAL; MAX_N para MAIOR_DIV; A para INDEX_LISTA;
-####    - Macros removidas: FASE (depreciado);
-####    - Macros adicionadas: POSSIVEL_GEMEO; ULTIMO_GEMEO_ENCONTRADO; recebe_int; print_str; print_int;
-####            inicia_registradores; get_primo_da_lista; incremento_com_teste_de_overflow;
-####    - Nomes dos dados alterados
-####    - Nomes de labels alterados: procedimento para exec; ??? para main; main para fim;
-####            atualizanumero para incrementaTeste; novoprimo para primoEncontrado; continuanp para testaGemeo;
-####            novogemeo para gemeoEncontrado; saida para exibeResultado; fase0error para erro;
-####    - Labels removidos: fimfase0; fase1; continuaFase1; resetavetor
-####
 
 ##
 # Macros
@@ -50,13 +37,23 @@
 
 .macro done                                 # Limpa o stack e faz a chamada de sistema exit(0)
     move    $sp, $fp
-    lw      $fp, 4($sp)
-    addiu   $sp, $sp, 0
-    li      $v0, 10
-    syscall
+    lw      $fp, 0($sp)
+    lw      $s0, 4($sp)
+    lw      $s1, 8($sp)
+    lw      $s2, 12($sp)
+    lw      $s3, 16($sp)
+    lw      $s4, 20($sp)
+    lw      $s5, 24($sp)
+    lw      $s6, 28($sp)
+    lw      $s7, 32($sp)
+    addiu   $sp, $sp, 4
+    # li      $v0, 10
+    # syscall
+    jr $ra
 .end_macro
 
 .macro inicia_registradores                 # Coloca o valor inicial nos registradores
+    empilha_registradores                   # Salva os registradores $sX
     li      NUM_EM_TESTE, 3                 # O numero a ser testado recebe 3
     li      POSSIVEL_GEMEO, 3               # POSSIVEL_GEMEO contém o candidato a gêmeo (3) que será testado.
     li      MULTIPLO_COUNT, 0               # O contador de múltiplos começa com 0
@@ -67,11 +64,12 @@
     move    INDEX_LISTA, $zero              # O índice da lista de primos recebe $zero
     l.d     $f18, d_zero                    # Salva o double 0.0 no registrador $f18
     l.d     $f20, d_full                    # Salva o double 4294967296.0 no registrador $f20
+    # li      $a0, 10000                      # Usado para testar o programa
 .end_macro
 
 .macro get_primo_da_lista (%indice)         # $t1 recebe o valor do primo do índice %indice/4 da lista || Usados $t0 e $t1
     add     $t0, $fp, INDEX_LISTA           # $t0 recebe o endereço de $fp - %index
-    lw      $t1, 0($t0)                     # $t1 recebe o primo do endereço $t0
+    lw      $t1, -32($t0)                     # $t1 recebe o primo do endereço $t0
 .end_macro
 
 .macro sqroot                               # Calcula sqrt de NUM_EM_TESTE e retorna parte inteira do resultado em $t8
@@ -96,11 +94,28 @@
 .end_macro
 
 .macro overflow_primo_gemeo                 # Testa se NUM_EM_TESTE retornou para 0x00000000
-    move $t2, NUM_EM_TESTE                  # Passa o NUM_EM_TESTE anterior para $t2
-    addiu NUM_EM_TESTE, NUM_EM_TESTE, 2     # Incrementa NUM_EM_TESTE
-    sltu $t3, $t2, NUM_EM_TESTE             # Testa se NUM_EM_TESTE atual é maior que NUM_EM_TESTE anterior
-    beq $t3, $zero, erro                    # Se NUM_EM_TESTE atual for menor que o anterior, imax foi encontrado
+    move    $t2, NUM_EM_TESTE                  # Passa o NUM_EM_TESTE anterior para $t2
+    addiu   NUM_EM_TESTE, NUM_EM_TESTE, 2     # Incrementa NUM_EM_TESTE
+    sltu    $t3, $t2, NUM_EM_TESTE             # Testa se NUM_EM_TESTE atual é maior que NUM_EM_TESTE anterior
+    beq     $t3, $zero, erro                    # Se NUM_EM_TESTE atual for menor que o anterior, imax foi encontrado
 .end_macro
+
+.macro empilha_registradores
+    addi    $sp, $sp, -40                    # Aloca 1 word no stack, armazena o $fp do caller e atualiza $fp para o frame atual
+    sw      $fp, 36($sp)
+    addi    $fp, $sp, 36
+    sw      $s0, 32($sp)
+    sw      $s1, 28($sp)
+    sw      $s2, 24($sp)
+    sw      $s3, 20($sp)
+    sw      $s4, 16($sp)
+    sw      $s5, 12($sp)
+    sw      $s6, 8($sp)
+    sw      $s7, 4($sp)
+    li      $t0, 3
+    sw      $t0, 0($sp)
+.end_macro
+
 ##
 # Data Segment
 ##
@@ -116,16 +131,9 @@
     # Text Segment
     ##
 .text
-main:
-    addiu   $sp, $sp, -4                    # Aloca 1 word no stack, armazena o $fp do caller e atualiza $fp para o frame atual
-    sw      $fp, 0($sp)
-    move    $fp, $sp
+pg:
     inicia_registradores                    # Macro: Inicialização de registradores
-    print_str (str_primos)
-    li    INDEX_PROCURADO, 99999999         # Index procurado arbitrariamente grande. Ocorrerá overflow de primos representáveis antes de alcançar esse valor
-    addi    $sp, $sp, -4                    # Aloca o primeiro primo (3) no stack
-    li      $t0, 3
-    sw      $t0, 0($sp)
+    move    INDEX_PROCURADO, $a0            # INDEX_PROCURADO é o argumento recebido em $a0
 
     j exec                                  # Inicia a execução
 
@@ -157,15 +165,12 @@ testaGemeo:
 gemeoEncontrado:
     move    ULTIMO_GEMEO_ENCONTRADO, $t4    # Salva o segundo elemento do último gêmeo encontrado
     addi    INDEX_ATUAL, INDEX_ATUAL, 1     # Incrementa o índice de busca atual
-    jal exibeResultado
     bne     INDEX_PROCURADO, INDEX_ATUAL, incrementaTeste   # Se os índices atual e esperado não forem iguais, continua a iteração
 
 exibeResultado:
-    addi    $t0, ULTIMO_GEMEO_ENCONTRADO, -2# Decrementa em 2 o último gêmeo encontrado
-    print_int ($t0)                         # printf ("%d",ULTIMO_GEMEO_ENCONTRADO-2)
-    print_str (str_newl)                    # printf ("\n")
+    addi    $v0, ULTIMO_GEMEO_ENCONTRADO, -2# Decrementa em 2 o último gêmeo encontrado
 
-    jr $ra
+    j fim
 
 erro:
     print_str(str_erro)                     # Exibe mensagem de erro
