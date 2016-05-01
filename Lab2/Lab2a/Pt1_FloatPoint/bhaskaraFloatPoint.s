@@ -54,8 +54,8 @@
 	abs.d DELTA, DELTA	#modifica DELTA para positivo
 	basico_bhaskara
 	addi $sp, $sp, -16
-	sdc1 DELTA, 8($sp)
-	sdc1 NEG_B, 0($sp)
+	sdc1 DELTA, 4($fp)
+	sdc1 NEG_B, 12($fp)
 .end_macro 
 
 .macro raizes_reais
@@ -64,76 +64,81 @@
 	sub.d R1, NEG_B, DELTA	#Raiz 1 = -B/(2A) - DELTA/(2A)
 	add.d R2, NEG_B, DELTA	#Raiz 2 = -B/(2A) + DELTA/(2A)
 	addi $sp, $sp, -16	#Prepara memoria para gravação, $sp registrador da pilha
-	sdc1 R2, 8($sp)		#Grava R1, Double (8bits), na memoria
-	sdc1 R1, 0($sp)		#Grava R2 ,Double (8bits), na memoria
+	sdc1 R2, 4($fp)		#Grava R1, Double (8bits), na memoria
+	sdc1 R1, 12($fp)		#Grava R2 ,Double (8bits), na memoria
 .end_macro 
 
 
 .data
-	.digA: 	.asciiz "Digite o valor de a: "
-	.digB: 	.asciiz "Digite o valor de b: "
-	.digC: 	.asciiz "Digite o valor de c: "
-	.raiz1: .asciiz "R(1) = "
-	.raiz2: .asciiz "R(2) = "
-	.i: 	.asciiz "i\n"
-	.mais: 	.asciiz " + "
-	.menos: .asciiz " - "
+	digA: 	.asciiz "Digite o valor de a: "
+	digB: 	.asciiz "Digite o valor de b: "
+	digC: 	.asciiz "Digite o valor de c: "
+	raiz1: .asciiz "R(1) = "
+	raiz2: .asciiz "\nR(2) = "
+	i: 	.asciiz "i"
+	mais: 	.asciiz " + "
+	menos: .asciiz " - "
 	zero:	.double 0.0
 	dois:	.double 2.0
-	.align quatro: .double 4.0
+	quatro: .double 4.0
 	
 .text
-	jal .input
-	jal .bhaskara
+	move $fp, $sp
+	addi $sp, $sp,-4
+	jal input
+	jal bhaskara
 	move $a0, $v0
-	jal .show
-	addi $sp, $sp, -16
+	jal show
+	move $sp, $fp
+	lw $fp, 0($fp)
 	li $v0, 10
 	syscall
-.input:
-	printf_string .digA
+input:
+	printf_string digA
 	read A1
-	printf_string .digB
+	printf_string digB
 	read B1
-	printf_string .digC
+	printf_string digC
 	read C1
 	jr $ra
-.bhaskara:
+bhaskara:
 	inicio_bhaskara
 	raizes_complexas: raizes_complexas
+	jr $ra
 	raizes_reais: raizes_reais
 	jr $ra
 	
-.show:
-	ldc1 $f0, 0($sp)
-	ldc1 $f2, -8($sp)
+show:
+	ldc1 $f2, 4($fp)
+	ldc1 $f0, 12($fp)
 	subi $t0, $a0, 1
 	beq $t0, $zero, reais
 	complexas:
-		printf_string .raiz1
+		printf_string raiz1
 		mov.d $f12, $f0
 		li $v0, 3
 		syscall
-		printf_string .mais
+		printf_string mais
 		mov.d $f12, $f2
 		li $v0, 3
 		syscall
-		printf_string .i
-		printf_string .raiz2
+		printf_string i
+		printf_string raiz2
 		mov.d $f12, $f0
 		li $v0, 3
 		syscall
-		printf_string .menos
+		printf_string menos
 		mov.d $f12, $f2
 		li $v0, 3
 		syscall
-		printf_string .i	
+		printf_string i
+		jr $ra
 	reais:	
-		printf_string .raiz1
+		printf_string raiz1
 		mov.d $f12, $f0
 		li $v0, 3
 		syscall
-		printf_string .raiz2
+		printf_string raiz2
 		mov.d $f12, $f2
 		li $v0, 3
 		syscall
