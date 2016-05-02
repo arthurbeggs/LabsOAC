@@ -18,8 +18,10 @@ module teste (
 	//output [8:0] oLEDG,
 	//output [6:0] oHEX0_D, oHEX1_D, oHEX2_D, oHEX3_D,
 	//output oHEX0_DP, oHEX1_DP, oHEX2_DP, oHEX3_DP );
-	output [6:0] oHEX0_D);
-	wire sum [3:0];
+	output [6:0] oHEX0_D ,
+	output [3:0] sum 
+	);
+	wire cIn;
 
 	assign oLEDR = iSW;
 	//assign oLEDG[0] = iKEY[0];
