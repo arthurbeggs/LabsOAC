@@ -1,9 +1,10 @@
 ## 
 # Laboratorio 1 - Baskhara
-# /Version 1.0
+# /Version 
+# /Authors
 
 ##
-# .eqv
+# Macros
 ##
 .eqv A1 $f2
 .eqv B1 $f4
@@ -14,9 +15,18 @@
 .eqv R1 $f24
 .eqv R2 $f22
 
-##
-# Macros
-##
+.macro printf_string %saida
+	la $a0, %saida
+	li $v0, 4
+	syscall	
+.end_macro
+.macro read %entrada
+	li $v0, 7
+	syscall	
+	l.d $f12, zero
+	add.d %entrada, $f12, $f0
+.end_macro 
+
 
 .macro  inicio_bhaskara
 	mul.d B2, B1, B1	#B^2 
@@ -60,12 +70,37 @@
 
 
 .data
+	digA: 	.asciiz "Digite o valor de a: "
+	digB: 	.asciiz "Digite o valor de b: "
+	digC: 	.asciiz "Digite o valor de c: "
+	raiz1: .asciiz "R(1) = "
+	raiz2: .asciiz "\nR(2) = "
+	i: 	.asciiz "i"
+	mais: 	.asciiz " + "
+	menos: .asciiz " - "
 	zero:	.double 0.0
 	dois:	.double 2.0
 	quatro: .double 4.0
 	
 .text
-
+	move $fp, $sp
+	addi $sp, $sp,-4
+	jal input
+	jal bhaskara
+	move $a0, $v0
+	jal show
+	move $sp, $fp
+	lw $fp, 0($fp)
+	li $v0, 10
+	syscall
+input:
+	printf_string digA
+	read A1
+	printf_string digB
+	read B1
+	printf_string digC
+	read C1
+	jr $ra
 bhaskara:
 	inicio_bhaskara
 	raizes_complexas: raizes_complexas
@@ -73,3 +108,42 @@ bhaskara:
 	raizes_reais: raizes_reais
 	jr $ra
 	
+show:
+	ldc1 $f2, 4($fp)
+	ldc1 $f0, 12($fp)
+	subi $t0, $a0, 1
+	beq $t0, $zero, reais
+	complexas:
+		printf_string raiz1
+		mov.d $f12, $f0
+		li $v0, 3
+		syscall
+		printf_string mais
+		mov.d $f12, $f2
+		li $v0, 3
+		syscall
+		printf_string i
+		printf_string raiz2
+		mov.d $f12, $f0
+		li $v0, 3
+		syscall
+		printf_string menos
+		mov.d $f12, $f2
+		li $v0, 3
+		syscall
+		printf_string i
+		jr $ra
+	reais:	
+		printf_string raiz1
+		mov.d $f12, $f0
+		li $v0, 3
+		syscall
+		printf_string raiz2
+		mov.d $f12, $f2
+		li $v0, 3
+		syscall
+	jr $ra
+	
+
+
+
