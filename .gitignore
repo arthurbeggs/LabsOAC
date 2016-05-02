@@ -6,8 +6,10 @@
 **/incremental_db
 **/output_files
 **/simulation
+*.done
 *.jdi
 *.pof
+*.rpt
 *.smsg
 *.sof
 *.summary
