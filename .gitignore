@@ -1,3 +1,10 @@
 # Ignored Files
 
+
+# Altera Quartus II ignored file and folder patterns
+**/db
+**/incremental_db
+**/output_files
+**/simulation
 *.bak
+*.temp
