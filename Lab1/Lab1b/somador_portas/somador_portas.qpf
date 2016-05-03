@@ -18,14 +18,13 @@
 #
 # Quartus II 32-bit
 # Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
-# Date created = 18:27:31  May 01, 2016
+# Date created = 20:47:08  May 02, 2016
 #
 # -------------------------------------------------------------------------- #
 
 QUARTUS_VERSION = "13.0"
-DATE = "18:27:31  May 01, 2016"
+DATE = "20:47:08  May 02, 2016"
 
 # Revisions
 
 PROJECT_REVISION = "somador_portas"
-PROJECT_REVISION = "somador"

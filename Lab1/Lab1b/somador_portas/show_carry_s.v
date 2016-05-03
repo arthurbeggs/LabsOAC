@@ -1,8 +1,10 @@
-module show_carry (
+module show_carry_s (
 	input carry,
-	output reg [6:0] display);
+	output reg [6:0] display,
+	input clock);
 	
-	always @(*)
+	//always @(*)
+	always@(posedge clock)
 		case (carry)
 			1'b1 : display = ~7'b0000110;
 			1'b0 : display = ~7'b0111111;

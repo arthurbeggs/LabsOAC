@@ -1,25 +1,25 @@
-/* teste.v */
+/* teste_s.v */
 
 /****************************************
 *    UnB - OAC - Prof. Marcus Lamar      *
-*    Laboratorio 1  Parte B  - DE-2 70   *
+*    LaboratÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³rio 1  Parte B  - DE-2 70   *
 *    GRUPO 2									  *
 *	  SOMADOR A NIVEL DE PORTAS LOGICAS   *
 *************************************** */
 
-// Este deve ser o programa TOP LEVEL do projeto ASSINCRONO para execucao na placa DE2 70
+// Este deve ser o programa TOP LEVEL do projeto SINCRONO para execucao na placa DE2 70
 // Ele recebe como entradas:
 //			- as chaves iSW[3:0] como primeira parcela
 // 		- as chaves iSW[17:14] como segunda parcela
-// Ele tem como saÃƒÂ­das:
+// Ele tem como saiÃ‚Â­das:
 // 		- o display de 7 segmentos HEX0 como valor da primeira parcela
 // 		- o display de 7 segmentos HEX3 como valor da segunda parcela
 // 		- o display de 7 segmentos HEX4 como valor da soma
 // 		- o display de 7 segmentos HEX5 como valor do carry
 
 
-module teste (
-	//input iCLK_50,
+module teste_s (
+	input iCLK_50,
 	input [17:0] iSW, 
 	input [3:0] iKEY,
 	output [17:0] oLEDR, 
@@ -53,11 +53,13 @@ module teste (
 	assign oHEX7_DP=1'b1;
 	assign oHEX7_D=7'b1111111;
 	
-	add4v a0 (iSW[3:0], iSW[17:14], f1[3:0], f2);	//modulo somador
+	
+	add4v_s a0 (.clock(iCLK_50), .iA(iSW[3:0]), .iB(iSW[17:14]), .oSUM(f1[3:0]), .oCARRY(f2));	//modulo somador
 			
-	decoder7 t0 (.In(iSW[3:0]),  .Out(oHEX0_D) ); //, .Clk(iCLK_50));
-	decoder7 t1 (.In(iSW[17:14]),  .Out(oHEX3_D) ); //, .Clk(iCLK_50));
-	decoder7 t2 (.In(f1[3:0]), .Out(oHEX4_D) ); //, .Clk(iCLK_50));
-	show_carry s0 (.carry(f2), .display(oHEX5_D) );//, .Clk(iCLK_50));
+	decoder7_s t0 (.In(iSW[3:0]),  .Out(oHEX0_D), .clock(iCLK_50));
+	decoder7_s t1 (.In(iSW[17:14]),  .Out(oHEX3_D), .clock(iCLK_50));
+	decoder7_s t2 (.In(f1[3:0]), .Out(oHEX4_D), .clock(iCLK_50));
+	show_carry_s s0 (.carry(f2), .display(oHEX5_D), .clock(iCLK_50));
 	
 endmodule
+
