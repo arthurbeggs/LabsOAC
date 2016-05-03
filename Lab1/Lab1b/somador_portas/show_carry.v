@@ -1,6 +1,6 @@
 module show_carry (
 	input carry,
-	output reg [6:0] display);
+	output [6:0] display);
 	
 	always @(*)
 		case (carry)
