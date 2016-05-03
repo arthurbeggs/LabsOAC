@@ -12,7 +12,7 @@ output oCARRY);
 
 wire c0, c1, c2;
 
-//somadores binarios em série
+//somadores unarios em série
 	//full_addv (input1, input2, carryIN, oSUM, carryOUT);
 full_addv x1 (iA[0], iB[0], gnd, oSUM[0], c0);
 full_addv x2 (iA[1], iB[1], c0, oSUM[1], c1);
