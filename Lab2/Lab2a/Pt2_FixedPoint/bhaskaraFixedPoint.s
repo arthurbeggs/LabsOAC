@@ -27,24 +27,24 @@
 	################
 	
 	#Prepara matissa
-	sll $t1, %entrada, 9
-	srl $t1, $t1, 9
+	sll $t1, %entrada, 13
+	srl $t1, $t1, 12
 	#prepara parte inteira
-	sra $t3, %entrada, 23
+	sra $t3, %entrada, 19
 	#prepara sinal e expoente para a matissa
 	addi $t3, $t3, -1
-	addi $t0, $zero, 127
-	sll $t0, $t0, 23
+	addi $t0, $zero, 1023
+	sll $t0, $t0, 20
 	#junta sinal, expoente e matissa
 	or $t0, $t0, $t1
 	#passa para c1
-	mtc1 $t0, $f0
+	mtc1 $t0, $f1
 	#passa inteiro para c1
-	mtc1 $t3, $f1
+	mtc1 $t3, $f2
 	#converte parte inteira em ponto flutuante
-	cvt.s.w $f1, $f1
+	cvt.d.w $f2, $f2
 	#finaliza converção
-	add.s %saida, $f1, $f0	
+	add.d %saida, $f2, $f0	
 .end_macro
 
 .macro convertToFixedPoint  %entrada, %saida 
@@ -53,31 +53,31 @@
 	################
 	
 	#pega valor inteiro
-	trunc.w.s  $f1, %entrada
-	mfc1 $t0, $f1
+	trunc.w.d  $f2, %entrada
+	mfc1 $t0, $f2
 	
 	#subtrai 1 do valor inteiro
 	addi $t1, $t0, -1
 	
 	#volta para c1 e tira parte inteira 
-	mtc1 $t1, $f1
-	cvt.s.w $f1, $f1
-	sub.s $f1, %entrada, $f1
+	mtc1 $t1, $f2
+	cvt.d.w $f2, $f2
+	sub.d $f2, %entrada, $f2
 	
 	#pega apenas parte fracionaria
-	mfc1 $t1, $f1
-	sll $t1, $t1, 9
-	srl $t1, $t1, 9
+	mfc1 $t1, $f3
+	sll $t1, $t1, 12
+	srl $t1, $t1, 13
 	
 	#dispoe bits de inteiro na parte correta
-	sll %saida, $t0, 23
+	sll %saida, $t0, 19
 	
 	#or com fração
 	or %saida, %saida, $t1 
 .end_macro
 
 .macro read %saida
-	li $v0, 6
+	li $v0, 7
 	syscall	
 	convertToFixedPoint $f0, %saida
 	
@@ -151,7 +151,7 @@
 	printf_string digA
 	read A1
 	convertFromFixedPoint $f12, A1
-	li $v0, 2
+	li $v0, 3
 	syscall
 	
 	
