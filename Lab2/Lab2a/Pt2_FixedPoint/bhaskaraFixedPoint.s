@@ -23,23 +23,24 @@
 
 .macro convertFromFixedPoint  %saida, %entrada
 	###OBSERVAÇÃO###
-	#Falta exceções quandoo numero é zero ou menor que 1
+	#Falta exceções quandoo numero menor que 1
 	################
 	
-	#prepara sinal e expoente para a matissa
-	addi $t0, $t0, 127
-	sll $t0, $t0, 23
 	#Prepara matissa
 	sll $t1, %entrada, 9
-	srl $t1, %entrada, 9
+	srl $t1, $t1, 9
+	#prepara parte inteira
+	sra $t3, %entrada, 23
+	#prepara sinal e expoente para a matissa
+	addi $t3, $t3, -1
+	addi $t0, $zero, 127
+	sll $t0, $t0, 23
 	#junta sinal, expoente e matissa
 	or $t0, $t0, $t1
 	#passa para c1
 	mtc1 $t0, $f0
-	#prepara parte inteira
-	sra $t0, %entrada, 23
 	#passa inteiro para c1
-	mtc1 $t0, $f1
+	mtc1 $t3, $f1
 	#converte parte inteira em ponto flutuante
 	cvt.s.w $f1, $f1
 	#finaliza converção
@@ -52,7 +53,7 @@
 	################
 	
 	#pega valor inteiro
-	ceil.w.s  $f1, %entrada
+	trunc.w.s  $f1, %entrada
 	mfc1 $t0, $f1
 	
 	#subtrai 1 do valor inteiro
@@ -60,12 +61,13 @@
 	
 	#volta para c1 e tira parte inteira 
 	mtc1 $t1, $f1
-	sub.s $f1, $f1, %entrada
+	cvt.s.w $f1, $f1
+	sub.s $f1, %entrada, $f1
 	
 	#pega apenas parte fracionaria
 	mfc1 $t1, $f1
 	sll $t1, $t1, 9
-	srl $t1, $t1, 9 
+	srl $t1, $t1, 9
 	
 	#dispoe bits de inteiro na parte correta
 	sll %saida, $t0, 23
@@ -145,7 +147,9 @@
 .text
 	move $fp, $sp
 	addi $sp, $sp,-4
-	jal input	
+	#jal input	
+	printf_string digA
+	read A1
 	convertFromFixedPoint $f12, A1
 	li $v0, 2
 	syscall
