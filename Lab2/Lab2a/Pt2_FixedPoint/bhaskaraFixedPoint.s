@@ -1,5 +1,5 @@
 ##
-# Laboratorio 1 - Baskhara
+# Laboratorio 2A - Baskhara
 # /Version      2
 # /Authors      Gabriel Iduarte | Arthur Matos
 
