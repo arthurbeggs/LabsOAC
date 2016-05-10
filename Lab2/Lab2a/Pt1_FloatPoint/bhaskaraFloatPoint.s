@@ -1,5 +1,5 @@
 ##
-# Laboratorio 1 - Baskhara
+# Laboratorio 2A - Baskhara
 # /Version      2
 # /Authors      Gabriel Iduarte
 
@@ -15,20 +15,20 @@
 .eqv R1    $f24
 .eqv R2    $f22
 
-.macro printf_string %saida
+.macro _printf_string_ %saida
     la     $a0, %saida
     li     $v0, 4
     syscall
 .end_macro
 
-.macro read %entrada
+.macro _read_ %entrada
     li     $v0, 7
     syscall
     l.d    $f12, zero
     add.d  %entrada, $f12, $f0
 .end_macro
 
-.macro  inicio_bhaskara
+.macro  _inicio_bhaskara_
     mul.d  B2, B1, B1                       # B^2
     mul.d  DELTA, A1, C1                    # A*C
     l.d    $f18, quatro
@@ -39,7 +39,7 @@
     j      raizes_reais                     # Vai para raizes_reais
 .end_macro
 
-.macro basico_bhaskara
+.macro _basico_bhaskara_
     l.d    $f18, dois
     mul.d  $f16, A1, $f18                   # 2*A com shift
     neg.d  NEG_B, B1                        # -B
@@ -48,19 +48,19 @@
     div.d  DELTA, DELTA, $f16               # sqrt (DELTA)/(2*A)
 .end_macro
 
-.macro raizes_complexas
+.macro _raizes_complexas_
     sub.d  DELTA, B2, DELTA                 # B^2 - 4AC
     li     $v0, 2                           # Modifica retorno para 2.
     abs.d  DELTA, DELTA                     # Modifica DELTA para positivo
-    basico_bhaskara
+    _basico_bhaskara_
     addi   $sp, $sp, -16
     sdc1   DELTA, 4($fp)
     sdc1   NEG_B, 12($fp)
 .end_macro
 
-.macro raizes_reais
+.macro _raizes_reais_
     sub.d  DELTA, B2, DELTA                 # B^2 - 4AC
-    basico_bhaskara                         # Chama macro de operações básicas para bhaskara
+    _basico_bhaskara_                        # Chama macro de operações básicas para bhaskara
     sub.d  R1, NEG_B, DELTA                 # Raiz 1 = -B/(2A) - DELTA/(2A)
     add.d  R2, NEG_B, DELTA                 # Raiz 2 = -B/(2A) + DELTA/(2A)
     addi   $sp, $sp, -16                    # Prepara memoria para gravação, $sp registrador da pilha
@@ -95,18 +95,18 @@ main:
     li     $v0, 10
     syscall
 input:
-    printf_string digA
-    read A1
-    printf_string digB
-    read B1
-    printf_string digC
-    read C1
+    _printf_string_ digA
+    _read_ A1
+    _printf_string_ digB
+    _read_ B1
+    _printf_string_ digC
+    _read_ C1
     jr     $ra
 bhaskara:
-    inicio_bhaskara
-    raizes_complexas:  raizes_complexas
+    _inicio_bhaskara_
+    raizes_complexas:  _raizes_complexas_
     jr     $ra
-    raizes_reais:      raizes_reais
+    raizes_reais:      _raizes_reais_
     jr     $ra
 
 show:
@@ -115,31 +115,31 @@ show:
     subi   $t0, $a0, 1
     beq    $t0, $zero, reais
     complexas:
-        printf_string raiz1
+        _printf_string_ raiz1
         mov.d     $f12, $f0
         li        $v0, 3
         syscall
-        printf_string mais
+        _printf_string_ mais
         mov.d     $f12, $f2
         li        $v0, 3
         syscall
-        printf_string i
-        printf_string raiz2
+        _printf_string_ i
+        _printf_string_ raiz2
         mov.d     $f12, $f0
         li        $v0, 3
         syscall
-        printf_string menos
+        _printf_string_ menos
         mov.d     $f12, $f2
         li        $v0, 3
         syscall
-        printf_string i
+        _printf_string_ i
         jr        $ra
     reais:
-        printf_string raiz1
+        _printf_string_ raiz1
         mov.d     $f12, $f0
         li        $v0, 3
         syscall
-        printf_string raiz2
+        _printf_string_ raiz2
         mov.d     $f12, $f2
         li        $v0, 3
         syscall
