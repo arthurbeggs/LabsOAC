@@ -1,7 +1,7 @@
 ##
 # Laboratorio 1 - Baskhara
 # /Version      2
-# /Authors
+# /Authors      Gabriel Iduarte
 
 ##
 # Macros
@@ -20,13 +20,13 @@
     li     $v0, 4
     syscall
 .end_macro
+
 .macro read %entrada
     li     $v0, 7
     syscall
     l.d    $f12, zero
     add.d  %entrada, $f12, $f0
 .end_macro
-
 
 .macro  inicio_bhaskara
     mul.d  B2, B1, B1                       # B^2
@@ -69,20 +69,21 @@
 .end_macro
 
 
-.data
-    digA:      .asciiz "Digite o valor de a: "
-    digB:      .asciiz "Digite o valor de b: "
-    digC:      .asciiz "Digite o valor de c: "
-    raiz1:     .asciiz "R(1) = "
-    raiz2:     .asciiz "\nR(2) = "
-    i:         .asciiz "i"
-    mais:      .asciiz " + "
-    menos:     .asciiz " - "
-    zero:      .double 0.0
-    dois:      .double 2.0
-    quatro:    .double 4.0
+    .data
+digA:      .asciiz "Digite o valor de a: "
+digB:      .asciiz "Digite o valor de b: "
+digC:      .asciiz "Digite o valor de c: "
+raiz1:     .asciiz "R(1) = "
+raiz2:     .asciiz "\nR(2) = "
+i:         .asciiz "i"
+mais:      .asciiz " + "
+menos:     .asciiz " - "
+zero:      .double 0.0
+dois:      .double 2.0
+quatro:    .double 4.0
 
-.text
+    .text
+main:
     move   $fp, $sp
     addi   $sp, $sp,-4
     jal    input
