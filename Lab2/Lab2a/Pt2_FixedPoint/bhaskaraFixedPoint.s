@@ -58,7 +58,7 @@
 
 .end_macro
 
-.macro _mult_ %rd, %rs, %rt
+.macro _mul_ %rd, %rs, %rt
     mult    %rs, %rt
     mfhi    $t5
     sll     $t5, $t5, 19
