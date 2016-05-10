@@ -58,6 +58,15 @@
 
 .end_macro
 
+.macro _mult_ %rd, %rs, %rt
+    mult    %rs, %rt
+    mfhi    $t5
+    sll     $t5, $t5, 19
+    mflo    $t6
+    srl     $t5, $t5, 13
+    or      %rd, $t5, $t6
+.end_macro
+
 .macro _div_ %rd, %rs, %rt
     #//TODO: Função de divisão em ponto fixo.
 .end_macro
@@ -67,10 +76,10 @@
 .end_macro
 
 .macro _inicio_bhaskara_
-    mul     B2, B1, B1                              # B^2
-    mul     DELTA, A1, C1                           # A*C
+    _mul_   B2, B1, B1                              # B^2
+    _mul_   DELTA, A1, C1                           # A*C
     li      $t0, 4
-    mul     DELTA, $t0, DELTA                       # 4*(A*C) com shift
+    _mul_   DELTA, $t0, DELTA                       # 4*(A*C) com shift
     slt     $t3, B2, DELTA                          # Altera $t3 para (B^2<4*A*C)
     bne     $t3, $zero, raizes_complexas            # Se $t3 TRUE vai para raizes_complexas, modificado retorno para 2.
     li      $v0, 1                                  # Modifica retorno para 1.
@@ -80,7 +89,7 @@
 .macro _basico_bhaskara_
     li      $t1, -1
     sll     $t2, A1, 1                              # 2*A com shift
-    mul     NEG_B, $t1, B1                          # -B
+    _mul_   NEG_B, $t1, B1                          # -B
     _div_   NEG_B, NEG_B,$t2                        # -B/(2*A)
     _sqrt_  DELTA, DELTA                            # sqrt (DELTA)
     _div_   DELTA, DELTA,$t2                        # sqrt (DELTA)/(2*A)
