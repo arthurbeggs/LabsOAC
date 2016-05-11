@@ -12,11 +12,11 @@
 .eqv NEG_B  $s3
 .eqv DELTA  $s5
 .eqv B2     $s7
-.eqv R1     $t8
-.eqv R2     $t9
 .eqv TMP    $t4
 .eqv BIT    $t5
 .eqv RES    $t6
+.eqv R1     $t8
+.eqv R2     $t9
 
 .macro _printf_string_ %entrada
     la      $a0, %entrada
@@ -39,7 +39,7 @@
     add.d   %saida, $f2, $f0                        # Finaliza conversão
 .end_macro
 
-.macro _convertToFixedPoint_  %entrada, %saida      # Ponto fixo Q13
+.macro _convertToFixedPoint_  %entrada, %saida      # Ponto fixo Q16
     # //TODO: Exceções quando o numero é zero ou menor que 1.
     trunc.w.d   $f2, %entrada                       # Pega valor inteiro
     mfc1    $t0, $f2
@@ -62,16 +62,22 @@
 .end_macro
 
 .macro _mul_ %rd, %rs, %rt
-    mult    %rs, %rt
+    mult    %rs, %rt                                # FLAGGGGGGGG
     mfhi    $t5
     sll     $t5, $t5, 16
     mflo    $t6
-    srl     $t5, $t5, 16
+    srl     $t6, $t6, 16
     or      %rd, $t5, $t6
 .end_macro
 
 .macro _div_ %rd, %rs, %rt
-    #//TODO: Função de divisão em ponto fixo.
+    #//FIXME: Divisão com divisor negativo.
+    #//TODO: Testes de valores invalidos dos parâmetros
+    la      $t0, maskF
+    lw      $t0, 0($t0)
+    divu    $t0, %rt
+    mflo    $t0
+    _mul_   %rd, %rs, $t0
 .end_macro
 
 .macro _sqrt_ %saida, %entrada                      # Método de cálculo dígito-por-dígito
@@ -154,6 +160,10 @@ menos:  .asciiz " - "
 zero:   .double 0.0
 dois:   .double 2.0
 quatro: .double 4.0
+maskU:  .word   0xFFFF0000
+maskD:  .word   0x0000FFFF
+maskF:  .word   0xFFFFFFFF
+mask1:  .word   0x00010000
 
 
     .text
@@ -163,7 +173,9 @@ main:
     #jal input
     _printf_string_ digA
     _read_ A1
-    _sqrt_ A1, A1
+    _printf_string_ digB
+    _read_ B1
+    _div_ A1, A1, B1
     _convertFromFixedPoint_ $f12, A1
     li      $v0, 3
     syscall
