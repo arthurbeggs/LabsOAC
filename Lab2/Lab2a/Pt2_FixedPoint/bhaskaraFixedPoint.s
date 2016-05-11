@@ -74,13 +74,10 @@
     #//TODO: Função de divisão em ponto fixo.
 .end_macro
 
-.macro _sqrt_ %saida, %entrada
+.macro _sqrt_ %saida, %entrada                      # Método de cálculo dígito-por-dígito
     #//TODO: Função de raiz quadrada em ponto fixo.
-        move    RES, $zero                          #FLAG SQRT
+        move    RES, $zero
         move    %saida, %entrada
-
-        sll     %saida, %saida, 3
-
         li      BIT, 1
         sll     BIT, BIT, 30
     L1:
@@ -101,11 +98,8 @@
         srl     BIT, BIT, 2
         j       L2
     LE:
+        sll     RES, RES, 8
         move    %saida, RES
-
-        sll     %saida, %saida, 8
-
-    #//NOTE: Verificar se é necessário deslocar o resultado para corrigir o ponto fixo
 .end_macro
 
 .macro _inicio_bhaskara_
