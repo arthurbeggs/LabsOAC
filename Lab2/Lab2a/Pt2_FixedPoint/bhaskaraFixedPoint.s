@@ -14,6 +14,9 @@
 .eqv B2     $s7
 .eqv R1     $t8
 .eqv R2     $t9
+.eqv TMP    $t4
+.eqv BIT    $t5
+.eqv RES    $t6
 
 .macro _printf_string_ %entrada
     la      $a0, %entrada
@@ -36,7 +39,7 @@
     add.d   %saida, $f2, $f0                        # Finaliza conversão
 .end_macro
 
-.macro _convertToFixedPoint_  %entrada, %saida
+.macro _convertToFixedPoint_  %entrada, %saida      # Ponto fixo Q13
     # //TODO: Exceções quando o numero é zero ou menor que 1.
     trunc.w.d   $f2, %entrada                       # Pega valor inteiro
     mfc1    $t0, $f2
@@ -71,8 +74,31 @@
     #//TODO: Função de divisão em ponto fixo.
 .end_macro
 
-.macro _sqrt_ %saida, %entrada
-    #//TODO: Função de raiz quadrada em ponto fixo.
+.macro _sqrt_ %saida, %entrada                      # Método de cálculo dígito-por-dígito
+        move    RES, $zero
+        move    %saida, %entrada
+        li      BIT, 1
+        sll     BIT, BIT, 30
+    L1:
+        ble     BIT, %saida, L2
+        srl     BIT, BIT, 2
+        j       L1
+    L2:
+        beq     BIT, $zero, LE
+        add     TMP, RES, BIT
+        blt     %saida, TMP, L4
+        sub     %saida, %saida, TMP
+        srl     RES, RES, 1
+        add     RES, RES, BIT
+        j       L5
+    L4:
+        srl     RES, RES, 1
+    L5:
+        srl     BIT, BIT, 2
+        j       L2
+    LE:
+        sll     RES, RES, 8
+        move    %saida, RES
 .end_macro
 
 .macro _inicio_bhaskara_
@@ -137,6 +163,7 @@ main:
     #jal input
     _printf_string_ digA
     _read_ A1
+    _sqrt_ A1, A1
     _convertFromFixedPoint_ $f12, A1
     li      $v0, 3
     syscall
