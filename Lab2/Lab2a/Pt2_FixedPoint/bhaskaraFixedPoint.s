@@ -71,13 +71,20 @@
 .end_macro
 
 .macro _div_ %rd, %rs, %rt
-    #//FIXME: Divisão com divisor negativo.
-    #//TODO: Testes de valores invalidos dos parâmetros
-    la      $t0, maskF
-    lw      $t0, 0($t0)
-    divu    $t0, %rt
-    mflo    $t0
-    _mul_   %rd, %rs, $t0
+        #//TODO: Testes de valores invalidos dos parâmetros
+        slt     $t5, %rt, $zero
+        beq     $t5, $zero, L1
+        _mod_   %rt, %rt
+    L1:
+        la      $t4, maskF
+        lw      $t4, 0($t4)
+        divu    $t4, %rt
+        mflo    $t4
+        addi    $t4, $t4, 1                         # Fator de arredondamento
+        beq     $t5, $zero, L2
+        _neg_   $t4, $t4
+    L2:
+        _mul_   %rd, %rs, $t4
 .end_macro
 
 .macro _sqrt_ %saida, %entrada                      # Método de cálculo dígito-por-dígito
@@ -105,6 +112,20 @@
     LE:
         sll     RES, RES, 8
         move    %saida, RES
+.end_macro
+
+.macro _mod_ %rt, %rs                               # Tira o módulo de um inteiro
+    sra     $t0, %rs, 31
+    xor     $t1, $t0, %rs
+    sub     %rt, $t1, $t0
+.end_macro
+
+.macro _neg_ %rt, %rs                               # Nega um número
+    _mod_   $t1, %rs
+    la      $t0, maskF
+    lw      $t0, 0($t0)
+    xor     $t1, $t1, $t0
+    sub     %rt, $t1, $t0
 .end_macro
 
 .macro _inicio_bhaskara_
@@ -160,11 +181,7 @@ menos:  .asciiz " - "
 zero:   .double 0.0
 dois:   .double 2.0
 quatro: .double 4.0
-maskU:  .word   0xFFFF0000
-maskD:  .word   0x0000FFFF
 maskF:  .word   0xFFFFFFFF
-mask1:  .word   0x00010000
-
 
     .text
 main:
