@@ -64,9 +64,9 @@
 .macro _mul_ %rd, %rs, %rt
     mult    %rs, %rt
     mfhi    $t5
-    sll     $t5, $t5, 19
+    sll     $t5, $t5, 16
     mflo    $t6
-    srl     $t5, $t5, 13
+    srl     $t5, $t5, 16
     or      %rd, $t5, $t6
 .end_macro
 
