@@ -23,9 +23,9 @@
 
 .macro _convertFromFixedPoint_  %saida, %entrada
     # //TODO: Exceções quando o numero menor que 1.
-    sll     $t1, %entrada, 13                       # Prepara matissa
+    sll     $t1, %entrada, 16                       # Prepara matissa
     srl     $t1, $t1, 12
-    sra     $t3, %entrada, 19                       # Prepara parte inteira
+    sra     $t3, %entrada, 16                       # Prepara parte inteira
     addi    $t3, $t3, -1                            # Prepara sinal e expoente para a matissa
     addi    $t0, $zero, 1023
     sll     $t0, $t0, 20
@@ -46,8 +46,8 @@
     sub.d   $f2, %entrada, $f2
     mfc1    $t1, $f3                                # Pega apenas parte fracionaria
     sll     $t1, $t1, 12
-    srl     $t1, $t1, 13
-    sll     %saida, $t0, 19                         # Dispõe bits de inteiro na parte correta
+    srl     $t1, $t1, 16
+    sll     %saida, $t0, 16                         # Dispõe bits de inteiro na parte correta
     or      %saida, %saida, $t1                     # or com fração
 .end_macro
 
