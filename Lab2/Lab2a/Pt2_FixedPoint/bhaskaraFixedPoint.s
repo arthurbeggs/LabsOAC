@@ -75,7 +75,6 @@
 .end_macro
 
 .macro _sqrt_ %saida, %entrada                      # Método de cálculo dígito-por-dígito
-    #//TODO: Função de raiz quadrada em ponto fixo.
         move    RES, $zero
         move    %saida, %entrada
         li      BIT, 1
