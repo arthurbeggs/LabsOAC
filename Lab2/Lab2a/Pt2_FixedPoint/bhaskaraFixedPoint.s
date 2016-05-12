@@ -39,18 +39,22 @@
 .end_macro
 
 .macro _convertToFixedPoint_  %entrada, %saida      # Ponto fixo Q16
-    # //TODO: Exceções quando o numero é zero ou menor que 1.
     trunc.w.d   $f2, %entrada                       # Pega valor inteiro
-    mfc1    $t0, $f2
-    addi    $t1, $t0, -1                            # Subtrai 1 do valor inteiro
-    mtc1    $t1, $f2                                # Volta para c1 e tira parte inteira
-    cvt.d.w $f2, $f2
-    sub.d   $f2, %entrada, $f2
-    mfc1    $t1, $f3                                # Pega apenas parte fracionaria
-    sll     $t1, $t1, 12
-    srl     $t1, $t1, 16
-    sll     %saida, $t0, 16                         # Dispõe bits de inteiro na parte correta
-    or      %saida, %saida, $t1                     # or com fração
+    mfc1    %saida, $f2
+    sll     %saida, %saida, 16
+
+    ### Para aceitar numeros fracionarios nos coeficientes:
+    # trunc.w.d   $f2, %entrada                       # Pega valor inteiro
+    # mfc1    $t0, $f2
+    # addi    $t1, $t0, -1                            # Subtrai 1 do valor inteiro
+    # mtc1    $t1, $f2                                # Volta para c1 e tira parte inteira
+    # cvt.d.w $f2, $f2
+    # sub.d   $f2, %entrada, $f2
+    # mfc1    $t1, $f3                                # Pega apenas parte fracionaria
+    # sll     $t1, $t1, 12
+    # srl     $t1, $t1, 16
+    # sll     %saida, $t0, 16                         # Dispõe bits de inteiro na parte correta
+    # or      %saida, %saida, $t1                     # or com fração
 .end_macro
 
 .macro _read_ %saida
@@ -69,7 +73,6 @@
 .end_macro
 
 .macro _div_ %rd, %rs, %rt
-        #//TODO: Testes de valores invalidos dos parâmetros
         slt     $t5, %rt, $zero
         beq     $t5, $zero, L1
         _mod_   %rt, %rt
@@ -80,7 +83,7 @@
         mflo    $t4
         addi    $t4, $t4, 1                         # Fator de arredondamento
         beq     $t5, $zero, L2
-        _nmod_   $t4, $t4
+        _nmod_  $t4, $t4
     L2:
         _mul_   %rd, %rs, $t4
 .end_macro
@@ -171,6 +174,8 @@
 
 
     .data
+msgIni: .asciiz "*** Bhaskara em Ponto Fixo ***\nOs valores inseridos em ponto flutuante serao truncados!\nValores inteiros permitidos para os coeficientes:\nA -> -1 ou 1\nB -> entre -127 e 127\nC -> entre -4095 e 4095\nValores diferentes nao serao aceitos pois podem causar overflow.\n\n"
+msgErr: .asciiz "\nValor nao permitido para o coeficiente! O programa sera encerrado."
 digA:   .asciiz "Digite o valor de a: "
 digB:   .asciiz "Digite o valor de b: "
 digC:   .asciiz "Digite o valor de c: "
@@ -186,23 +191,47 @@ maskF:  .word   0xFFFFFFFF
 
     .text
 main:
-    move    $fp, $sp
     addi    $sp, $sp,-4
-    jal input
-    jal bhaskara
-    move $a0, $v0
-    jal show
+    sw      $fp, 0($sp)
+    move    $fp, $sp
+    jal     input
+    jal     bhaskara
+    move    $a0, $v0
+    jal     show
     move    $sp, $fp
     lw      $fp, 0($fp)
+    addi    $sp, $sp, 4
     li      $v0, 10
     syscall
+erro:
+    _printf_string_ msgErr
+    move    $sp, $fp
+    lw      $fp, 0($fp)
+    addi    $sp, $sp, 4
+    li      $v0, 17
+    li      $a0, 1
+    syscall
 input:
+    _printf_string_ msgIni
     _printf_string_ digA
-    _read_ A1
+    _read_  A1
+    _mod_   $t0, A1                                 # Testa se o coeficiente A é -1 ou 1
+    li      $t1, -1
+    sll     $t1, $t1, 16
+    add     $t0, $t0, $t1
+    bne     $t0, $zero, erro
     _printf_string_ digB
-    _read_ B1
+    _read_  B1
+    _mod_   $t0, B1
+    addi    $t1, $zero, 127
+    sll     $t1, $t1, 16
+    blt     $t1, $t0, erro
     _printf_string_ digC
-    _read_ C1
+    _read_  C1
+    _mod_   $t0, C1
+    addi    $t1, $zero, 4095
+    sll     $t1, $t1, 16
+    blt     $t1, $t0, erro
     jr      $ra
 
 bhaskara:
