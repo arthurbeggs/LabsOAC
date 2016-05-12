@@ -25,7 +25,6 @@
 .end_macro
 
 .macro _convertFromFixedPoint_  %saida, %entrada
-    # //TODO: Exceções quando o numero menor que 1.
     sll     $t1, %entrada, 16                       # Prepara matissa
     srl     $t1, $t1, 12
     sra     $t3, %entrada, 16                       # Prepara parte inteira
@@ -81,12 +80,12 @@
         mflo    $t4
         addi    $t4, $t4, 1                         # Fator de arredondamento
         beq     $t5, $zero, L2
-        _neg_   $t4, $t4
+        _nmod_   $t4, $t4
     L2:
         _mul_   %rd, %rs, $t4
 .end_macro
 
-.macro _sqrt_ %saida, %entrada                      # Método de cálculo dígito-por-dígito
+.macro _sqrt_ %saida, %entrada                      # Método de cálculo dígito-por-dígito; Infere que %entrada é sempre positivo
         move    RES, $zero
         move    %saida, %entrada
         li      BIT, 1
@@ -119,12 +118,19 @@
     sub     %rt, $t1, $t0
 .end_macro
 
-.macro _neg_ %rt, %rs                               # Nega um número
+.macro _nmod_ %rt, %rs                              # %rt = -|%rs|
     _mod_   $t1, %rs
     la      $t0, maskF
     lw      $t0, 0($t0)
     xor     $t1, $t1, $t0
     sub     %rt, $t1, $t0
+.end_macro
+
+.macro _neg_ %rt, %rs                               # %rt = -%rs
+    la      $t0, maskF
+    lw      $t0, 0($t0)
+    xor     %rt, %rs, $t0
+    sub     %rt, %rt, $t0
 .end_macro
 
 .macro _inicio_bhaskara_
@@ -138,7 +144,7 @@
 
 .macro _basico_bhaskara_
     sll     $t2, A1, 1                              # 2*A com shift
-    _neg_   NEG_B, B1                               # -B/(2*A)
+    _neg_   NEG_B, B1                               # -B
     _div_   NEG_B, NEG_B, $t2                       # B/(2*A)
     _sqrt_  DELTA, DELTA                            # sqrt (DELTA)
     _div_   DELTA, DELTA, $t2                       # sqrt(DELTA)/(2*A)
@@ -182,18 +188,6 @@ maskF:  .word   0xFFFFFFFF
 main:
     move    $fp, $sp
     addi    $sp, $sp,-4
-
-    ### ROTINA DE TESTES ###
-    # _printf_string_ digA
-    # _read_ A1
-    # _printf_string_ digB
-    # _read_ B1
-    # _div_ A1, A1, B1
-    # _sqrt_ A1, A1
-    # _convertFromFixedPoint_ $f12, A1
-    # li      $v0, 3
-    # syscall
-
     jal input
     jal bhaskara
     move $a0, $v0
