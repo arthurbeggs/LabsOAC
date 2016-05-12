@@ -58,11 +58,10 @@
     li      $v0, 7
     syscall
     _convertToFixedPoint_ $f0, %saida
-
 .end_macro
 
 .macro _mul_ %rd, %rs, %rt
-    mult    %rs, %rt                                # FLAGGGGGGGG
+    mult    %rs, %rt
     mfhi    $t5
     sll     $t5, $t5, 16
     mflo    $t6
@@ -131,41 +130,37 @@
 .macro _inicio_bhaskara_
     _mul_   B2, B1, B1                              # B^2
     _mul_   DELTA, A1, C1                           # A*C
-    li      $t0, 4
-    _mul_   DELTA, $t0, DELTA                       # 4*(A*C) com shift
-    slt     $t3, B2, DELTA                          # Altera $t3 para (B^2<4*A*C)
-    bne     $t3, $zero, raizes_complexas            # Se $t3 TRUE vai para raizes_complexas, modificado retorno para 2.
-    li      $v0, 1                                  # Modifica retorno para 1.
+    sll     DELTA, DELTA, 2                         # 4*(A*C)
+    sub     DELTA, B2, DELTA                        # DELTA = b^2 - 4*(A*C)
+    blt     DELTA, $zero, raizes_complexas
     j       raizes_reais                            # Vai para raizes_reais
 .end_macro
 
 .macro _basico_bhaskara_
-    li      $t1, -1
     sll     $t2, A1, 1                              # 2*A com shift
-    _mul_   NEG_B, $t1, B1                          # -B
-    _div_   NEG_B, NEG_B,$t2                        # -B/(2*A)
+    _neg_   NEG_B, B1                               # -B/(2*A)
+    _div_   NEG_B, NEG_B, $t2                       # B/(2*A)
     _sqrt_  DELTA, DELTA                            # sqrt (DELTA)
-    _div_   DELTA, DELTA,$t2                        # sqrt (DELTA)/(2*A)
+    _div_   DELTA, DELTA, $t2                       # sqrt(DELTA)/(2*A)
 .end_macro
 
 .macro _raizes_complexas_
-    sub     DELTA, B2, DELTA                        # B^2 - 4AC
     li      $v0, 2                                  # Modifica retorno para 2.
-    abs     DELTA, DELTA                            # Modifica DELTA para positivo
+    _mod_   DELTA, DELTA                            # Modifica DELTA para positivo
     _basico_bhaskara_
     addi    $sp, $sp, -8
-    sw      DELTA, 4($sp)
     sw      NEG_B, 0($sp)
+    sw      DELTA, 4($sp)
 .end_macro
 
 .macro _raizes_reais_
-    sub     DELTA, B2, DELTA                        # B^2 - 4AC
+    li      $v0, 1                                  # Modifica retorno para 1.
     _basico_bhaskara_                               # Chama macro de opera??es basicas para bhaskara
     sub     R1, NEG_B, DELTA                        # Raiz 1 = -B/(2A) - DELTA/(2A)
     add     R2, NEG_B, DELTA                        # Raiz 2 = -B/(2A) + DELTA/(2A)
     addi    $sp, $sp, -8                            # Prepara memoria para grava??o, $sp registrador da pilha
-    sw      R2, 0($sp)                              # Grava R1, Double (8bits), na memoria
-    sw      R1, 4($sp)                              # Grava R2 ,Double (8bits), na memoria
+    sw      R1, 0($sp)                              # Grava R1, Double (8bits), na memoria
+    sw      R2, 4($sp)                              # Grava R2 ,Double (8bits), na memoria
 .end_macro
 
 
@@ -187,19 +182,22 @@ maskF:  .word   0xFFFFFFFF
 main:
     move    $fp, $sp
     addi    $sp, $sp,-4
-    #jal input
-    _printf_string_ digA
-    _read_ A1
-    _printf_string_ digB
-    _read_ B1
-    _div_ A1, A1, B1
-    _convertFromFixedPoint_ $f12, A1
-    li      $v0, 3
-    syscall
 
-    #jal bhaskara
-    #move $a0, $v0
-    #jal show
+    ### ROTINA DE TESTES ###
+    # _printf_string_ digA
+    # _read_ A1
+    # _printf_string_ digB
+    # _read_ B1
+    # _div_ A1, A1, B1
+    # _sqrt_ A1, A1
+    # _convertFromFixedPoint_ $f12, A1
+    # li      $v0, 3
+    # syscall
+
+    jal input
+    jal bhaskara
+    move $a0, $v0
+    jal show
     move    $sp, $fp
     lw      $fp, 0($fp)
     li      $v0, 10
@@ -221,39 +219,39 @@ bhaskara:
     jr      $ra
 
 show:
-    lw      $t1, 0($fp)
-    lw      $t2, 4($fp)
+    lw      $t5, 0($sp)
+    lw      $t6, 4($sp)
+    _convertFromFixedPoint_ $f14, $t5
+    _convertFromFixedPoint_ $f16, $t6
     addi    $t0, $a0, -1
     beq     $t0, $zero, reais
-    _convertFromFixedPoint_ $f0, $t1
-    _convertFromFixedPoint_ $f2, $t2
     complexas:
         _printf_string_ raiz1
-        mov.d   $f12, $f0
+        mov.d   $f12, $f14
         li      $v0, 3
         syscall
         _printf_string_ mais
-        mov.d   $f12, $f0
+        mov.d   $f12, $f16
         li      $v0, 3
         syscall
         _printf_string_ i
         _printf_string_ raiz2
-        mov.d   $f12, $f0
+        mov.d   $f12, $f14
         li      $v0, 3
         syscall
         _printf_string_ menos
-        mov.d   $f12, $f2
+        mov.d   $f12, $f16
         li      $v0, 3
         syscall
         _printf_string_ i
-        jr      $ra
+    jr      $ra
     reais:
         _printf_string_ raiz1
-        mov.d   $f12, $f0
+        mov.d   $f12, $f14
         li      $v0, 3
         syscall
         _printf_string_ raiz2
-        mov.d   $f12, $f2
+        mov.d   $f12, $f16
         li      $v0, 3
         syscall
     jr      $ra
