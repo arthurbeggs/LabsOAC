@@ -1,0 +1,19 @@
+INTENDED_DEVICE_FAMILY=UNUSED
+LPM_HINT=UNUSED
+LPM_TYPE=altfp_abs
+PIPELINE=0
+WIDTH_EXP=8
+WIDTH_MAN=23
+DEVICE_FAMILY="Cyclone II"
+CBX_AUTO_BLACKBOX=ALL
+CBX_AUTO_BLACKBOX=ALL
+data
+nan
+nan_in
+overflow
+overflow_in
+result
+underflow
+underflow_in
+zero
+zero_in
