@@ -15,7 +15,7 @@ module CPU (
 	input 	wire [4:0]	wVGASelect,
 	output 	wire [31:0]	wVGARead,
 	//barramentos de dados
-	output 	wire DwReadEnable, DwWriteEnable,
+	output 	wire 		DwReadEnable, DwWriteEnable,
 	output 	wire [3:0]	DwByteEnable,
 	output 	wire [31:0]	DwWriteData,
 	input 	wire [31:0]	DwReadData,
@@ -27,7 +27,7 @@ module CPU (
 	input 	wire [31:0]	IwReadData,
 	output 	wire [31:0]	IwAddress,
 	//interrupcoes
-	input 	[7:0]	iPendingInterrupt
+	input 		 [7:0]	iPendingInterrupt
 );
 
 
@@ -36,7 +36,7 @@ module CPU (
 // Visualizacao dos sinais de controle especi­ficos
 wire 	[2:0]	OrigPC, Mem2Reg;
 wire 	[1:0]	ALUOp,OrigALU, RegDst;
-wire 	RegWrite;
+wire 			RegWrite;
 assign 	wControlSignals	= {DwReadEnable, DwWriteEnable, RegWrite, RegDst[1:0], ALUOp[1:0], OrigALU[1:0], Mem2Reg[2:0], OrigPC[2:0]};
 assign 	wControlState	= 6'b0;
 
@@ -86,10 +86,10 @@ Datapath_UNI Processor (
 /*************  MULTICICLO **********************************/
 `ifdef MULTICICLO
 // Sinais de controle especi­ficos
-wire 	[1:0] ALUOp, ALUSrcA;
-wire 	[2:0] ALUSrcB, PCSource;
-wire 	IRWrite, IorD, PCWrite, RegDst;
-wire 	RegWrite;
+wire 	[1:0]	ALUOp, ALUSrcA;
+wire 	[2:0]	ALUSrcB, PCSource;
+wire 			IRWrite, IorD, PCWrite, RegDst;
+wire 			RegWrite;
 assign 	wControlSignals = {DwReadEnable, DwWriteEnable, RegWrite,
 							RegDst, ALUOp[1:0], ALUSrcA[1:0], ALUSrcB[2:0],
 							IorD, IRWrite, PCWrite, PCSource[2:0]
@@ -145,7 +145,7 @@ Datapath_MULTI Processor (
 // Sinais de controle especi­ficos
 wire 	[2:0]	OrigPC;
 wire 	[1:0]	ALUOp, OrigALU, RegDst;
-wire 	RegWrite;
+wire 			RegWrite;
 assign 	wControlSignals = {DwReadEnable, DwWriteEnable, RegWrite,
 							ALUOp[1:0], OrigALU[1:0], RegDst[1:0], OrigPC[2:0]
 };
@@ -153,7 +153,7 @@ assign 	wControlState	= 6'b111111;
 assign 	wRegDispFPU		= 32'hDEDEB0B0;
 assign 	wRegDispCOP0 	= 32'hCACACACA;
 assign 	flagBank 		= 8'hFF;
-wire 	SavePC;
+wire 			SavePC;
 // wire 	wLock;
 // assign 	wLock			= 1'b0;
 

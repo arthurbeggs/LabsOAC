@@ -163,78 +163,79 @@ em 2015/1 na disciplina OAC
 
 module TopDE (
 	/* I/O type definition */
-	input 	iCLK_50, iCLK_50_2, iCLK_28, iCLK_50_4,		// Clocks
-	input 	[3:0]	iKEY,				// KEYs
-	input 	[17:0]	iSW,				// Switches
-	output 	[8:0]	oLEDG,				// LEDs Green
-	output 	[17:0]	oLEDR,  			// LEDs Red
-	output 	[6:0]	oHEX0_D, oHEX1_D, oHEX2_D, oHEX3_D, oHEX4_D, oHEX5_D, oHEX6_D, oHEX7_D,		// Displays Hex
-	output 	oHEX0_DP, oHEX1_DP, oHEX2_DP, oHEX3_DP, oHEX4_DP, oHEX5_DP, oHEX6_DP, oHEX7_DP,		// Displays Dot Point
+	input 		 		iCLK_50, iCLK_50_2, iCLK_28, iCLK_50_4,		// Clocks
+	input 		 [3:0]	iKEY,				// KEYs
+	input 		 [17:0]	iSW,				// Switches
+	output 		 [8:0]	oLEDG,				// LEDs Green
+	output 		 [17:0]	oLEDR,  			// LEDs Red
+	output 		 [6:0]	oHEX0_D, oHEX1_D, oHEX2_D, oHEX3_D, oHEX4_D, oHEX5_D, oHEX6_D, oHEX7_D,		// Displays Hex
+	output 		 		oHEX0_DP, oHEX1_DP, oHEX2_DP, oHEX3_DP, oHEX4_DP, oHEX5_DP, oHEX6_DP, oHEX7_DP,		// Displays Dot Point
+
 
 	// GPIO_0
 	// input 	[31:0] GPIO_0,
 	// output 	[31:0] GPIO_1,
 
 	//VGA interface
-	output 	oVGA_CLOCK, oVGA_HS, oVGA_VS, oVGA_BLANK_N, oVGA_SYNC_N,
-	output 	[9:0] oVGA_R, oVGA_G, oVGA_B,
+	output 				oVGA_CLOCK, oVGA_HS, oVGA_VS, oVGA_BLANK_N, oVGA_SYNC_N,
+	output 		 [9:0]	oVGA_R, oVGA_G, oVGA_B,
 
 	// TV Decoder
-	output 	oTD1_RESET_N, 				// TV Decoder Reset
+	output 				oTD1_RESET_N, 		// TV Decoder Reset
 
 	// I2C
-	inout  	I2C_SDAT, 					// I2C Data
-	output 	oI2C_SCLK, 					// I2C Clock
+	inout  				I2C_SDAT, 			// I2C Data
+	output 				oI2C_SCLK, 			// I2C Clock
 
 	// Audio CODEC
-	inout  	AUD_ADCLRCK, 				// Audio CODEC ADC LR Clock
-	input  	iAUD_ADCDAT, 				// Audio CODEC ADC Data
-	output  AUD_DACLRCK, 				// Audio CODEC DAC LR Clock
-	output 	oAUD_DACDAT,  				// Audio CODEC DAC Data
-	inout  	AUD_BCLK,					// Audio CODEC Bit-Stream Clock
-	output 	oAUD_XCK,	 				// Audio CODEC Chip Clock
+	inout  				AUD_ADCLRCK, 		// Audio CODEC ADC LR Clock
+	input  				iAUD_ADCDAT, 		// Audio CODEC ADC Data
+	output  			AUD_DACLRCK, 		// Audio CODEC DAC LR Clock
+	output 				oAUD_DACDAT,  		// Audio CODEC DAC Data
+	inout  				AUD_BCLK,			// Audio CODEC Bit-Stream Clock
+	output 				oAUD_XCK,	 		// Audio CODEC Chip Clock
 
 	// PS2 Keyborad
-	inout 	PS2_KBCLK,
-	inout 	PS2_KBDAT,
+	inout 				PS2_KBCLK,
+	inout 				PS2_KBDAT,
 
 	//	Modulo LCD 16X2
-	inout	[7:0]	LCD_D,				// LCD Data bus 8 bits
-	output 	oLCD_ON,					// LCD Power ON/OFF
-	output 	oLCD_BLON,					// LCD Back Light ON/OFF
-	output 	oLCD_RW,					// LCD Read/Write Select, 0 = Write, 1 = Read
-	output 	oLCD_EN,					// LCD Enable
-	output 	oLCD_RS,					// LCD Command/Data Select, 0 = Command, 1 = Data
+	inout 		 [7:0]	LCD_D,				// LCD Data bus 8 bits
+	output 				oLCD_ON,			// LCD Power ON/OFF
+	output 				oLCD_BLON,			// LCD Back Light ON/OFF
+	output 				oLCD_RW,			// LCD Read/Write Select, 0 = Write, 1 = Read
+	output 				oLCD_EN,			// LCD Enable
+	output 				oLCD_RS,			// LCD Command/Data Select, 0 = Command, 1 = Data
 
 	// SRAM Interface
-	inout 	[31:0] SRAM_DQ,				// SRAM Data Bus 32 Bits
-	output 	[18:0]	oSRAM_A,			// SRAM Address bus 21 Bits
-	output 	oSRAM_ADSC_N, 				// SRAM Controller Address Status
-	output 	oSRAM_ADSP_N, 				// SRAM Processor Address Status
-	output 	oSRAM_ADV_N, 				// SRAM Burst Address Advance
-	output 	[3:0]	oSRAM_BE_N, 		// SRAM Byte Write Enable
-	output 	oSRAM_CE1_N, 				// SRAM Chip Enable
-	output 	oSRAM_CE2, 					// SRAM Chip Enable
-	output 	oSRAM_CE3_N, 				// SRAM Chip Enable
-	output 	oSRAM_CLK, 					// SRAM Clock
-	output 	oSRAM_GW_N, 				// SRAM Global Write Enable
-	output 	oSRAM_OE_N, 				// SRAM Output Enable
-	output 	oSRAM_WE_N, 				// SRAM Write Enable
+	inout 		 [31:0] SRAM_DQ,			// SRAM Data Bus 32 Bits
+	output 		 [18:0]	oSRAM_A,			// SRAM Address bus 21 Bits
+	output 				oSRAM_ADSC_N, 		// SRAM Controller Address Status
+	output 				oSRAM_ADSP_N, 		// SRAM Processor Address Status
+	output 				oSRAM_ADV_N, 		// SRAM Burst Address Advance
+	output 		 [3:0]	oSRAM_BE_N, 		// SRAM Byte Write Enable
+	output 				oSRAM_CE1_N, 		// SRAM Chip Enable
+	output 				oSRAM_CE2, 			// SRAM Chip Enable
+	output 				oSRAM_CE3_N, 		// SRAM Chip Enable
+	output 				oSRAM_CLK, 			// SRAM Clock
+	output 				oSRAM_GW_N, 		// SRAM Global Write Enable
+	output 				oSRAM_OE_N, 		// SRAM Output Enable
+	output 				oSRAM_WE_N, 		// SRAM Write Enable
 
 	// Interface Serial RS-232
-	output 	oUART_TXD,					//	UART Transmitter
-	input 	iUART_RXD,					//	UART Receiver
-	output 	oUART_CTS,		 			//	UART Clear To Send
-	input 	iUART_RTS,					//	UART Request To Send
+	output 				oUART_TXD,			//	UART Transmitter
+	input 				iUART_RXD,			//	UART Receiver
+	output 				oUART_CTS,		 	//	UART Clear To Send
+	input 				iUART_RTS,			//	UART Request To Send
 
 	// Para simulacao em forma de onda do TopDE
-	output 	OCLK, OCLK100, OCLK200, OCLK_2x,
-	output 	[4:0] 	OwRegDispSelect,
-	output 	[31:0] 	OwPC,OwInstr,OwRegDisp,OwRegDispFPU,
-	output 	[7:0] 	OflagBank,
-	output 	ODReadEnable, ODWriteEnable,
-	output 	[31:0] 	ODAddress, ODWriteData, ODReadData,
-	output 	[31:0] 	OIAddress, OIReadData
+	output 				OCLK, OCLK100, OCLK200, OCLK_2x,
+	output 		 [4:0] 	OwRegDispSelect,
+	output 		 [31:0] OwPC,OwInstr,OwRegDisp,OwRegDispFPU,
+	output 		 [7:0] 	OflagBank,
+	output 				ODReadEnable, ODWriteEnable,
+	output 		 [31:0] ODAddress, ODWriteData, ODReadData,
+	output 		 [31:0] OIAddress, OIReadData
 );
 
 // Para simulacao de forma de onda
@@ -258,8 +259,8 @@ assign 	OIReadData 		= IReadData;
 
 
 /**** Gerador e gerenciador de Clock *******************************/
-wire 	CLK, CLK_2x, iCLK_100, iCLK_200;
-wire 	Reset, CLKSelectFast, CLKSelectAuto;
+wire 	 	CLK, CLK_2x, iCLK_100, iCLK_200;
+wire 	 	Reset, CLKSelectFast, CLKSelectAuto;
 
 CLOCK_Interface CLKI0(
 	.iCLK_50(iCLK_50),  				// 50MHz
@@ -302,32 +303,32 @@ assign wOutput	= (iSW[12] ? (iSW[17] ? wPC :  							// PC
 
 
 //  Define o endereco inicial do PC
-wire 	[31:0] PCinicial;
-assign 	PCinicial = (iSW[8]? BEGINNING_BOOT : BEGINNING_TEXT);  		// Controle do Boot
+wire [31:0]	PCinicial;
+assign 	PCinicial	= (iSW[8]? BEGINNING_BOOT : BEGINNING_TEXT);  		// Controle do Boot
 
 
 // Barramento Principal
-wire 	[31:0]	DAddress, DWriteData;
-wire 	[31:0]	DReadData;
-wire 	DWriteEnable, DReadEnable;
-wire 	[3:0]	DByteEnable;
+wire [31:0]	DAddress, DWriteData;
+wire [31:0]	DReadData;
+wire 		DWriteEnable, DReadEnable;
+wire [3:0]	DByteEnable;
 
 // Barramento de Instrucoes
-wire 	[31:0]	IAddress, IWriteData;
-wire 	[31:0]	IReadData;
-wire 	IWriteEnable, IReadEnable;
-wire 	[3:0]	IByteEnable;
+wire [31:0]	IAddress, IWriteData;
+wire [31:0]	IReadData;
+wire 		IWriteEnable, IReadEnable;
+wire [3:0]	IByteEnable;
 
 
 
 // Interface Comum entre o processador e os mostradores
-wire 	[4:0]	wRegDispSelect;
-wire 	[31:0]	wPC, wRegDisp, wRegDispFPU, wRegDispCOP0, wOutput, wInstr, wDebug;
-wire 	[7:0]	flagBank;
-wire 	[17:0]	wSinaisControle;
-wire 	[5:0]	wControlState;
-wire 	[4:0]	wVGASelect;
-wire 	[31:0]	wVGARead;
+wire [4:0]	wRegDispSelect;
+wire [31:0]	wPC, wRegDisp, wRegDispFPU, wRegDispCOP0, wOutput, wInstr, wDebug;
+wire [7:0]	flagBank;
+wire [17:0]	wSinaisControle;
+wire [5:0]	wControlState;
+wire [4:0]	wVGASelect;
+wire [31:0]	wVGARead;
 
 
 
@@ -460,8 +461,8 @@ CodeMemory_Interface MEMCODE(
 
 /* ***************************** Interrupcoes ****************************** */
 // feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
-wire 	[7:0] 	wPendingInterrupt;
-assign 	wPendingInterrupt = {5'b0,
+wire [7:0] 	wPendingInterrupt;
+assign 	wPendingInterrupt	= {5'b0,
 							(!reg_mouse_keyboard)&&(received_data_en_contador_enable) ,
 							(audio_clock_flip_flop ^ audio_proc_clock_flip_flop),
 							reg_mouse_keyboard&&(ps2_scan_ready_clock ^ keyboard_interrupt)
@@ -494,7 +495,7 @@ VGA_Interface VGA0 (
 
 
 /* ************************* Audio CODEC Interface ************************** */
-wire 	audio_clock_flip_flop, audio_proc_clock_flip_flop;
+wire 		audio_clock_flip_flop, audio_proc_clock_flip_flop;
 
 AudioCODEC_Interface Audio0 (
 	.iCLK(CLK), .iCLK_50(iCLK_50), .iCLK_50_2(iCLK_50_2), .Reset(Reset),
@@ -523,7 +524,7 @@ AudioCODEC_Interface Audio0 (
 
 
 /* ************************* Teclado PS2 Interface ************************** */
-wire 	ps2_scan_ready_clock, keyboard_interrupt;
+wire 		ps2_scan_ready_clock, keyboard_interrupt;
 
 TecladoPS2_Interface TEC0 (
 	.iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
@@ -558,10 +559,10 @@ LCD_Interface LCD0 (
 
 
 /* ************************ Sintetizador Interface ************************* */
-wire 	[15:0]	wsaudio_outL, wsaudio_outR;
-wire 	DReadEnableS;
-wire 	[31:0]	DAddressS, DReadDataS;
-wire 	[31:0]	oSynthNoteData, iSynthAddress;
+wire [15:0]	wsaudio_outL, wsaudio_outR;
+wire 		DReadEnableS;
+wire [31:0]	DAddressS, DReadDataS;
+wire [31:0]	oSynthNoteData, iSynthAddress;
 
 Sintetizador_Interface SINT0 (
 	.iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
@@ -583,7 +584,7 @@ Sintetizador_Interface SINT0 (
 
 
 /* **************************** Mouse Interface ***************************** */
-wire reg_mouse_keyboard, received_data_en_contador_enable;
+wire 		reg_mouse_keyboard, received_data_en_contador_enable;
 
 MousePS2_Interface MOUSE0 (
 	.iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
