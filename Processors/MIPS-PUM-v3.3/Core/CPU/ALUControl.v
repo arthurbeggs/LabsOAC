@@ -32,77 +32,77 @@ begin
 		begin
 			case (iFunct)
 				FUNSLL:
-					oControlSignal <= 	OPSLL;
+					oControlSignal	<= 	OPSLL;
 				FUNSRL:
-					oControlSignal <= 	OPSRL;
+					oControlSignal	<= 	OPSRL;
 				FUNSRA:
-					oControlSignal <= 	OPSRA;
+					oControlSignal	<= 	OPSRA;
 				FUNMFHI:
-					oControlSignal <=	OPMFHI;				// 2015/1
+					oControlSignal	<=	OPMFHI;				// 2015/1
 				FUNMTHI:
-					oControlSignal <= OPMTHI;
+					oControlSignal	<=	OPMTHI;
 				FUNMFLO:
-					oControlSignal <=	OPMFLO;				// 2015/1
+					oControlSignal	<=	OPMFLO;				// 2015/1
 				FUNMTLO:
-					oControlSignal <= OPMTLO;
+					oControlSignal	<=	OPMTLO;
 				FUNMULT:
-					oControlSignal <=	OPMULT;
+					oControlSignal	<=	OPMULT;
 				FUNDIV:
-					oControlSignal <=	OPDIV;
+					oControlSignal	<=	OPDIV;
 				FUNMULTU:
-					oControlSignal <=	OPMULTU;
+					oControlSignal	<=	OPMULTU;
 				FUNDIVU:
-					oControlSignal <=	OPDIVU;
+					oControlSignal	<=	OPDIVU;
 				FUNADD:
-					oControlSignal <=	OPADD;
+					oControlSignal	<=	OPADD;
 				FUNADDU:
-					oControlSignal <=	OPADD;
+					oControlSignal	<=	OPADD;
 				FUNSUB:
-					oControlSignal <=	OPSUB;
+					oControlSignal	<=	OPSUB;
 				FUNSUBU:
-					oControlSignal <=	OPSUB;
+					oControlSignal	<=	OPSUB;
 				FUNAND:
-					oControlSignal <=	OPAND;
+					oControlSignal	<=	OPAND;
 				FUNOR:
-					oControlSignal <=	OPOR;
+					oControlSignal	<=	OPOR;
 				FUNXOR:
-					oControlSignal <=	OPXOR;
+					oControlSignal	<=	OPXOR;
 				FUNNOR:
-					oControlSignal <=	OPNOR;
+					oControlSignal	<=	OPNOR;
 				FUNSLT:
-					oControlSignal <=	OPSLT;
+					oControlSignal	<=	OPSLT;
 				FUNSLTU:
-					oControlSignal <=	OPSLTU;
+					oControlSignal	<=	OPSLTU;
 				FUNSRLV:
-				   oControlSignal <=	OPSRLV;
+					oControlSignal	<=	OPSRLV;
 				FUNSLLV:
-					oControlSignal <=	OPSLLV;
+					oControlSignal	<=	OPSLLV;
 				FUNSRAV:
-					oControlSignal <=	OPSRAV;
+					oControlSignal	<=	OPSRAV;
 				default:
-					oControlSignal <=	5'b00000;
+					oControlSignal	<=	5'b00000;
 			endcase
 		end
 		2'b11:
 			case (iOpcode)
 				OPCADDI:
-					oControlSignal <= 	OPADD;
+					oControlSignal	<= 	OPADD;
 				OPCADDIU:
-					oControlSignal <= 	OPADD;
+					oControlSignal	<= 	OPADD;
 				OPCSLTI:
-					oControlSignal <= 	OPSLT;
+					oControlSignal	<= 	OPSLT;
 				OPCSLTIU:
-					oControlSignal <= 	OPSLTU;
+					oControlSignal	<= 	OPSLTU;
 				OPCANDI:
-					oControlSignal <= 	OPAND;
+					oControlSignal	<= 	OPAND;
 				OPCORI:
-					oControlSignal <= 	OPOR;
+					oControlSignal	<= 	OPOR;
 				OPCXORI:
-					oControlSignal <= 	OPXOR;
+					oControlSignal	<= 	OPXOR;
 				OPCLUI:
-					oControlSignal <= 	OPLUI;
+					oControlSignal	<= 	OPLUI;
 				default:
-					oControlSignal <=	5'b00000;
+					oControlSignal	<=	5'b00000;
 			endcase
 	endcase
 end

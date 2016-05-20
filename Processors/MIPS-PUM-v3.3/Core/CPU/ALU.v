@@ -27,12 +27,12 @@ begin
 	tmp <= 4'b0000;
 end
 
-assign oOverflow = iControlSignal==OPADD ? 
+assign oOverflow = iControlSignal==OPADD ?
 		((iA[31] == 0 && iB[31] == 0 &&  oALUresult[31] == 1) || (iA[31] == 1 && iB[31] == 1 && oALUresult[31] == 0))
-		: iControlSignal==OPSUB ? 
+		: iControlSignal==OPSUB ?
 			((iA[31] == 0 && iB[31] == 1 && oALUresult[31]== 1)|| (iA[31] == 1 && iB[31] == 0 && oALUresult[31] == 0))
 			: 1'b0;
-			
+
 always @(*)
 begin
 	case (iControlSignal)
@@ -65,12 +65,12 @@ begin
 		OPLUI:
 			oALUresult	<= {iB[15:0],16'b0};
 		OPSLLV:
-			oALUresult <= iB << iA[4:0];
+			oALUresult	<= iB << iA[4:0];
 		OPSRAV:
 			oALUresult	<= iB >>> iA[4:0];
 		OPSRLV:
-			oALUresult <= iB >> iA[4:0];
-			
+			oALUresult	<= iB >> iA[4:0];
+
 // para testes e simulacao
 		OPMULT:
 			oALUresult	<= LO;
@@ -88,7 +88,7 @@ begin
 	if (iRST)
 	begin
 		{HI,LO}	<= 64'b0;
-  		tmp <= 4'b0000;
+		tmp <= 4'b0000;
 	end
 	else
 		case (iControlSignal)
@@ -106,7 +106,7 @@ begin
 						tmp <= tmp + 1'b1;
 					end
 				end
-			
+
 			OPMULTU:
 				{HI,LO} <= $unsigned(iA) * $unsigned(iB);
 
@@ -121,11 +121,11 @@ begin
 						tmp <= tmp + 1'b1;
 					end
 				end
-			
+
 			// 2015/1
 			OPMTHI:
 				HI <= iA;
-			
+
 			// 2015/1
 			OPMTLO:
 				LO <= iA;
@@ -135,7 +135,3 @@ end
 assign oLock = ((iControlSignal == OPDIV || iControlSignal == OPDIVU) && (tmp < 4'b1010)) ? 1'b1 : 1'b0;
 
 endmodule
-
-
-
-
