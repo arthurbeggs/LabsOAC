@@ -9,13 +9,13 @@ module Datapath_UNI (
 	input 	wire [31:0] iInitialPC,
 
 	// Para testes
-	output 	wire [7:0]	oflag,
+	output 	wire [7:0]	oflag,						// NOTE: oflag não possui um driver [desconectada]. O código que a usa foi comentado?
 	output 	wire [31:0]	wPC, woInstr,
 	output 	wire [31:0]	wRegDisp, wRegDispFPU, wRegDispCOP0,
 	input 	wire [4:0]	wRegDispSelect,
 	output 	wire [31:0]	wDebug,
 	output 	wire [7:0]	wFPUFlagBank,
-	output 	wire 		ireg_equal_0,
+	output 	wire 		ireg_equal_0,				// NOTE: ireg_equal_0 não possui um driver [desconectado]. Seria um typo de "reg_equal_0"?
 	input		 [4:0]	wVGASelect,
 	output		 [31:0]	wVGARead,
 
@@ -149,7 +149,7 @@ assign 	IwAddress		= wPC;
 assign 	IwWriteData		= ZERO;
 assign 	wInstr			= IwReadData;
 
-assign 	reg_equal_0 	= wRead2 == 0;
+assign 	reg_equal_0 	= wRead2 == 0;			// NOTE: Declaração implícita de reg_equal_0. Pq?
 /*
 CodeMemory memInstr(
 	.iCLK(iCLK),

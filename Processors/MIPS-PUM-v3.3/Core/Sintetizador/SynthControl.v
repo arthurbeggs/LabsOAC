@@ -40,7 +40,7 @@ initial
 	Play <= 1'b0;
 	Stop <= 1'b0;
 	Pause <= 1'b0;
-	ConversionMilliseconds <= 6'd96;		//48
+	ConversionMilliseconds <= 6'd96;		//48	// NOTE: O Quartus trunca o valor para 6 bits. Reescrever o assignment?
 	occupied[0]	<= 1'b0;
 	occupied[1]	<= 1'b0;
 	occupied[2]	<= 1'b0;
@@ -49,7 +49,7 @@ initial
 	occupied[5]	<= 1'b0;
 	occupied[6]	<= 1'b0;
 	occupied[7]	<= 1'b0;
-	
+
 	melody[0]	<= 1'b0;
 	melody[1]	<= 1'b0;
 	melody[2]	<= 1'b0;
@@ -65,7 +65,7 @@ assign oCurrentNoteAddress = currentAddress;
 assign SynthMelody = (melody[0] || melody[1] || melody[2] || melody[3] || melody[4] || melody[5] || melody[6] || melody[7]);
 
 
-always @(posedge CLK)			
+always @(posedge CLK)
 		if(MemWrite) //Escrita no dispositivo de Audio
 			begin
 				if(wMemAddress == MUSIC_ADDRESS) begin
@@ -82,7 +82,7 @@ always @(posedge CLK)
 						Pause <= ~Pause;
 				end
 			end
-	
+
 
 always @(posedge iSampleClock) begin
 	if (Play ^ Stop) begin
@@ -90,7 +90,7 @@ always @(posedge iSampleClock) begin
 			regDacapo <= ~regDacapo;
 			currentAddress <= MusicAddress;
 		end
-		
+
 		if (SynthMelody == 1'b0) begin
 			Allocated <= 1'b0;
 			if (occupied[0] == 1'b0 && Allocated == 1'b0) begin
@@ -114,8 +114,8 @@ always @(posedge iSampleClock) begin
 					if (iData[9] == 1'b1) begin
 					Stop <= ~Stop;
 					end
-					else currentAddress <= currentAddress + 32'd4; 
-				end	
+					else currentAddress <= currentAddress + 32'd4;
+				end
 			end
 			else begin
 				if (occupied[1] == 1'b0 && Allocated == 1'b0) begin
@@ -139,8 +139,8 @@ always @(posedge iSampleClock) begin
 						if (iData[9] == 1'b1) begin
 						Stop <= ~Stop;
 						end
-						else currentAddress <= currentAddress + 32'd4; 
-					end	
+						else currentAddress <= currentAddress + 32'd4;
+					end
 				end
 				else begin
 					if (occupied[2] == 1'b0 && Allocated == 1'b0) begin
@@ -164,8 +164,8 @@ always @(posedge iSampleClock) begin
 							if (iData[9] == 1'b1) begin
 							Stop <= ~Stop;
 							end
-							else currentAddress <= currentAddress + 32'd4; 
-						end	
+							else currentAddress <= currentAddress + 32'd4;
+						end
 					end
 					else begin
 						if (occupied[3] == 1'b0 && Allocated == 1'b0) begin
@@ -189,8 +189,8 @@ always @(posedge iSampleClock) begin
 								if (iData[9] == 1'b1) begin
 								Stop <= ~Stop;
 								end
-								else currentAddress <= currentAddress + 32'd4; 
-							end	
+								else currentAddress <= currentAddress + 32'd4;
+							end
 						end
 						else begin
 							if (occupied[4] == 1'b0 && Allocated == 1'b0) begin
@@ -214,8 +214,8 @@ always @(posedge iSampleClock) begin
 									if (iData[9] == 1'b1) begin
 									Stop <= ~Stop;
 									end
-									else currentAddress <= currentAddress + 32'd4; 
-								end	
+									else currentAddress <= currentAddress + 32'd4;
+								end
 							end
 							else begin
 								if (occupied[5] == 1'b0 && Allocated == 1'b0) begin
@@ -239,8 +239,8 @@ always @(posedge iSampleClock) begin
 										if (iData[9] == 1'b1) begin
 										Stop <= ~Stop;
 										end
-										else currentAddress <= currentAddress + 32'd4; 
-									end	
+										else currentAddress <= currentAddress + 32'd4;
+									end
 								end
 								else begin
 									if (occupied[6] == 1'b0 && Allocated == 1'b0) begin
@@ -264,8 +264,8 @@ always @(posedge iSampleClock) begin
 											if (iData[9] == 1'b1) begin
 											Stop <= ~Stop;
 											end
-											else currentAddress <= currentAddress + 32'd4; 
-										end	
+											else currentAddress <= currentAddress + 32'd4;
+										end
 									end
 									else begin
 										if (occupied[7] == 1'b0 && Allocated == 1'b0) begin
@@ -289,8 +289,8 @@ always @(posedge iSampleClock) begin
 												if (iData[9] == 1'b1) begin
 												Stop <= ~Stop;
 												end
-												else currentAddress <= currentAddress + 32'd4; 
-											end	
+												else currentAddress <= currentAddress + 32'd4;
+											end
 										end
 									end
 								end
@@ -398,7 +398,7 @@ always @(posedge iSampleClock) begin
 			end
 			counter[7] <= counter[7] - 1'b1;
 		end
-	end	
+	end
 end
-	
+
 endmodule

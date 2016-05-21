@@ -10,15 +10,15 @@ module CLOCK_Interface(
 	input Timmer
 );
 
- 
+
 // Reset Assincrono
 always @(posedge CLK)
 	Reset <= ~iKEY[0];
 
-	
+
 /* Clock signals */
 reg CLKManual, CLKAutoSlow, CLKAutoFast;
-wire CLK_CTRL, CLK_LOCK;
+wire CLK_CTRL, CLK_LOCK;							// NOTE: CLK_LOCK nunca lido. Bloco que o usa está comentado?
 reg [7:0] CLKCount2; // contador do CLK fast
 reg [25:0] CLKCount; // contador do CLK slow
 
@@ -36,7 +36,7 @@ begin
 //	r2<=0;
 end
 
-wire wClk, wClk1, wClk2, wClk3,wLock;
+wire wClk, wClk1, wClk2, wClk3,wLock;				// NOTE: wClk nunca lido. Bloco que o usa está comentado?
 PLL PLL1 (.areset(1'b0),.inclk0(iCLK_50_4),.c0(wClk1),.c1(wClk2),.c2(wClk3),.locked(wLock));
 assign oCLK_100=wClk1; // 100MHz
 assign oCLK_200=wClk3; // 200MHz
@@ -64,21 +64,21 @@ mono Timmer10 (.clock50(ck2),.clock(ck1), .ctrl(~Timmer), .clock_ctrl(CLK_CTRL),
 always @(posedge CLK_CTRL)
 	CLK <= CLKSelectAuto?(CLKSelectFast?CLKAutoFast:CLKAutoSlow):CLKManual;
 
-	
+
 
 always @(posedge iKEY[3])    //Clock Manual
 	CLKManual=~CLKManual;
 
 always @(posedge iKEY[2])
 	CLKSelectAuto <= ~CLKSelectAuto; // Automatico/Manual
-	
+
 always @(posedge iKEY[1])
 	CLKSelectFast <= ~CLKSelectFast;  //Slow/Fast
 
 wire [7:0] divisor;
 assign divisor=fdiv-8'd1;
- 
-		
+
+
 always @(posedge CLK_CTRL)   // Divisores do clock
 begin
 	if (CLKCount == {divisor, 18'b0}) //Clock Slow
@@ -88,7 +88,7 @@ begin
 		end
 	else
 		CLKCount <= CLKCount + 1'b1;
-	
+
 	if (CLKCount2 == divisor) //Clock Fast
 		begin
 			CLKAutoFast <= ~CLKAutoFast;
@@ -96,7 +96,7 @@ begin
 		end
 	else
 		CLKCount2 <= CLKCount2 + 1'b1;
-	
+
 end
 
 
@@ -122,7 +122,7 @@ begin
 		end
 	else
 		CLKCount_2x <= CLKCount_2x + 1'b1;
-	
+
 	if (CLKCount2_2x == divisor) //Clock Fast
 		begin
 			CLKAutoFast_2x <= ~CLKAutoFast_2x;
@@ -130,7 +130,7 @@ begin
 		end
 	else
 		CLKCount2_2x <= CLKCount2_2x + 1'b1;
-	
+
 end
 
 

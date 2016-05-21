@@ -11,17 +11,17 @@ module AudioCODEC_Interface(
 	output oAUD_DACDAT,  	// Audio CODEC DAC Data
 	inout  AUD_BCLK,    	// Audio CODEC Bit-Stream Clock
 	output oAUD_XCK,     	// Audio CODEC Chip Clock
-	
+
 	//Para o Sintetizador
 	input [15:0] wsaudio_outL,
 	input [15:0] wsaudio_outR,
-	
+
 	//  Barramento de IO
 	input wReadEnable, wWriteEnable,
 	input [3:0] wByteEnable,
 	input [31:0] wAddress, wWriteData,
-	output [31:0] wReadData,	
-	
+	output [31:0] wReadData,
+
 	// Para o Coprocessador 0 - Interrupcao
 	output reg audio_clock_flip_flop,
 	output reg audio_proc_clock_flip_flop
@@ -36,7 +36,7 @@ assign	oTD1_RESET_N = 1'b1;  // Enable 27 MHz
 wire AUD_CTRL_CLK;
 
 /*
-VGA_Audio_PLL 	p1 (	
+VGA_Audio_PLL 	p1 (
 	.areset(~DLY_RST),
 	.inclk0(iCLK_28),
 	.c0(),
@@ -51,26 +51,26 @@ AudioVideo_PLL av_pll(
 	.c1()
 );
 
-I2C_AV_Config u3(	
+I2C_AV_Config u3(
 //	Host Side
   .iCLK(iCLK_50),
   .iRST_N(~Reset),
 //	I2C Side
   .I2C_SCLK(oI2C_SCLK),
-  .I2C_SDAT(I2C_SDAT)	
+  .I2C_SDAT(I2C_SDAT)
 );
 
 
 assign	AUD_ADCLRCK	=	AUD_DACLRCK;
 assign	oAUD_XCK	=	AUD_CTRL_CLK;
 
-audio_clock u4(	
+audio_clock u4(
 //	Audio Side
    .oAUD_BCK(AUD_BCLK),
    .oAUD_LRCK(AUD_DACLRCK),
 //	Control Signals
    .iCLK_18_4(AUD_CTRL_CLK),
-   .iRST_N(DLY_RST)	
+   .iRST_N(DLY_RST)
 );
 
 
@@ -97,15 +97,15 @@ wire [15:0] audio_outL,audio_outR;
 reg [31:0] waudio_inL ,waudio_inR;
 reg [31:0] waudio_outL, waudio_outR;
 reg [31:0] Ctrl1,Ctrl2;
- 
-wire [15:0] wcaudio_outL, wcaudio_outR;
+
+wire [15:0] wcaudio_outL, wcaudio_outR;						// NOTE: wcaudio_outL e wcaudio_outR declarados, mas nunca usados. Código de uso comentado?
 
 //assign audio_outL=(wcaudio_outL+wsaudio_outL)>>1; // canal L media entre as amostras do CODEC e do Sintetizador
 //assign audio_outR=(wcaudio_outR+wsaudio_outR)>>1; // canal R media entre as amostras do CODEC e do Sintetizador
 
 assign audio_outL = wsaudio_outL; // canal L média entre as amostras do CODEC e do Sintetizador
 assign audio_outR = wsaudio_outR;
-	
+
 initial
 	begin
 		waudio_inL<=32'b0;
@@ -130,7 +130,7 @@ always @(negedge AUD_DACLRCK)
 always @(posedge iCLK)
 	audio_proc_clock_flip_flop <= audio_clock_flip_flop;
 
-	
+
 always @(negedge AUD_DACLRCK)
 	begin
 		if(Ctrl2[0]==0)
@@ -142,7 +142,7 @@ always @(negedge AUD_DACLRCK)
 		else
 			Ctrl1[0]<=1'b0;
 	end
-	
+
 always @(posedge AUD_DACLRCK)
 	begin
 		if(Ctrl2[1]==0)
@@ -155,15 +155,15 @@ always @(posedge AUD_DACLRCK)
 			Ctrl1[1]<=1'b0;
 	end
 
-always @(posedge iCLK)			
+always @(posedge iCLK)
 		if(wWriteEnable) //Escrita no dispositivo de Audio
 			begin
 				if(wAddress==AUDIO_OUTR_ADDRESS) 	waudio_outR <= wWriteData[15:0]; else
 				if(wAddress==AUDIO_OUTL_ADDRESS) 	waudio_outL <= wWriteData[15:0]; else
 				if(wAddress==AUDIO_CRTL2_ADDRESS)	Ctrl2 <= wWriteData[7:0];
-			end	
-	
-					
+			end
+
+
 always @(*)
 		if(wReadEnable)  //Leitura do dispositivo de Audio
 			begin

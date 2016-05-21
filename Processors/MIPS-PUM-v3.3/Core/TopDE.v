@@ -259,7 +259,7 @@ assign 	OIReadData 		= IReadData;
 
 
 /**** Gerador e gerenciador de Clock *******************************/
-wire 	 	CLK, CLK_2x, iCLK_100, iCLK_200;
+wire 	 	CLK, CLK_2x, iCLK_100, iCLK_200;			// NOTE: CLK_2x declarado, mas não atribuido. assign comentado? Sem driver nem valor inicial.
 wire 	 	Reset, CLKSelectFast, CLKSelectAuto;
 
 CLOCK_Interface CLKI0(
@@ -323,7 +323,7 @@ wire [3:0]	IByteEnable;
 
 // Interface Comum entre o processador e os mostradores
 wire [4:0]	wRegDispSelect;
-wire [31:0]	wPC, wRegDisp, wRegDispFPU, wRegDispCOP0, wOutput, wInstr, wDebug;
+wire [31:0]	wPC, wRegDisp, wRegDispFPU, wRegDispCOP0, wOutput, wInstr, wDebug;		// NOTE: wDebug declarado, mas nunca atribuído. assign comentado? Sem driver nem valor inicial.
 wire [7:0]	flagBank;
 wire [17:0]	wSinaisControle;
 wire [5:0]	wControlState;
@@ -577,7 +577,7 @@ Sintetizador_Interface SINT0 (
 	.wReadEnableS(DReadEnableS),
 	.wAddressS(DAddressS), .wReadDataS(DReadDataS),
 
-	.iSynthAddress(iSynthAdress),
+	.iSynthAddress(iSynthAdress),								// NOTE: Declaração implícita de iSynthAdress
 	.oSynthNoteData(oSynthNoteData)
 );
 

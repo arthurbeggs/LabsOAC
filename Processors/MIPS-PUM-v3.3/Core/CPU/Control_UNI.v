@@ -209,7 +209,6 @@ begin
 					oExcCodeCOP0		<= wALUExcCode;
 				end
 
-
 				FUNMOV_FouT:
 				begin
 					case (iBranchC1)
@@ -255,6 +254,29 @@ begin
 							oExcOccurredCOP0	<= wIntException;
 							oBranchDelayCOP0	<= 1'b0;
 							oExcCodeCOP0		<= EXCODEINT;
+						end
+
+						// instrucao invalida. Colocado para evitar a criação de latches.
+						default:
+						begin
+							oRegDst				<= 2'b00;
+							oOrigALU			<= 2'b00;
+							oMemparaReg			<= 3'b000;
+							oEscreveReg			<= 1'b0;
+							oLeMem				<= 1'b0;
+							oEscreveMem			<= 1'b0;
+							oOrigPC				<= 3'b000;
+							oOpALU				<= 2'b00;
+							oEscreveRegFPU		<= 1'b0;
+							oRegDstFPU			<= 2'b00;
+							oFPUparaMem			<= 2'b00;
+							oDataRegFPU			<= 2'b00;
+							oFPFlagWrite		<= 1'b0;
+							oEscreveRegCOP0		<= 1'b0;
+							oEretCOP0			<= 1'b0;
+							oExcOccurredCOP0	<= wNotExcLevel;
+							oBranchDelayCOP0	<= 1'b0;
+							oExcCodeCOP0		<= EXCODEINSTR;
 						end
 					endcase
 				end
@@ -624,6 +646,29 @@ begin
 							oBranchDelayCOP0	<= 1'b1;
 							oExcCodeCOP0		<= EXCODEINT;
 						end
+
+						// instrucao invalida. Colocado para evitar a criação de latches.
+						default:
+						begin
+							oRegDst				<= 2'b00;
+							oOrigALU			<= 2'b00;
+							oMemparaReg			<= 3'b000;
+							oEscreveReg			<= 1'b0;
+							oLeMem				<= 1'b0;
+							oEscreveMem			<= 1'b0;
+							oOrigPC				<= 3'b000;
+							oOpALU				<= 2'b00;
+							oEscreveRegFPU		<= 1'b0;
+							oRegDstFPU			<= 2'b00;
+							oFPUparaMem			<= 2'b00;
+							oDataRegFPU			<= 2'b00;
+							oFPFlagWrite		<= 1'b0;
+							oEscreveRegCOP0		<= 1'b0;
+							oEretCOP0			<= 1'b0;
+							oExcOccurredCOP0	<= wNotExcLevel;
+							oBranchDelayCOP0	<= 1'b0;
+							oExcCodeCOP0		<= EXCODEINSTR;
+						end
 					endcase
 				end
 
@@ -795,6 +840,29 @@ begin
 									oBranchDelayCOP0	<= 1'b0;
 									oExcCodeCOP0		<= EXCODEINT;
 								end
+
+								// instrucao invalida. Colocado para evitar a criação de latches.
+								default:
+								begin
+									oRegDst				<= 2'b00;
+									oOrigALU			<= 2'b00;
+									oMemparaReg			<= 3'b000;
+									oEscreveReg			<= 1'b0;
+									oLeMem				<= 1'b0;
+									oEscreveMem			<= 1'b0;
+									oOrigPC				<= 3'b000;
+									oOpALU				<= 2'b00;
+									oEscreveRegFPU		<= 1'b0;
+									oRegDstFPU			<= 2'b00;
+									oFPUparaMem			<= 2'b00;
+									oDataRegFPU			<= 2'b00;
+									oFPFlagWrite		<= 1'b0;
+									oEscreveRegCOP0		<= 1'b0;
+									oEretCOP0			<= 1'b0;
+									oExcOccurredCOP0	<= wNotExcLevel;
+									oBranchDelayCOP0	<= 1'b0;
+									oExcCodeCOP0		<= EXCODEINSTR;
+								end
 							endcase
 						end
 						FUNSQRT,
@@ -889,99 +957,6 @@ begin
 							oExcCodeCOP0		<= EXCODEINT;
 						end
 
-						FUNMOVZS:
-						begin
-							oRegDst				<= 2'b00;
-							oOrigALU			<= 2'b00;
-							oMemparaReg			<= 3'b000;
-							oEscreveReg			<= 1'b0;
-							oLeMem				<= 1'b0;
-							oEscreveMem			<= 1'b0;
-							oOrigPC				<= 3'b000;
-							oOpALU				<= 2'b00;
-							oEscreveRegFPU		<= iequal_0 ? 1'b1:1'b0;
-							oRegDstFPU			<= 2'b00;
-							oFPUparaMem			<= 2'b00;
-							oDataRegFPU			<= 2'b11;
-							oFPFlagWrite		<= 1'b0;
-							oEscreveRegCOP0		<= 1'b0;
-							oEretCOP0			<= 1'b0;
-							oExcOccurredCOP0	<= wALUException;
-							oBranchDelayCOP0	<= 1'b0;
-							oExcCodeCOP0		<= wALUExcCode;
-						end
-
-						FUNMOVNS:
-						begin
-							oRegDst				<= 2'b01;
-							oOrigALU			<= 2'b00;
-							oMemparaReg			<= 3'b000;
-							oEscreveReg			<= 1'b0;
-							oLeMem				<= 1'b0;
-							oEscreveMem			<= 1'b0;
-							oOrigPC				<= 3'b000;
-							oOpALU				<= 2'b01;
-							oEscreveRegFPU		<= iequal_0 ? 1'b0:1'b1;
-							oRegDstFPU			<= 2'b00;
-							oFPUparaMem			<= 2'b00;
-							oDataRegFPU			<= 2'b11;
-							oFPFlagWrite		<= 1'b0;
-							oEscreveRegCOP0		<= 1'b0;
-							oEretCOP0			<= 1'b0;
-							oExcOccurredCOP0	<= wALUException;
-							oBranchDelayCOP0	<= 1'b0;
-							oExcCodeCOP0		<= wALUExcCode;
-						end
-
-						FUNMOV_FouT_S:
-						begin
-							case(iBranchC1)
-								FTFALSE:
-								begin
-									oRegDst				<= 2'b01;
-									oOrigALU			<= 2'b00;
-									oMemparaReg			<= 3'b000;
-									oEscreveReg			<= 1'b0;
-									oLeMem				<= 1'b0;
-									oEscreveMem			<= 1'b0;
-									oOrigPC				<= 3'b000;
-									oOpALU				<= 2'b00;
-									oEscreveRegFPU		<= oFlagFP[0] ? 1'b0:1'b1;
-									oDataRegFPU			<= 2'b11;
-									oRegDstFPU			<= 2'b00;
-									oFPUparaMem			<= 2'b00;
-									oFPFlagWrite		<= 1'b0;
-									oEscreveRegCOP0		<= 1'b0;
-									oEretCOP0			<= 1'b0;
-									oExcOccurredCOP0	<= wIntException;
-									oBranchDelayCOP0	<= 1'b0;
-									oExcCodeCOP0		<= EXCODEINT;
-								end
-
-								FTTRUE:
-								begin
-									oRegDst				<= 2'b01;
-									oOrigALU			<= 2'b00;
-									oMemparaReg			<= 3'b000;
-									oEscreveReg			<= 1'b0;
-									oLeMem				<= 1'b0;
-									oEscreveMem			<= 1'b0;
-									oOrigPC				<= 3'b000;
-									oOpALU				<= 2'b00;
-									oEscreveRegFPU		<= oFlagFP[0] ? 1'b1:1'b0;
-									oDataRegFPU			<= 2'b11;
-									oRegDstFPU			<= 2'b00;
-									oFPUparaMem			<= 2'b00;
-									oFPFlagWrite		<= 1'b0;
-									oEscreveRegCOP0		<= 1'b0;
-									oEretCOP0			<= 1'b0;
-									oExcOccurredCOP0	<= wIntException;
-									oBranchDelayCOP0	<= 1'b0;
-									oExcCodeCOP0		<= EXCODEINT;
-								end
-							endcase
-						end
-
 						// instrucao invalida
 						default:
 						begin
@@ -1003,7 +978,7 @@ begin
 							oExcOccurredCOP0	<= wNotExcLevel;
 							oBranchDelayCOP0	<= 1'b0;
 							oExcCodeCOP0		<= EXCODEINSTR;
-						end	
+						end
 					endcase
 				end
 								// instrucao invalida

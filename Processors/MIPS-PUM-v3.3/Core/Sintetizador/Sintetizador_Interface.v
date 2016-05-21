@@ -11,10 +11,10 @@ module Sintetizador_Interface(
 	input [31:0] wAddress, wWriteData,
 	output [31:0] wReadData,
 	// Barramento do Sintetizador - read only
-	output wReadEnableS,
-	output [31:0] wAddressS,
+	output wReadEnableS,									// NOTE: Declarado, mas nunca lido
+	output [31:0] wAddressS,								// NOTE: Declarado, mas nunca lido.
 	input [31:0] wReadDataS,
-	
+
 	output [31:0] iSynthAddress,
 	input [31:0] oSynthNoteData
 );
@@ -51,14 +51,14 @@ initial
 		wSynthMelody <= 1'b0;
 	end
 
-	
+
 wire wSynthEnable, wSynthMelody;
 
 wire [7:0] pitch_play;
 wire [6:0] volume;
 wire [3:0] instrument;
 
-	
+
 SynthControl SC1 (
 	.CLK(iCLK),
 	.iSampleClock(AUD_DACLRCK),
@@ -70,12 +70,12 @@ SynthControl SC1 (
 	.oSynth(pitch_play),
 	.oSynthVolume(volume),
 	.oSynthInst(instrument),
-	.Pause(Pause)
+	.Pause(Pause)							// NOTE: Declaração implícita de Pause.
 );
 
 // Usar o barramento do sintetizador para ler as notas da memoria SRAM automaticamente
 /*
-always @(posedge CLK) begin	
+always @(posedge CLK) begin
 	if(wWriteEnable) begin
 		case (wAddress)
 			MUSIC_ADDRESS: begin
