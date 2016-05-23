@@ -6,162 +6,161 @@
 //`define PIPELINE
 
 
-/*   ******************  Historico *********************** 
- Top Level para processador MIPS UNICICLO v0 baseado no processador desenvolvido por 
-Alexandre Lins 	09/40097
-Daniel Dutra 	09/08436
-*Yuri Maia 	09/16803
+/*   ******************  Historico ***********************
+ Top Level para processador MIPS UNICICLO v0 baseado no processador desenvolvido por
+Alexandre Lins							09/40097
+Daniel Dutra							09/08436
+*Yuri Maia								09/16803
 em 2010/1 na disciplina OAC
 
- Top Level para processador MIPS UNICICLO v1 baseado no processador desenvolvido por 
-Emerson Grzeidak 							0993514
-Gabriel Calache Cozendey 						09/47946
-Glauco Medeiros Volpe 						10/25091
-*Luiz Henrique Dias Navarro 						10/00748
-Waldez Azevedo Gomes Junior						10/08617
+ Top Level para processador MIPS UNICICLO v1 baseado no processador desenvolvido por
+Emerson Grzeidak						09/93514
+Gabriel Calache Cozendey				09/47946
+Glauco Medeiros Volpe					10/25091
+*Luiz Henrique Dias Navarro				10/00748
+Waldez Azevedo Gomes Junior				10/08617
 em 2011/1 na disciplina OAC
 
- Top Level para processador MIPS UNICICLO v2 baseado no processador desenvolvido por 
-*Antonio Martino Neto  09/89886
-Bruno de Matos Bertasso  08/25590
-Carolina S. R. de Oliveira  07/45006
-Herman Ferreira M. de Asevedo  09/96319
-Renata Cristina  09/0130600
+ Top Level para processador MIPS UNICICLO v2 baseado no processador desenvolvido por
+*Antonio Martino Neto					09/89886
+Bruno de Matos Bertasso					08/25590
+Carolina S. R. de Oliveira  			07/45006
+Herman Ferreira M. de Asevedo			09/96319
+Renata Cristina							09/0130600
 em 2011/2 na disciplina OAC
 
- Top Level para processador MIPS UNICICLO v3 baseado no processador desenvolvido por 
-Andre Franca - 10/0007457
-Felipe Carvalho Gules - 08/29137
-Filipe Tancredo Barros - 10/0029329
-Guilherme Ferreira - 12/0051133
-*Vitor Coimbra de Oliveira - 10/0021832
+ Top Level para processador MIPS UNICICLO v3 baseado no processador desenvolvido por
+Andre Franca							10/0007457
+Felipe Carvalho Gules					08/29137
+Filipe Tancredo Barros					10/0029329
+Guilherme Ferreira						12/0051133
+*Vitor Coimbra de Oliveira				10/0021832
 em 2012/1 na disciplina OAC
 
- Top Level para processador MIPS UNICICLO v4 baseado no processador desenvolvido por 
-Alexandre Dantas 10/0090788
-Ciro Viana 09/0137531
-*Matheus Pimenta 09/0125789
+ Top Level para processador MIPS UNICICLO v4 baseado no processador desenvolvido por
+Alexandre Dantas						10/0090788
+Ciro Viana								09/0137531
+*Matheus Pimenta						09/0125789
 em 2013/1 na disciplina OAC
 
- Top Level para processador MIPS UNICICLO v6 baseado no processador desenvolvido por 
-Vitor de Alencastro Lacerda 11/0067142
-*Hugo Luis Andrade Silva 12/0012987
+ Top Level para processador MIPS UNICICLO v6 baseado no processador desenvolvido por
+Vitor de Alencastro Lacerda				11/0067142
+*Hugo Luis Andrade Silva				12/0012987
 em 2013/2 na disciplina OAC
 
-Top Level para processador MIPS UNICICLO v7 baseado no processador desenvolvido por 
-*Thales Marques Ramos 09/0133421
-Daniel Magalhaes dos Santos 11/0113403
-Gustavo Ribeiro Teixeira 09/0115791
-Lorena Goncalves Miquett 10/0015581
-Thales Moreira Vinkler 10/0050638
-Wilson Domingos Sidinei Alves Miranda 14/0053344
+Top Level para processador MIPS UNICICLO v7 baseado no processador desenvolvido por
+*Thales Marques Ramos					09/0133421
+Daniel Magalhaes dos Santos				11/0113403
+Gustavo Ribeiro Teixeira				09/0115791
+Lorena Goncalves Miquett				10/0015581
+Thales Moreira Vinkler					10/0050638
+Wilson Domingos Sidinei Alves Miranda	14/0053344
 em 2014/1 na disciplina OAC
 
-
-Top Level para processador MIPS MULTICICLO v0 baseado no processador desenvolvido por 
+Top Level para processador MIPS MULTICICLO v0 baseado no processador desenvolvido por
 David A. Patterson e John L. Hennessy
 Computer Organization and Design
 3a Edicao
 
-Top Level para processador MIPS MULTICICLO v01 baseado no processador desenvolvido por 
-Alexandre Lins 	09/40097
-Daniel Dutra 	09/08436
-*Yuri Maia 	09/16803
+Top Level para processador MIPS MULTICICLO v01 baseado no processador desenvolvido por
+Alexandre Lins							09/40097
+Daniel Dutra							09/08436
+*Yuri Maia								09/16803
 em 2010/1 na disciplina OAC
 
- Top Level para processador MIPS UNICICLO v1 baseado no processador desenvolvido por 
-Emerson Grzeidak 							0993514
-Gabriel Calache Cozendey 						09/47946
-Glauco Medeiros Volpe 						10/25091
-*Luiz Henrique Dias Navarro 						10/00748
-Waldez Azevedo Gomes Junior						10/08617
+ Top Level para processador MIPS UNICICLO v1 baseado no processador desenvolvido por
+Emerson Grzeidak 						09/93514
+Gabriel Calache Cozendey 				09/47946
+Glauco Medeiros Volpe 					10/25091
+*Luiz Henrique Dias Navarro 			10/00748
+Waldez Azevedo Gomes Junior				10/08617
 em 2011/1 na disciplina OAC
 
- Top Level para processador MIPS UNICICLO v2 baseado no processador desenvolvido por 
-*Antonio Martino Neto ? 09/89886
-Bruno de Matos Bertasso ? 08/25590
-Carolina S. R. de Oliveira ? 07/45006
-Herman Ferreira M. de Asevedo ? 09/96319
-Renata Cristina ? 09/0130600
+ Top Level para processador MIPS UNICICLO v2 baseado no processador desenvolvido por
+*Antonio Martino Neto					09/89886
+Bruno de Matos Bertasso					08/25590
+Carolina S. R. de Oliveira				07/45006
+Herman Ferreira M. de Asevedo			09/96319
+Renata Cristina							09/0130600
 em 2011/2 na disciplina OAC
 
- Top Level para processador MIPS MULTICICLO v9 baseado no processador desenvolvido por 
-Andre Franca - 10/0007457
-Felipe Carvalho Gules - 08/29137
-Filipe Tancredo Barros - 10/0029329
-Guilherme Ferreira - 12/0051133
-*Vitor Coimbra de Oliveira - 10/0021832
+ Top Level para processador MIPS MULTICICLO v9 baseado no processador desenvolvido por
+Andre Franca							10/0007457
+Felipe Carvalho Gules					08/29137
+Filipe Tancredo Barros					10/0029329
+Guilherme Ferreira						12/0051133
+*Vitor Coimbra de Oliveira				10/0021832
 em 2012/1 na disciplina OAC
 
- Top Level para processador MIPS MULTICICLO v10 baseado no processador desenvolvido por 
-Alexandre Dantas 10/0090788
-Ciro Viana 09/0137531
-*Matheus Pimenta 09/0125789
+ Top Level para processador MIPS MULTICICLO v10 baseado no processador desenvolvido por
+Alexandre Dantas						10/0090788
+Ciro Viana								09/0137531
+*Matheus Pimenta						09/0125789
 em 2013/1 na disciplina OAC
 
-Top Level para processador MIPS PIPELINE v1 baseado no processador desenvolvido por  
-Andre Figueira Lourenco 	09/89525
-Jose Chaves Junior 	08/40122
-Hugo Marello 	10/29444
+Top Level para processador MIPS PIPELINE v1 baseado no processador desenvolvido por
+Andre Figueira Lourenco					09/89525
+Jose Chaves Junior						08/40122
+Hugo Marello							10/29444
 em 2010/2 na disciplina OAC
 
-Top Level para processador MIPS PIPELINE v1.5 baseado no processador desenvolvido por  
-Emerson Grzeidak 09/93514
-Gabriel Calache Cozendey 09/47946
-Glauco Medeiros Volpe 10/25091
-*Luiz Henrique Dias Navarro 10/00748
-Waldez Azevedo Gomes Junior 10/08617
+Top Level para processador MIPS PIPELINE v1.5 baseado no processador desenvolvido por
+Emerson Grzeidak						09/93514
+Gabriel Calache Cozendey				09/47946
+Glauco Medeiros Volpe					10/25091
+*Luiz Henrique Dias Navarro				10/00748
+Waldez Azevedo Gomes Junior				10/08617
 em 2011/1 na disciplina OAC
 
-Top Level para processador MIPS PIPELINE v2 baseado no processador desenvolvido por 
-*Antonio Martino Neto 09/89886
-Bruno de Matos Bertasso 08/25590
-Carolina S. R. de Oliveira 07/45006
-Herman Ferreira M. de Asevedo 09/96319
-Renata Cristina 09/0130600
+Top Level para processador MIPS PIPELINE v2 baseado no processador desenvolvido por
+*Antonio Martino Neto					09/89886
+Bruno de Matos Bertasso					08/25590
+Carolina S. R. de Oliveira				07/45006
+Herman Ferreira M. de Asevedo			09/96319
+Renata Cristina							09/0130600
 em 2012/1 na disciplina OAC
 
-Top Level para processador MIPS PIPELINE v3 baseado no processador desenvolvido por 
-Antonio Martino Neto 09/89886
+Top Level para processador MIPS PIPELINE v3 baseado no processador desenvolvido por
+Antonio Martino Neto					09/89886
 em 2013/1 na disciplina TG1
 
-Top Level para processador MIPS PIPELINE v4 baseado no processador desenvolvido por 
-*Hugo Luis Andrade Silva  12/0012987
-Leonardo de Oliveira Lourenco - 13/0120197
-*Thales Marques Ramos - 09/0133421
-Daniel Magalhaes dos Santos  11/0113403
-Marcus da Silva Ferreira - 10/0056881
-Wilson Domingos Sidinei Alves Miranda - 11/0144201
+Top Level para processador MIPS PIPELINE v4 baseado no processador desenvolvido por
+*Hugo Luis Andrade Silva 				12/0012987
+Leonardo de Oliveira Lourenco			13/0120197
+*Thales Marques Ramos					09/0133421
+Daniel Magalhaes dos Santos				11/0113403
+Marcus da Silva Ferreira				10/0056881
+Wilson Domingos Sidinei Alves Miranda	11/0144201
 em 2013/2 na disciplina OAC
 
  V8.2 Com eret para PC (calcular PC+4 no programa)
  v8.3 Arrumado todos os PARAMETROS, ULA nova
- v9 com RS232 e BootLoader baseado no processador desenvolvido por 
-Filipe Lima - 09/0113802
-Sinayra Moreira - 10/0020666
-Tulio Matias - 10/0055150
-*Gabriel Naves - 12/0011867
-Gabriel Sousa - 12/0060353
-Icaro Mota - 12/0051389
+ v9 com RS232 e BootLoader baseado no processador desenvolvido por
+Filipe Lima								09/0113802
+Sinayra Moreira							10/0020666
+Tulio Matias							10/0055150
+*Gabriel Naves							12/0011867
+Gabriel Sousa							12/0060353
+Icaro Mota								12/0051389
 em 2014/2 na disciplina OAC
 
-Com sintetizador de Ã¡udio programÃ¡vel e MTHI/MTLO
-*Maxwell M. Fernandes â€“ 10/0116175
-TÃºlio de Carvalho Matias â€“ 10/0055150
-*Luiz Henrique Campos Barboza â€“ 09/0010256
-*Diego Marques de Azevedo â€“ 11/0027876
-Marcos de Moura GonÃ§alves â€“ 15/0093349
-Yuri Barcellos Galli â€“ 12/0024098
+Com sintetizador de áudio programável e MTHI/MTLO
+*Maxwell M. Fernandes					10/0116175
+Túlio de Carvalho Matias				10/0055150
+*Luiz Henrique Campos Barboza			09/0010256
+*Diego Marques de Azevedo				11/0027876
+Marcos de Moura Gonçalves				15/0093349
+Yuri Barcellos Galli					12/0024098
 em 2015/1 na disciplina OAC
 
  Adaptado para a placa de desenvolvimento DE2-70.
  Prof. Marcus Vinicius Lamar   2016/1
  UnB - Universidade de Brasilia
  Dep. Ciencia da Computacao
- 
+
  */
- 
- 
+
+
 module TopDE (
 	/* I/O type definition */
 	input iCLK_50, iCLK_28, iCLK_50_4,  // Clocks
@@ -202,7 +201,7 @@ module TopDE (
 	// SRAM Interface
 	inout [31:0] SRAM_DQ, // SRAM Data Bus 32 Bits
 	output [18:0] oSRAM_A, // SRAM Address bus 21 Bits
-	output oSRAM_ADSC_N, // SRAM Controller Address Status 
+	output oSRAM_ADSC_N, // SRAM Controller Address Status
 	output oSRAM_ADSP_N, // SRAM Processor Address Status
 	output oSRAM_ADV_N, // SRAM Burst Address Advance
 	output [3:0] oSRAM_BE_N, // SRAM Byte Write Enable
@@ -252,7 +251,7 @@ module TopDE (
 
 
 /**** Gerador e gerenciador de Clock *******************************/
-wire CLK, iCLK_100, iCLK_200; 
+wire CLK, iCLK_100, iCLK_200;
 wire Reset, CLKSelectFast, CLKSelectAuto;
 
 CLOCK_Interface CLKI0(
@@ -270,7 +269,7 @@ CLOCK_Interface CLKI0(
 	.Timmer(iSW[10])   					//Timmer de 10 segundos
 );
 
- 
+
 /* LEDs sinais de controle */
 assign oLEDR 		= wSinaisControle; // Varia de acordo com o processador
 assign oLEDG[5:0]	= wControlState;
@@ -289,10 +288,10 @@ assign wOutput	= (iSW[12] ? (iSW[17] ? wPC :  //PC
 									iSW[15] ? {25'b0,wInstr[31:26]} : // Opcode
 									iSW[14] ?{25'b0,wInstr[6:0]} : // Funct
 									iSW[13]? wDebug: {3'b0, flagBank[7], 3'b0, flagBank[6], 3'b0, flagBank[5], 3'b0, flagBank[4], 3'b0, flagBank[3], 3'b0, flagBank[2], 3'b0, flagBank[1], 3'b0, flagBank[0]}) :
-					  iSW[11] ? wRegDispFPU : 
+					  iSW[11] ? wRegDispFPU :
 					  iSW[9]  ? wRegDispCOP0 : wRegDisp );
 
-					  
+
 //  Define o endereco inicial do PC
 wire [31:0] PCinicial;
 assign PCinicial = (iSW[8]? BEGINNING_BOOT : BEGINNING_TEXT);  // Controle do Boot
@@ -329,7 +328,7 @@ CPU CPU0 (
 	.iCLK50(iCLK_50),  	// Clock 50MHz fixo, usado so na FPU
 	.iRST(Reset),
 	.iInitialPC(PCinicial),
-	
+
 	// Sinais de monitoramento
 	.wPC(wPC),
 	.wInstr(wInstr),
@@ -345,42 +344,42 @@ CPU CPU0 (
 	.wVGARead(wVGARead),
 	.wVGASelectFPU(wVGASelectFPU),
 	.wVGAReadFPU(wVGAReadFPU),
-	
+
 	// Barramento Dados
 	.DwReadEnable(DReadEnable), .DwWriteEnable(DWriteEnable),
 	.DwByteEnable(DByteEnable),
 	.DwAddress(DAddress), .DwWriteData(DWriteData),.DwReadData(DReadData),
-	
+
 	// Barramento Instrucoes - Nao tem no multiciclo
 	.IwReadEnable(IReadEnable), .IwWriteEnable(IWriteEnable),
 	.IwByteEnable(IByteEnable),
 	.IwAddress(IAddress), .IwWriteData(IWriteData), .IwReadData(IReadData),
-	
+
 	// Interrupcao
 	.iPendingInterrupt(wPendingInterrupt)
 	);
 
 
-	
+
 /* ********************* Memoria RAM Interface ********************** */
 
 `ifdef MULTICICLO // Multiciclo
 // multi
 Memory_Interface MEMORY(
-	.iCLK(CLK), .iCLKMem(iCLK_50), 		
+	.iCLK(CLK), .iCLKMem(iCLK_50),
 	// Barramento
 	.wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
 	.wByteEnable(DByteEnable),
 	.wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),
 	//Barramento do Sintetizador
-	//.wAddressS(DAddressS), .wReadDataS(DReadDataS)	
+	//.wAddressS(DAddressS), .wReadDataS(DReadDataS)
 	);
 `endif
-	
+
 `ifndef MULTICICLO  // Uniciclo e Pipeline
 // uni e pipe
 DataMemory_Interface MEMDATA(
-	.iCLK(CLK), .iCLKMem(iCLK_50), 		
+	.iCLK(CLK), .iCLKMem(iCLK_50),
 	// Barramento de dados
 	.wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
 	.wByteEnable(DByteEnable),
@@ -388,9 +387,9 @@ DataMemory_Interface MEMDATA(
 	//Barramento do Sintetizador
 	//.wAddressS(DAddressS), .wReadDataS(DReadDataS)
 	);
-	
+
 CodeMemory_Interface MEMCODE(
-	.iCLK(CLK), .iCLKMem(iCLK_50), 		
+	.iCLK(CLK), .iCLKMem(iCLK_50),
 	// Barramento de Instrucoes
 	.wReadEnable(IReadEnable), .wWriteEnable(IWriteEnable),
 	.wByteEnable(IByteEnable),
@@ -398,8 +397,8 @@ CodeMemory_Interface MEMCODE(
 	);
 `endif
 
-	
-	
+
+
 /****** SRAM Interface **********************************************/
 	SRAM_Interface SRAM0 (
 	.iCLK(CLK), .iCLKMem(iCLK_50),
@@ -415,24 +414,24 @@ CodeMemory_Interface MEMCODE(
 	.oSRAM_BE_N(oSRAM_BE_N),
 	.oSRAM_ADV_N(oSRAM_ADV_N),
 	.oSRAM_ADSP_N(oSRAM_ADSP_N),
-	.oSRAM_ADSC_N(oSRAM_ADSC_N),	
+	.oSRAM_ADSC_N(oSRAM_ADSC_N),
 	// Barramento
 	.wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
 	.wByteEnable(DByteEnable),
 	.wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData)
 );
-	
 
-	
-/* ******************************************************************************************** */	
+
+
+/* ******************************************************************************************** */
 // feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 wire [7:0] wPendingInterrupt;
 
-assign wPendingInterrupt = {5'b0, 
+assign wPendingInterrupt = {5'b0,
 	(!reg_mouse_keyboard)&&(received_data_en_contador_enable) ,
-	(audio_clock_flip_flop ^ audio_proc_clock_flip_flop), 
+	(audio_clock_flip_flop ^ audio_proc_clock_flip_flop),
 	reg_mouse_keyboard&&(ps2_scan_ready_clock ^ keyboard_interrupt)};
-	
+
 
 
 /********* 7 segment displays Interface ***********************************************/
@@ -440,8 +439,8 @@ Display7_Interface DisplayI7 (.HEX0_D(oHEX0_D), .HEX1_D(oHEX1_D), .HEX2_D(oHEX2_
 										.HEX0_DP(oHEX0_DP), .HEX1_DP(oHEX1_DP), .HEX2_DP(oHEX2_DP), .HEX3_DP(oHEX3_DP), .HEX4_DP(oHEX4_DP), .HEX5_DP(oHEX5_DP), .HEX6_DP(oHEX6_DP), .HEX7_DP(oHEX7_DP),
 										.Output(wOutput));
 
-	
-	
+
+
 /************ VGA Interface *********************************************************/
 wire [4:0] wVGASelectIn;
 wire [31:0] wVGAReadIn;
@@ -470,7 +469,7 @@ wire audio_clock_flip_flop,audio_proc_clock_flip_flop;
 AudioCODEC_Interface Audio0 (
 	.iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
 	.iCLK_28(iCLK_28),
-	.oTD1_RESET_N(oTD1_RESET_N), 
+	.oTD1_RESET_N(oTD1_RESET_N),
 	.I2C_SDAT(I2C_SDAT),
 	.oI2C_SCLK(oI2C_SCLK),
 	.AUD_ADCLRCK(AUD_ADCLRCK),
@@ -480,8 +479,8 @@ AudioCODEC_Interface Audio0 (
 	.AUD_BCLK(AUD_BCLK),
 	.oAUD_XCK(oAUD_XCK),
 	// Para o sintetizador
-	.wsaudio_outL(wsaudio_outL), 
-	.wsaudio_outR(wsaudio_outR), 
+	.wsaudio_outL(wsaudio_outL),
+	.wsaudio_outR(wsaudio_outR),
 	// Barramento
 	.wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
 	.wByteEnable(DByteEnable),
@@ -502,7 +501,7 @@ TecladoPS2_Interface TEC0 (
 	// Barramento
 	.wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
 	.wByteEnable(DByteEnable),
-	.wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),	
+	.wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),
 	//Interrupcao
 	.ps2_scan_ready_clock(ps2_scan_ready_clock),
 	.keyboard_interrupt(keyboard_interrupt)
@@ -528,7 +527,7 @@ LCD_Interface LCD0 (
 	.wInstr(wInstr)
 );
 
-	
+
 /*****  Sintetizador Interface ********************************************************************/
 wire [15:0] wsaudio_outL, wsaudio_outR;
 wire DReadEnableS;
@@ -555,12 +554,12 @@ wire reg_mouse_keyboard, received_data_en_contador_enable;
 
 MousePS2_Interface MOUSE0 (
 	.iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
-	.PS2_KBCLK(PS2_KBCLK),	
+	.PS2_KBCLK(PS2_KBCLK),
  	.PS2_KBDAT(PS2_KBDAT),
 	//  Barramento
 	.wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
 	.wByteEnable(DByteEnable),
-	.wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),	
+	.wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),
 	// Interrupcao
 	.reg_mouse_keyboard(reg_mouse_keyboard),
 	.received_data_en_contador_enable(received_data_en_contador_enable)
