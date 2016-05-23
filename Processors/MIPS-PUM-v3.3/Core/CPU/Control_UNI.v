@@ -255,29 +255,6 @@ begin
 							oBranchDelayCOP0	<= 1'b0;
 							oExcCodeCOP0		<= EXCODEINT;
 						end
-
-						// instrucao invalida. Colocado para evitar a criação de latches.
-						default:
-						begin
-							oRegDst				<= 2'b00;
-							oOrigALU			<= 2'b00;
-							oMemparaReg			<= 3'b000;
-							oEscreveReg			<= 1'b0;
-							oLeMem				<= 1'b0;
-							oEscreveMem			<= 1'b0;
-							oOrigPC				<= 3'b000;
-							oOpALU				<= 2'b00;
-							oEscreveRegFPU		<= 1'b0;
-							oRegDstFPU			<= 2'b00;
-							oFPUparaMem			<= 2'b00;
-							oDataRegFPU			<= 2'b00;
-							oFPFlagWrite		<= 1'b0;
-							oEscreveRegCOP0		<= 1'b0;
-							oEretCOP0			<= 1'b0;
-							oExcOccurredCOP0	<= wNotExcLevel;
-							oBranchDelayCOP0	<= 1'b0;
-							oExcCodeCOP0		<= EXCODEINSTR;
-						end
 					endcase
 				end
 
@@ -646,29 +623,6 @@ begin
 							oBranchDelayCOP0	<= 1'b1;
 							oExcCodeCOP0		<= EXCODEINT;
 						end
-
-						// instrucao invalida. Colocado para evitar a criação de latches.
-						default:
-						begin
-							oRegDst				<= 2'b00;
-							oOrigALU			<= 2'b00;
-							oMemparaReg			<= 3'b000;
-							oEscreveReg			<= 1'b0;
-							oLeMem				<= 1'b0;
-							oEscreveMem			<= 1'b0;
-							oOrigPC				<= 3'b000;
-							oOpALU				<= 2'b00;
-							oEscreveRegFPU		<= 1'b0;
-							oRegDstFPU			<= 2'b00;
-							oFPUparaMem			<= 2'b00;
-							oDataRegFPU			<= 2'b00;
-							oFPFlagWrite		<= 1'b0;
-							oEscreveRegCOP0		<= 1'b0;
-							oEretCOP0			<= 1'b0;
-							oExcOccurredCOP0	<= wNotExcLevel;
-							oBranchDelayCOP0	<= 1'b0;
-							oExcCodeCOP0		<= EXCODEINSTR;
-						end
 					endcase
 				end
 
@@ -839,29 +793,6 @@ begin
 									oExcOccurredCOP0	<= wIntException;
 									oBranchDelayCOP0	<= 1'b0;
 									oExcCodeCOP0		<= EXCODEINT;
-								end
-
-								// instrucao invalida. Colocado para evitar a criação de latches.
-								default:
-								begin
-									oRegDst				<= 2'b00;
-									oOrigALU			<= 2'b00;
-									oMemparaReg			<= 3'b000;
-									oEscreveReg			<= 1'b0;
-									oLeMem				<= 1'b0;
-									oEscreveMem			<= 1'b0;
-									oOrigPC				<= 3'b000;
-									oOpALU				<= 2'b00;
-									oEscreveRegFPU		<= 1'b0;
-									oRegDstFPU			<= 2'b00;
-									oFPUparaMem			<= 2'b00;
-									oDataRegFPU			<= 2'b00;
-									oFPFlagWrite		<= 1'b0;
-									oEscreveRegCOP0		<= 1'b0;
-									oEretCOP0			<= 1'b0;
-									oExcOccurredCOP0	<= wNotExcLevel;
-									oBranchDelayCOP0	<= 1'b0;
-									oExcCodeCOP0		<= EXCODEINSTR;
 								end
 							endcase
 						end

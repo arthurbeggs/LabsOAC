@@ -8,7 +8,7 @@
  *			- 010: Endereco do Jump
  *			- 011: Nada
  *		    - 100: 0x4000 .ktext
-		    - 111: wPC 	    
+		    - 111: wPC
  *		- Os dois mux da parte debaixo da etapa EX serao controlados pelo sinal RegDst:
  *			- 00: Rt
  *			- 01: Rd
@@ -74,7 +74,7 @@ wire iLock;
 assign iLock =  wMEM_LockExt || wEX_Lock;
 
 // Registers between stages
-reg [ 63:0] RegIFID;  
+reg [ 63:0] RegIFID;
 reg [144:0] RegIDEX;  /*******ATUALIZAÇÃO LAB 5*******/
 reg [114:0] RegEXMEM; /*******ATUALIZAÇÃO LAB 5*******/
 reg [ 40:0] RegMEMWB; /*******ATUALIZAÇÃO LAB 5*******/
@@ -102,7 +102,7 @@ always @(*) begin
 	case(wID_COrigPC)
 		3'b000:  wIF_iPC = wIF_PC4; // PC + 4
 		3'b001:  wIF_iPC = wID_Equal ? wID_BranchPC : wIF_PC4; //wID_PC4 + 32'h4; // beq address
-		3'b010:  wIF_iPC = (wHU_ForwardJr) ? wEX_ResultALU : wID_ResultForwardJr; // Mux jr 
+		3'b010:  wIF_iPC = (wHU_ForwardJr) ? wEX_ResultALU : wID_ResultForwardJr; // Mux jr
 		3'b011:  wIF_iPC = PC;
 		3'b100:  wIF_iPC = BEGINNING_KTEXT; // .ktext
 		3'b101:  wIF_iPC = ~wID_Equal ? wID_BranchPC : wIF_PC4; //wID_PC4 + 32'h4; // bne address
@@ -218,7 +218,7 @@ Registers memReg(
 	.iReadRegister1(wID_NumRs),
 	.iReadRegister2(wID_NumRt),
 	.iWriteRegister(wWB_RegDestino),
-	.iWriteData(wWB_WriteData), 
+	.iWriteData(wWB_WriteData),
 	.iRegWrite(wWB_RegWrite1), /*******ATUALIZAÇÃO LAB 5*******/
 	.oReadData1(wID_Read1),
 	.oReadData2(wID_Read2),
@@ -252,14 +252,14 @@ Control_PIPEM Controlunit ( /*******ATUALIZAÇÃO LAB 5*******/
 	.oLoadType(wID_LoadType),
 	.oWriteType(wID_WriteType),
 	.oMovN(wID_CMovN),      /*******INSERÇÃO LAB 5*******/
-	.oMovZ(wID_CMovZ),      /*******INSERÇÃO LAB 5*******/
+	.oMovZ(wID_CMovZ)       /*******INSERÇÃO LAB 5*******/
 );
 
 HazardUnitM hUnit (   /*******ATUALIZAÇÃO LAB 5*******/
-	.iID_NumRs(wID_NumRs), 
-	.iID_NumRt(wID_NumRt), 
-	.iEX_NumRt(wEX_NumRt), 
-	.iEX_MemRead(wEX_MemRead), 
+	.iID_NumRs(wID_NumRs),
+	.iID_NumRt(wID_NumRt),
+	.iEX_NumRt(wEX_NumRt),
+	.iEX_MemRead(wEX_MemRead),
 	.iEX_RegWrite(wEX_RegWrite),
 	.iCJr(wID_CJr),
 	.iEX_RegDst(wEX_RegDestino),
@@ -327,7 +327,7 @@ wire [2:0] wEX_LoadType  = RegIDEX[140:138];
 wire [1:0] wEX_WriteType = RegIDEX[142:141];
 wire       wEX_MovN      = RegIDEX[143]; /*******INSERÇÃO LAB 5*******/
 wire       wEX_MovZ      = RegIDEX[144]; /*******INSERÇÃO LAB 5*******/
-    
+
 wire [31:0] wEX_ResultALU1;	/*******INSERÇÃO LAB 5********/
 wire [31:0] wEX_ResultForwardA; // resultado do mux ForwardA
 wire [31:0] wEX_ResultForwardB; // resultado do mux ForwardB
@@ -349,7 +349,7 @@ wire [31:0] wEX_ExtSigImm     = {{16{wEX_Instr[15]}}, wEX_Instr[15:0]};
 wire [4:0] wEX_ALUControl; // fio que sai da ALUControl e entra na ULA
 
 // wire [1:0] wEX_MemReadWrite;//contem os sinais EscreveMem, LeMem
-wire [4:0] wEX_RegDestino; // numero do registrador de destino 
+wire [4:0] wEX_RegDestino; // numero do registrador de destino
 
 wire wEX_Zero, wEX_Overflow;
 wire [1:0] wFU_ForwardA, wFU_ForwardB;
@@ -364,9 +364,9 @@ always @(*) begin
 		default: wEX_ResultForwardA = wEX_Read1;
 	endcase
 end
-/*******INSERÇÃO LAB 5********/	
+/*******INSERÇÃO LAB 5********/
 wire [31:0] wEX_iA = (wEX_MovN || wEX_MovZ)? 32'd0 : wEX_ResultForwardA;  /********INSERÇÃO LAB 5*******/
-wire [31:0] wEX_ResultALU2 = wEX_ResultForwardA; /*******INSERÇÃO LAB 5********/	
+wire [31:0] wEX_ResultALU2 = wEX_ResultForwardA; /*******INSERÇÃO LAB 5********/
 
 // Mux Forward B
 always @(*) begin
@@ -399,9 +399,9 @@ always @(*) begin
 end
 
 ALUControl ALUControlunit (
-	.iFunct(wEX_Funct), 
-	.iOpcode(wEX_Opcode), 
-	.iALUOp(wEX_ALUOp), 
+	.iFunct(wEX_Funct),
+	.iOpcode(wEX_Opcode),
+	.iALUOp(wEX_ALUOp),
 	.oControlSignal(wEX_ALUControl)
 );
 
@@ -409,7 +409,7 @@ ALU ALUunit(
 	.iCLK(iCLK),
 	.iRST(iRST),
 	.iControlSignal(wEX_ALUControl),
-	.iA(wEX_iA), 
+	.iA(wEX_iA),
 	.iB(wEX_ResultOrigALU),
 	.iShamt(wEX_Shamt),
 	.oALUresult(wEX_ResultALU1), /*******ATUALIZAÇÃO LAB 5********/
@@ -429,10 +429,10 @@ ForwardUnitM fUnit(              /*******ATUALIZAÇÃO LAB 5********/
 	.iWB_RegWrite(wWB_RegWrite1), /*******ATUALIZAÇÃO LAB 5*******/
 	.iWB_MemRead(wMEM_MemRead),
 	.iMEM_MovN(wMEM_MovN),        /*******INSERÇÃO LAB 5********/
-	.iMEM_MovZ(wMEM_MovZ),        /*******INSERÇÃO LAB 5********/	
+	.iMEM_MovZ(wMEM_MovZ),        /*******INSERÇÃO LAB 5********/
 	.iMEM_Zero(wMEM_Zero),        /*******INSERÇÃO LAB 5********/
 	.iWB_MovN(wWB_MovN),          /*******INSERÇÃO LAB 5********/
-	.iWB_MovZ(wWB_MovZ),          /*******INSERÇÃO LAB 5********/	
+	.iWB_MovZ(wWB_MovZ),          /*******INSERÇÃO LAB 5********/
 	.iWB_Zero(wWB_Zero),          /*******INSERÇÃO LAB 5********/
 	.iLock(wMEM_LockExt),
 	.oFwdA(wFU_ForwardA),
@@ -440,8 +440,8 @@ ForwardUnitM fUnit(              /*******ATUALIZAÇÃO LAB 5********/
 	.oFwdBranchRs(wFU_ForwardBranchRs),
 	.oFwdBranchRt(wFU_ForwardBranchRt)
 );
-/*******INSERÇÃO LAB 5********/	
-wire [31:0] wEX_ResultALU = (wEX_MovN || wEX_MovZ)? wEX_ResultALU2 : wEX_ResultALU1;  
+/*******INSERÇÃO LAB 5********/
+wire [31:0] wEX_ResultALU = (wEX_MovN || wEX_MovZ)? wEX_ResultALU2 : wEX_ResultALU1;
 
 // EX/MEM register write
 always @(posedge iCLK) begin /*******ATUALIZAÇÃO LAB 5********/
@@ -485,7 +485,7 @@ end
 wire [31:0] wMEM_PC4            = RegEXMEM[ 31:  0]; // PC+4 do EX/MEM
 wire [31:0] wMEM_ResultALU      = RegEXMEM[ 63: 32]; // resultado na saida da ALU
 wire [31:0] wMEM_ResultForwardB = RegEXMEM[ 95: 64]; // resultado do mux ForwardB
-wire [ 4:0] wMEM_RegDestino     = RegEXMEM[100: 96]; // numero do registrador de destino 
+wire [ 4:0] wMEM_RegDestino     = RegEXMEM[100: 96]; // numero do registrador de destino
 wire        wMEM_MemRead        = RegEXMEM[    101];
 wire        wMEM_MemWrite       = RegEXMEM[    102];
 wire        wMEM_SavePC         = RegEXMEM[    103];
@@ -518,7 +518,7 @@ always @(posedge iCLK) begin
 	if (iRST) begin
 		RegMEMWB <= 41'b0;
 	end
-	else begin 
+	else begin
 		if (!iLock) begin
 			RegMEMWB[31: 0] <= wMEM_ResultMem; /*******ATUALIZAÇÃO LAB 5********/
 			RegMEMWB[36:32] <= wMEM_RegDestino;
@@ -564,7 +564,7 @@ MemLoad MemLoad0 (
 
 // MEM/WB register wires
 wire [31:0] wWB_WriteData  = RegMEMWB[31: 0]; // DataFromMem + ResultALU
-wire [ 4:0] wWB_RegDestino = RegMEMWB[36:32]; // numero do registrador de destino 
+wire [ 4:0] wWB_RegDestino = RegMEMWB[36:32]; // numero do registrador de destino
 wire        wWB_RegWrite   = RegMEMWB[   37];
 wire			wWB_MovN       = RegMEMWB[   38]; /*******INSERÇÃO LAB 5*******/
 wire			wWB_MovZ       = RegMEMWB[   39]; /*******INSERÇÃO LAB 5*******/
