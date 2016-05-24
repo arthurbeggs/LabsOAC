@@ -2,7 +2,7 @@ module CLOCK_Interface(
 	input iCLK_50,
 	input iCLK_50_4,
 	output oCLK_100, oCLK_200,
-	output reg CLK, 
+	output reg CLK,
 	output CLK_X,
 	output Reset,
 	output reg CLKSelectFast, CLKSelectAuto,
@@ -11,12 +11,12 @@ module CLOCK_Interface(
 	input Timmer
 );
 
- 
+
 // Reset Síncrono com Clock
 always @(posedge CLK)
 	Reset <= ~iKEY[0];
 
-	
+
 /* Clock signals */
 reg CLKManual, CLKAutoSlow, CLKAutoFast;
 wire CLK_CTRL, CLK_LOCK;
@@ -49,9 +49,9 @@ reg ck1,ck2;
 initial begin ck1=0; ck2=0; end
 
 always @(posedge oCLK_200)
-	ck1=~ck1; //100
+	ck1    <=  ~ck1; //100                                                     //NOTE: Alterado para nonblocking
 always @(posedge ck1)
-	ck2=~ck2; //50
+	ck2    <=  ~ck2; //50                                                      //NOTE: Alterado para nonblocking
 
 //assign CLK_X=wClk; assign CLK_LOCK=wLock;//||CLK_CLOCK;
 assign CLK_X=ck1; assign CLK_LOCK=wLock;//||CLK_CLOCK;
@@ -64,21 +64,21 @@ mono Timmer10 (.clock50(ck2),.clock(ck1), .ctrl(~Timmer), .clock_ctrl(CLK_CTRL),
 always @(posedge CLK_CTRL)
 begin
 	CLK <= CLKSelectAuto?(CLKSelectFast?CLKAutoFast:CLKAutoSlow):CLKManual;
-end	
+end
 
 always @(posedge iKEY[3])    //Clock Manual
-	CLKManual=~CLKManual;
+	CLKManual <= ~CLKManual;													// NOTE: Alterado para nonblocking
 
 always @(posedge iKEY[2])
 	CLKSelectAuto <= ~CLKSelectAuto; // Automatico/Manual
-	
+
 always @(posedge iKEY[1])
 	CLKSelectFast <= ~CLKSelectFast;  //Slow/Fast
 
 wire [7:0] divisor;
 assign divisor=fdiv-8'd1;
- 
-		
+
+
 always @(posedge CLK_CTRL)   // Divisores do clock
 begin
 	if (CLKCount == {divisor, 18'b0}) //Clock Slow
@@ -88,7 +88,7 @@ begin
 		end
 	else
 		CLKCount <= CLKCount + 1'b1;
-	
+
 	if (CLKCount2 == divisor) //Clock Fast
 		begin
 			CLKAutoFast <= ~CLKAutoFast;
@@ -96,7 +96,7 @@ begin
 		end
 	else
 		CLKCount2 <= CLKCount2 + 1'b1;
-	
+
 end
 
 
