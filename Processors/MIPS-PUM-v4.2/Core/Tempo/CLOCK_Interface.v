@@ -49,9 +49,9 @@ reg ck1,ck2;
 initial begin ck1=0; ck2=0; end
 
 always @(posedge oCLK_200)
-	ck1    <=  ~ck1; //100                                                     //NOTE: Alterado para nonblocking
+	ck1    <=  ~ck1; //100
 always @(posedge ck1)
-	ck2    <=  ~ck2; //50                                                      //NOTE: Alterado para nonblocking
+	ck2    <=  ~ck2; //50
 
 //assign CLK_X=wClk; assign CLK_LOCK=wLock;//||CLK_CLOCK;
 assign CLK_X=ck1; assign CLK_LOCK=wLock;//||CLK_CLOCK;
@@ -67,7 +67,7 @@ begin
 end
 
 always @(posedge iKEY[3])    //Clock Manual
-	CLKManual <= ~CLKManual;													// NOTE: Alterado para nonblocking
+	CLKManual <= ~CLKManual;
 
 always @(posedge iKEY[2])
 	CLKSelectAuto <= ~CLKSelectAuto; // Automatico/Manual

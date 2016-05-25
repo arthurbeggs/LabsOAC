@@ -49,13 +49,13 @@ begin
     if (iCLR)
     begin
         for (i = 0; i <= 31; i = i + 1)
-            registers[i] <= 32'b0;                                      //NOTE: Alterado para nonblocking
-        registers[SPR]   <= STACK_ADDRESS;  // $SP                      //NOTE: Alterado para nonblocking
+            registers[i] <= 32'b0;
+        registers[SPR]   <= STACK_ADDRESS;  // $SP
     end
     else
     if(iRegWrite)
         if (iWriteRegister != 5'b0)
-            registers[iWriteRegister] <= iWriteData;                    //NOTE: Alterado para nonblocking
+            registers[iWriteRegister] <= iWriteData;
 end
 
 endmodule
