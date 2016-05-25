@@ -1,17 +1,17 @@
-module my_spi_interface(readdata,writedata,write,clock,reset_n,SD_CLK,SD_MOSI,SD_MISO,SD_CS);
-output [7:0] readdata;
-input [7:0] writedata;
-input write;
-input clock;
-input reset_n;
-output SD_CLK;
-output SD_MOSI;
-input SD_MISO;
-output SD_CS;
+module my_spi_interface(
+    output  [7:0]   readdata,
+    input   [7:0]   writedata,
+    input           write,
+    input           clock,
+    input           reset_n,
+    output          SD_CLK,
+    output          SD_MOSI,
+    input           SD_MISO,
+    output          SD_CS,
+);
 
-
-reg [3:0] ff;
-wire enable;
+reg  [3:0]  ff;
+wire        enable;
 /*
 assign enable = (chip_select && write);
 assign readdata[0] = ff[0];
@@ -40,7 +40,7 @@ begin
 			ff[1] <= 1'b0;
 			ff[2] <= 1'b0;
 			ff[3] <= 1'b0;
-		end 
+		end
 	end
 end
 */
