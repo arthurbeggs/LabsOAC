@@ -18,11 +18,11 @@ port (
 
     rd      : in    std_logic;
     wr      : in    std_logic;
-    dm_in   : in    std_logic;    -- data mode, 0 = write continuously, 1 = write single block
+    dm_in   : in    std_logic;  -- data mode, 0 = write continuously, 1 = write single block
     reset   : in    std_logic;
     din     : in    std_logic_vector(7 downto 0);
     dout    : out   std_logic_vector(7 downto 0);
-    clk     : in    std_logic    -- twice the SPI clk
+    clk     : in    std_logic   -- twice the SPI clk
 );
 
 end sd_controller;
@@ -36,7 +36,7 @@ type states is (
     CMD41,
     POLL_CMD,
 
-    IDLE,    -- wait for read or write pulse
+    IDLE,                       -- wait for read or write pulse
     READ_BLOCK,
     READ_BLOCK_WAIT,
     READ_BLOCK_DATA,
@@ -45,10 +45,10 @@ type states is (
     RECEIVE_BYTE_WAIT,
     RECEIVE_BYTE,
     WRITE_BLOCK_CMD,
-    WRITE_BLOCK_INIT,        -- initialise write command
-    WRITE_BLOCK_DATA,        -- loop through all data bytes
-    WRITE_BLOCK_BYTE,        -- send one byte
-    WRITE_BLOCK_WAIT        -- wait until not busy
+    WRITE_BLOCK_INIT,           -- initialise write command
+    WRITE_BLOCK_DATA,           -- loop through all data bytes
+    WRITE_BLOCK_BYTE,           -- send one byte
+    WRITE_BLOCK_WAIT            -- wait until not busy
 );
 
 
@@ -86,13 +86,13 @@ begin
                     cmd_out         <= (others => '1');
                     address         <= x"00000000";
                     byte_counter    := 0;
-                    cmd_mode        <= '1'; -- 0=data, 1=command
-                    response_mode   <= '1';    -- 0=data, 1=command
+                    cmd_mode        <= '1';     -- 0=data, 1=command
+                    response_mode   <= '1';     -- 0=data, 1=command
                     bit_counter     := 160;
                     cs              <= '1';
                     state           <= INIT;
 
-                when INIT =>        -- CS=1, send 80 clocks, CS=0
+                when INIT =>                    -- CS=1, send 80 clocks, CS=0
                     if (bit_counter = 0) then
                         cs              <= '0';
                         state           <= CMD0;
@@ -274,9 +274,9 @@ begin
         end case;
       end if;
     end if;
-  end process;
+end process;
 
-  sclk  <= sclk_sig;
-  mosi  <= cmd_out(55) when cmd_mode='1' else data_sig(7);
+sclk  <= sclk_sig;
+mosi  <= cmd_out(55) when cmd_mode='1' else data_sig(7);
 
 end rtl;

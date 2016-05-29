@@ -4,38 +4,38 @@
  */
 
  module Control_UNI(
-    input wire iCLK, iBranchC1,
-    input wire [5:0] iOp, iFunct,
-    input wire [4:0] iFmt,
-    output wire  oEscreveReg, oLeMem, oEscreveMem, oEscreveRegFPU, oFPFlagWrite,
-    output wire [1:0] oRegDst, oOpALU, oOrigALU, oDataRegFPU, oRegDstFPU, oFPUparaMem,
-    output wire [2:0] oOrigPC, oMemparaReg,
+    input  wire        iCLK, iBranchC1,
+    input  wire [5:0]  iOp, iFunct,
+    input  wire [4:0]  iFmt,
+    output wire        oEscreveReg, oLeMem, oEscreveMem, oEscreveRegFPU, oFPFlagWrite,
+    output wire [1:0]  oRegDst, oOpALU, oOrigALU, oDataRegFPU, oRegDstFPU, oFPUparaMem,
+    output wire [2:0]  oOrigPC, oMemparaReg,
     // feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
-    input iExcLevel,
-    input iALUOverflow,
-    input iFPALUOverflow,
-    input iFPALUUnderflow,
-    input iFPALUNaN,
-    input iUserMode,
-    input [7:0] iPendingInterrupt,
-    output oEscreveRegCOP0,
-    output oEretCOP0,
-    output oExcOccurredCOP0,
-    output oBranchDelayCOP0,
-    output [4:0] oExcCodeCOP0
-    );
+    input         iExcLevel,
+    input         iALUOverflow,
+    input         iFPALUOverflow,
+    input         iFPALUUnderflow,
+    input         iFPALUNaN,
+    input         iUserMode,
+    input  [7:0]  iPendingInterrupt,
+    output        oEscreveRegCOP0,
+    output        oEretCOP0,
+    output        oExcOccurredCOP0,
+    output        oBranchDelayCOP0,
+    output [4:0]  oExcCodeCOP0
+);
 
-wire wInterruptNotZero, wNotExcLevel, wNotUserMode, wIntException, wALUException, wFPALUException;
-wire [4:0] wALUExcCode, wFPALUExcCode;
+wire        wInterruptNotZero, wNotExcLevel, wNotUserMode, wIntException, wALUException, wFPALUException;
+wire [4:0]  wALUExcCode, wFPALUExcCode;
 
-assign wInterruptNotZero = iPendingInterrupt != 8'b0;
-assign wNotExcLevel = ~iExcLevel;
-assign wNotUserMode = ~iUserMode;
-assign wIntException = wInterruptNotZero && wNotExcLevel;
-assign wALUException = (iALUOverflow || wInterruptNotZero) && wNotExcLevel;
-assign wALUExcCode = iALUOverflow ? EXCODEALU : EXCODEINT;
-assign wFPALUException = (iFPALUOverflow || iFPALUUnderflow || wInterruptNotZero) && wNotExcLevel;
-assign wFPALUExcCode = iFPALUOverflow || iFPALUUnderflow ? EXCODEFPALU : EXCODEINT;
+assign wInterruptNotZero    = iPendingInterrupt != 8'b0;
+assign wNotExcLevel         = ~iExcLevel;
+assign wNotUserMode         = ~iUserMode;
+assign wIntException        = wInterruptNotZero && wNotExcLevel;
+assign wALUException        = (iALUOverflow || wInterruptNotZero) && wNotExcLevel;
+assign wALUExcCode          = iALUOverflow ? EXCODEALU : EXCODEINT;
+assign wFPALUException      = (iFPALUOverflow || iFPALUUnderflow || wInterruptNotZero) && wNotExcLevel;
+assign wFPALUExcCode        = iFPALUOverflow || iFPALUUnderflow ? EXCODEFPALU : EXCODEINT;
 
 initial
 begin

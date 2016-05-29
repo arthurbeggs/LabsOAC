@@ -1,8 +1,9 @@
 module my_spi_interface(
+    input           iCLK,
+    input           iCLK_50,
     output  [7:0]   readdata,
     input   [7:0]   writedata,
     input           write,
-    input           clock,
     input           reset_n,
     output          SD_CLK,
     output          SD_MOSI,
@@ -44,7 +45,7 @@ begin
 	end
 end
 */
- sd_controller sd1(
+sd_controller sd1(
 	.cs(SD_CS),
 	.mosi(SD_MOSI),
 	.miso(SD_MISO),
@@ -56,7 +57,7 @@ end
 	.reset(~reset_n),
 	.din(writedata[7:0]),
 	.dout(readdata[7:0]),
-	.clk(clock)
+	.clk(iCLK_50)
 );
 
 endmodule

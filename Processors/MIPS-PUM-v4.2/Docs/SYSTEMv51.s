@@ -508,6 +508,9 @@ syscallException:
     addi    $t0, $zero, 48              # syscall 48 = CLS
     beq     $t0, $v0, goToCLS
 
+    addi    $t0, $zero, 49              # syscall 49 = SD Card read
+    beq     $t0, $v0, goToSDread
+
     addi    $t0, $zero, 150             # syscall 50 = pop event
     beq     $t0, $v0, goToPopEvent
 
@@ -663,6 +666,10 @@ goToInKey:
 
 goToCLS:
     jal     CLS                         # chama CLS
+    j       endSyscall
+
+goToSDread:
+    jal     sdRead                      # Chama sdRead
     j       endSyscall
 
 goToPopEvent:
@@ -1647,6 +1654,18 @@ Fort3:
     j       Fort3
 Endt3:
     jr      $ra
+
+
+############################################                                    //TODO: Implementar syscall de leitura do cartão SD
+#  SD Card Read                            #
+#  $a0    =    Origem Addr                 #
+#  $a1    =    Destino Addr                #
+#  $a2    =    Quantidade de Bytes         #
+#  $v0    =    Sucesso? 0 : 1              #
+############################################
+
+
+
 
 
 
