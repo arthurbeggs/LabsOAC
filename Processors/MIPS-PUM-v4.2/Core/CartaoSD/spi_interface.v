@@ -1,18 +1,25 @@
-module my_spi_interface(
-    input           iCLK,
-    input           iCLK_50,
-    output  [7:0]   readdata,
-    input   [7:0]   writedata,
-    input           write,
-    input           reset_n,
-    output          SD_CLK,
-    output          SD_MOSI,
-    input           SD_MISO,
-    output          SD_CS,
+module SPI_Interface(
+    input         iCLK,
+    input         iCLK_50,
+    input         Reset_n,
+    input  [7:0]  readData,
+    output [7:0]  writeData,
+    input         write,
+    output        SD_CLK,
+    output        SD_MOSI,
+    input         SD_MISO,
+    output        SD_CS,
+    // Barramento de dados
+    input         wReadEnable, wWriteEnable,
+	input  [3:0]  wByteEnable,
+	input  [31:0] wAddress, wWriteData,
+	output [31:0] wReadData
 );
 
-reg  [3:0]  ff;
-wire        enable;
+
+// NOTE: Qual o funcionamento desse código comentado???
+// reg  [3:0]  ff;
+// wire        enable;
 /*
 assign enable = (chip_select && write);
 assign readdata[0] = ff[0];
@@ -54,10 +61,21 @@ sd_controller sd1(
 	.rd(~write),
 	.wr(write),
 	.dm_in(1),	// data mode, 0 = write continuously, 1 = write single block
-	.reset(~reset_n),
-	.din(writedata[7:0]),
-	.dout(readdata[7:0]),
+	.reset(~Reset_n),
+	.din(writeData[7:0]),
+	.dout(readData[7:0]),
 	.clk(iCLK_50)
 );
+
+//TODO: Criar divisor de clock para que a frequência seja correta para cada etapa [init: 100~400 KHz] [pos-init: 20~25 MHz]
+//NOTE: Provavelmente é mais conveniente fornecer o iCLK_50 e criar o divisor de clock dentro do sd_controller aproveitando sua fsm.
+//TODO: Quando wAddress == SD_Interface, fazer a leitura do byte no endereço wAddress do cartão SD.
+//NOTE: É conveniente fazer com que o byte lido esteja no endereço SD_Interface+4 (deixando a interface SD com 5 bytes)? Como fazer isso?
+//TODO: Adicionar input do endereço do byte a ser lido pelo sd_controller.
+//NOTE: Como fazer a leitura de um único byte se o cartão lê setores de 512 bytes? Criar um buffer de 512 bytes ou gambiarrar a leitura de um byte específico?
+//NOTE: Ler um setor gasta mais de 4096 ticks de clock. Como fazer pra que isso não ferre com o tempo de execução do processador?
+//NOTE: Como referenciar o endereço de leitura do cartão? Precisa calcular o setor com base no endereço ou dá pra usar o endereço diretamente?
+//TODO: Criar controle que diga quando o byte está pronto para ser lido.
+
 
 endmodule

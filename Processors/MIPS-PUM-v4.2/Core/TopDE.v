@@ -584,20 +584,21 @@ RS232_Interface SERIAL0 (
 
 
 /* *************************** SD Card Interface **************************** */
-wire [7:0]  iSDreadData, oSDwriteData;
+wire [7:0]  iSDreadData, oSDwriteData;  // NOTE: São necessários???
 
-spi_interface SDCARD (                  // NOTE: Nada foi testado ainda.
-    .iCLK(CLK),
-    .iCLK_50(iCLK_50),
-    .readdata(iSDreadData),
-    .writedata(oSDwriteData),
+SPI_Interface SDCARD (                  // NOTE: Nada foi testado ainda.
+    .iCLK(CLK), .iCLK_50(iCLK_50), .Reset_n(Reset),      // NOTE: ~Reset???
+    .readData(iSDreadData),             // Byte recebido.   NOTE: É necessário acessá-lo fora da Interface SPI?
+    .writeData(oSDwriteData),           // Byte enviado.    NOTE: É necessário acessá-lo fora da Interface SPI?
     .write(0),                          // Fixado para leitura.
-    .reset_n(Reset),                    // NOTE: ~Reset???
-    .SD_CLK(oSD_CLK),
-    .SD_MOSI(SD_DAT),
-    .SD_MISO(SD_CMD),
-    .SD_CS(SD_DAT3)
-    // Barramento                       // TODO: Adicionar conexão ao barramento.
+    .SD_CLK(oSD_CLK),                   // SPI SCK
+    .SD_MOSI(SD_DAT),                   // SPI MOSI
+    .SD_MISO(SD_CMD),                   // SPI MISO
+    .SD_CS(SD_DAT3)                     // SPI CS
+    // Barramento de dados
+    .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
+    .wByteEnable(DByteEnable),
+    .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData)
 );
 
 

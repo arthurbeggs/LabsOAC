@@ -214,7 +214,7 @@ parameter
     MUSIC_ADDRESS               = 32'hFFFF0210,         // Endereco para uso do Controlador do sintetizador
     PAUSE_ADDRESS               = 32'hFFFF0214,
 
-    INTERFACE_SD                = 32'hFFFF0250,         // Endereço da interface do cartão SD
+    SD_INTERFACE                = 32'hFFFF0250,         // Endereço da interface do cartão SD
 
 /* STATES ************************************************************************************************************/
     FETCH           = 6'd0,
