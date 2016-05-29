@@ -69,13 +69,17 @@ sd_controller sd1(
 
 //TODO: Criar divisor de clock para que a frequência seja correta para cada etapa [init: 100~400 KHz] [pos-init: 20~25 MHz]
 //NOTE: Provavelmente é mais conveniente fornecer o iCLK_50 e criar o divisor de clock dentro do sd_controller aproveitando sua fsm.
+
 //TODO: Quando wAddress == SD_Interface, fazer a leitura do byte no endereço wAddress do cartão SD.
 //NOTE: É conveniente fazer com que o byte lido esteja no endereço SD_Interface+4 (deixando a interface SD com 5 bytes)? Como fazer isso?
+
 //TODO: Adicionar input do endereço do byte a ser lido pelo sd_controller.
-//NOTE: Como fazer a leitura de um único byte se o cartão lê setores de 512 bytes? Criar um buffer de 512 bytes ou gambiarrar a leitura de um byte específico?
-//NOTE: Ler um setor gasta mais de 4096 ticks de clock. Como fazer pra que isso não ferre com o tempo de execução do processador?
-//NOTE: Como referenciar o endereço de leitura do cartão? Precisa calcular o setor com base no endereço ou dá pra usar o endereço diretamente?
+//NOTE: Para ler um único byte, o comando SET_BLOCKLEN (CMD16) deve definir o tamanho do setor para 1 byte! Para isso, o parâmetro READ_BL_PARTIAL do CSD do cartão deve ser 1. Obs.: Não funciona para cartões SDHC e SDXC
+//TODO: Implementar CMD16 no sd_controller.
+
 //TODO: Criar controle que diga quando o byte está pronto para ser lido.
+
+//TODO: Comentar o código do sd_controller para entender completamente seu funcionamento.
 
 
 endmodule
