@@ -13,11 +13,11 @@
  * 11		|	The opcode field determines the ALU operation.
  */
 
-module ALUControl (iFunct, iOpcode, iALUOp, oControlSignal);
+module ALUControl (iFunct, iOpcode, iRt, iALUOp, oControlSignal);
 
 
 /* I/O type definition */
-input wire [5:0] iFunct, iOpcode;
+input wire [5:0] iFunct, iOpcode, iRt;
 input wire [1:0] iALUOp;
 output reg [4:0] oControlSignal;
 
@@ -101,6 +101,15 @@ begin
 					oControlSignal <= 	OPXOR;
 				OPCLUI:
 					oControlSignal <= 	OPLUI;
+				OPCBGE_LTZ:
+				begin
+					case (iRt)
+						RTBGEZ:
+							oControlSignal <= OPSLT;
+						default:
+							oControlSignal <= 5'b00000;
+					endcase
+				end
 				default:
 					oControlSignal <=	5'b00000;
 			endcase

@@ -5,7 +5,7 @@
  
  module Control_UNI(
 	input wire iCLK, iBranchC1,
-	input wire [5:0] iOp, iFunct,
+	input wire [5:0] iOp, iFunct, iRt,
 	input wire [4:0] iFmt,
 	output wire  oEscreveReg, oLeMem, oEscreveMem, oEscreveRegFPU, oFPFlagWrite,
 	output wire [1:0] oRegDst, oOpALU, oOrigALU, oDataRegFPU, oRegDstFPU, oFPUparaMem,
@@ -794,6 +794,57 @@ begin
 			oBranchDelayCOP0 <= 1'b0;
 			oExcCodeCOP0 <= EXCODEINT;
 		end
+		
+		// 1/2016, Implementar intruções bgez, bgezal, bgltz, bltzal.
+		OPCBGE_LTZ:
+      begin
+          case (iRt)
+                RTBGEZ:
+                begin
+                    oRegDst <= 2'b00;//pronto
+                    oOrigALU <= 2'b11;//pronto
+                    oMemparaReg <= 3'b000;//pronto
+                    oEscreveReg <= 1'b0;//pronto
+                    oLeMem <= 1'b0;//pronto
+                    oEscreveMem <= 1'b0;//pronto
+                    oOrigPC <= 3'b001;//pronto
+                    oOpALU <= 2'b11;//pronto
+                    oEscreveRegFPU <= 1'b0;//pronto
+                    oRegDstFPU <= 2'b00;//pronto
+                    oFPUparaMem <= 2'b00;//pronto
+                    oDataRegFPU <= 2'b00;//pronto
+                    oFPFlagWrite <= 1'b0;
+                    oEscreveRegCOP0 <= 1'b0;
+                    oEretCOP0 <= 1'b0;
+                    oExcOccurredCOP0 <= wIntException;
+                    oBranchDelayCOP0 <= 1'b1;
+                    oExcCodeCOP0 <= EXCODEINT;
+                end
+                
+                // instrucao invalida
+                default:
+                begin
+                    oRegDst <= 2'b00;
+                    oOrigALU <= 2'b00;
+                    oMemparaReg <= 3'b000;
+                    oEscreveReg <= 1'b0;
+                    oLeMem <= 1'b0;
+                    oEscreveMem <= 1'b0;
+                    oOrigPC <= 3'b000;                         
+                    oOpALU <= 2'b00;
+                    oEscreveRegFPU <= 1'b0;
+                    oRegDstFPU <= 2'b00;
+                    oFPUparaMem <= 2'b00;
+                    oDataRegFPU <= 2'b00;
+                    oFPFlagWrite <= 1'b0;
+                    oEscreveRegCOP0 <= 1'b0;
+                    oEretCOP0 <= 1'b0;
+                    oExcOccurredCOP0 <= wNotExcLevel;
+                    oBranchDelayCOP0 <= 1'b0;
+                    oExcCodeCOP0 <= EXCODEINSTR;
+                end
+          endcase
+      end
 		
 		// feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 		OPCCOP0:
