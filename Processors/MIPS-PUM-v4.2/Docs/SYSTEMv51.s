@@ -1656,19 +1656,44 @@ Endt3:
     jr      $ra
 
 
-############################################                                    //TODO: Implementar syscall de leitura do cartão SD
-#  SD Card Read                            #
-#  $a0    =    Origem Addr                 #
+############################################
+#  SD Card Read                            #                                    //TODO: Colocar nop's para garantir o funcionamento com o pipeline.
+#  $a0    =    Origem Addr                 #                                    //TODO: Implementar identificação de falha na leitura do cartão.
 #  $a1    =    Destino Addr                #
 #  $a2    =    Quantidade de Bytes         #
 #  $v0    =    Sucesso? 0 : 1              #
 ############################################
 
+sdRead:
+    la      $s0, 0xFFFF0250                 # SD_INTERFACE_ADDR Address
+    la      $s2, 0xFFFF0254                 # SD_INTERFACE_CTRL Address
+    la      $s3, 0xFFFF0255                 # SD_INTERFACE_DATA Address
+    li      $t1, 1                          # Comparador de bytes a serem lidos
+sdBusy:
+    lb      $s1, 0($s2)                     # $s1 = SDCtrl
+    bne     $s1, $zero, sdBusy              # $s1 ? BUSY : IDLE
+sdLoop:
+    slt     $t2, $a2, $t1                   # ($a2 < 1) ? 1 : 0
+    bne     $t2, $zero, sdFim               # Se a qtd de bytes a serem lidos < 1, finaliza a leitura
 
+sdRead:
+    sw      $a0, 0($s0)                     # SD_INTERFACE_ADDR = $a0
+sdWait:
+    lb      $s1, 0($s2)                     # $s1 = SDCtrl
+    bne     $s1, $zero, sdWait              # $s1 ? BUSY : IDLE
+sdDataReady:
+    lb      $t0, 0($s3)                     # $t0 recebe byte lido do cartão SD
+    sb      $t0, 0($a1)                     # Byte lido é salvo no endereço desejado
 
+sdNextAddr:
+    addi    $a2, $a2, -1                    # Subtrai 1 dos bytes a serem lidos
+    addi    $a0, $a0, 1                     # Próximo endereço de origem
+    addi    $a1, $a1, 1                     # Próximo endereço de destino
+    j       sdLoop                          # Realiza próxima leitura
 
-
-
+sdFim:
+    move    $v0, 0                          # Sucesso na transferência.         NOTE: Hardcoded. Um teste de falha deve ser implementado.
+    jr      $ra
 
 #################################
 #    Pop event        #

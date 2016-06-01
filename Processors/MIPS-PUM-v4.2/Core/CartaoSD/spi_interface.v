@@ -57,14 +57,14 @@ sd_controller sd1(
     .miso(SD_MISO),
     .sclk(SD_CLK),
 
-    .rd(~SDReadEnable),
-    .wr(SDReadEnable),
+    .rd(SDReadEnable),
+    .wr(0),
     .dm_in(1),                  // data mode, 0 = write continuously, 1 = write single block
     .reset(Reset),
     .din(8'b0),
     .dout(SDData),
-    .iCLK(iCLK_50),
     .address(SDAddress),
+    .iCLK(iCLK_50),
     .idleSD(SDCtrl)
 );
 
@@ -76,21 +76,27 @@ wire        SDReadEnable;
 
 always @ (posedge iCLK)
     if (wWriteEnable)
+    begin
         if (wAddress == SD_INTERFACE_ADDR)
         begin
             SDAddress      <= wWriteData;
-            if (SDCtrl == 8'b0) SDReadEnable    <= 1'b0;
-            else                SDReadEnable    <= 1'b1;                        //NOTE: Talvez não seja uma ideia tão boa fazer essa proteção por hardware. O tempo dirá se dá ruim. FIXME: Trocar assignment para 1'bz.
+            if (SDCtrl == 8'b0)
+                SDReadEnable    <= 1'b1;
+            else
+                SDReadEnable    <= 1'b0;
         end
+        else    SDReadEnable    <= 1'b0;    //NOTE: Talvez não seja uma ideia tão boa fazer essa proteção por hardware. Se o iCLK ~ iCLK_50 (risos), pode ser que o controlador SD não opere.
+    end
 
 always @ (*)
     if (wReadEnable)
     begin
-        if (wAddress == SD_INTERFACE_DATA)  wReadData       = {SDData, 24'b0}; else    //DEBUG: É {SDData, 24'b0} ou {24'b0, SDData}
-        if (wAddress == SD_INTERFACE_CTRL)  wReadData       = {SDCtrl, 24'b0};         //DEBUG: É {SDCtrl, 24'b0} ou {24'b0, SDCtrl}?
-        else                                wReadData       = 32'bz;
+        if (wAddress == SD_INTERFACE_DATA   ||  wAddress == SD_INTERFACE_CTRL)
+            wReadData   = {16'b0, SDData, SDCtrl};
+        else
+            wReadData   = 32'bz;
     end
-    else wReadData       = 32'bz;
+    else    wReadData   = 32'bz;
 
 
 
@@ -105,8 +111,6 @@ always @ (*)
 //TODO: Criar controle que diga quando o byte está pronto para ser lido.    NOTE: Acho que resolvi o problema enviando somente o dado do cartão para SDData.
 
 //TODO: write deve ser um tri-state buffer que deve ficar em estado de alta impedância caso não se queira ler ou escrever no cartão.    REVIEW: Implementado, mas não testado.
-
-//NOTE: Talvez seja uma boa trocar o iCLK_50 por algum iCLK_50_X. O TimeQuest diz que fmax só poderia ser 38.5MHz em vez dos 50 MHz
 
 
 endmodule
