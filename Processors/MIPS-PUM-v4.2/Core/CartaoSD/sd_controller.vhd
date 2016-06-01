@@ -1,9 +1,14 @@
 -- VHDL SD card interface
 -- by Steven J. Merrifield, June 2008
+-- Source: http://stevenmerrifield.com/tools/sd.vhd
 
 -- Reads and writes a single block of data, and also writes continuous data
 -- Tested on Xilinx Spartan 3 hardware, using Transcend and SanDisk Ultra II cards
 -- Read states are derived from the Apple II emulator by Stephen Edwards
+
+-- Edited by Arthur Matos to read a single byte from a SD card in May 2016.
+-- Now it does NOT work with SDHC & SDXC cards that must read a full 512 bytes sector.
+-- Write operations were corrupted with the changes made.
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -18,11 +23,13 @@ port (
 
     rd      : in    std_logic;
     wr      : in    std_logic;
-    dm_in   : in    std_logic;  -- data mode, 0 = write continuously, 1 = write single block
+    dm_in   : in    std_logic;                      -- data mode, 0 = write continuously, 1 = write single block
     reset   : in    std_logic;
     din     : in    std_logic_vector(7 downto 0);
     dout    : out   std_logic_vector(7 downto 0);
-    clk     : in    std_logic   -- twice the SPI clk
+    address : in    std_logic_vector(31 downto 0);  -- Endereço do byte a ser lido
+    iCLK    : in    std_logic;                      -- twice the SPI clk
+    idleSD  : out   std_logic_vector(7 downto 0)    -- Indica se o controlador está pronto para realizar uma nova leitura. idleSD ? BUSY : IDLE
 );
 
 end sd_controller;
@@ -33,7 +40,8 @@ type states is (
     INIT,
     CMD0,
     CMD55,
-    CMD41,
+    ACMD41,
+    CMD16,                      -- SET_BLOCKLEN
     POLL_CMD,
 
     IDLE,                       -- wait for read or write pulse
@@ -60,16 +68,18 @@ signal state, return_state : states;
 signal sclk_sig         : std_logic := '0';
 signal cmd_out          : std_logic_vector(55 downto 0);
 signal recv_data        : std_logic_vector(7 downto 0);
-signal address          : std_logic_vector(31 downto 0);
+-- signal address          : std_logic_vector(31 downto 0);
 signal cmd_mode         : std_logic := '1';
 signal data_mode        : std_logic := '1';
 signal response_mode    : std_logic := '1';
 signal data_sig         : std_logic_vector(7 downto 0) := x"00";
+signal fast_clk         : std_logic := '0';                 -- fast_clk ? 50MHz : 800KHz    NOTE: As frequências de operação devem ser 400KHz na inicialização e 25MHz em IO. A fsm já divide o clock por 2
+signal clk              : std_logic := '0';
 
 begin
 
-    process(clk,reset)
-        variable byte_counter   : integer range 0 to WRITE_DATA_SIZE;
+    process(clk,reset, dm_in)
+        variable byte_counter   : integer range 0 to 4;     -- CHANGED: WRITE_DATA_SIZE     DEBUG:(1 start byte + 1 data byte + 2 'FF' end bytes)
         variable bit_counter    : integer range 0 to 160;
     begin
         data_mode <= dm_in;
@@ -84,12 +94,14 @@ begin
                 when RST =>
                     sclk_sig        <= '0';
                     cmd_out         <= (others => '1');
-                    address         <= x"00000000";
+                    -- address         <= x"00000000";
                     byte_counter    := 0;
                     cmd_mode        <= '1';     -- 0=data, 1=command
                     response_mode   <= '1';     -- 0=data, 1=command
                     bit_counter     := 160;
                     cs              <= '1';
+                    fast_clk        <= '0';
+                    idleSD          <= x"01";
                     state           <= INIT;
 
                 when INIT =>                    -- CS=1, send 80 clocks, CS=0
@@ -110,10 +122,10 @@ begin
                 when CMD55 =>
                     cmd_out         <= x"FF770000000001";    -- 55d OR 40h = 77h
                     bit_counter     := 55;
-                    return_state    <= CMD41;
+                    return_state    <= ACMD41;
                     state           <= SEND_CMD;
 
-                when CMD41 =>
+                when ACMD41 =>
                     cmd_out         <= x"FF690000000001";    -- 41d OR 40h = 69h
                     bit_counter     := 55;
                     return_state    <= POLL_CMD;
@@ -121,18 +133,27 @@ begin
 
                 when POLL_CMD =>
                     if (recv_data(0) = '0') then
-                        state       <= IDLE;
+                        state       <= CMD16;               -- CHANGED: IDLE
                     else
                         state       <= CMD55;
                     end if;
 
+                when CMD16 =>                               -- SET_BLOCKLEN to 1 byte
+                    cmd_out         <= x"FF500000000401";   -- DEBUG: (1 start byte + 1 data byte + 2 'FF' end bytes)
+                    bit_counter     := 55;
+                    return_state    <= IDLE;
+                    state           <= SEND_CMD;
+
                 when IDLE =>
                     if (rd = '1') then
                         state       <= READ_BLOCK;
-                    elsif (wr='1') then
-                        state       <= WRITE_BLOCK_CMD;
+                        idleSD      <= x"01";               -- BUSY
+                    -- elsif (wr = '1') then
+                    --     state       <= WRITE_BLOCK_CMD;
+                    --     idleSD      <= x"01";               -- BUSY
                     else
                         state       <= IDLE;
+                        idleSD      <= x"00";               -- IDLE
                     end if;
 
                 when READ_BLOCK =>
@@ -143,8 +164,8 @@ begin
 
                 when READ_BLOCK_WAIT =>
                     if (sclk_sig='1' and miso='0') then
-                        state           <= READ_BLOCK_DATA;
-                        byte_counter    := 511;
+                        -- state           <= READ_BLOCK_DATA;            -- 2 assignments de novo estado???
+                        byte_counter    := 1;                           -- DEBUG: O valor está correto?
                         bit_counter     := 7;
                         return_state    <= READ_BLOCK_DATA;
                         state           <= RECEIVE_BYTE;
@@ -166,7 +187,7 @@ begin
                 when READ_BLOCK_CRC =>
                     bit_counter     := 7;
                     return_state    <= IDLE;
-                    address         <= std_logic_vector(unsigned(address) + x"200");
+                    -- address         <= std_logic_vector(unsigned(address) + x"200");
                     state           <= RECEIVE_BYTE;
 
                 when SEND_CMD =>
@@ -199,7 +220,9 @@ begin
                         recv_data       <= recv_data(6 downto 0) & miso;
                         if (bit_counter = 0) then
                             state           <= return_state;
-                            dout            <= recv_data(6 downto 0) & miso;
+                            if (byte_counter = 0) then
+                                dout            <= recv_data(6 downto 0) & miso;
+                            end if;
                         else
                             bit_counter     := bit_counter - 1;
                         end if;
@@ -219,7 +242,7 @@ begin
 
                 when WRITE_BLOCK_INIT =>
                     cmd_mode        <= '0';
-                    byte_counter    := WRITE_DATA_SIZE;
+                    byte_counter    := 0;                                       -- CHANGED: WRITE_DATA_SIZE
                     state           <= WRITE_BLOCK_DATA;
 
                 when WRITE_BLOCK_DATA =>
@@ -263,7 +286,7 @@ begin
                             if (data_mode='0') then
                                 state           <= WRITE_BLOCK_INIT;
                             else
-                                address         <= std_logic_vector(unsigned(address) + x"200");
+                                -- address         <= std_logic_vector(unsigned(address) + x"200");
                                 state           <= IDLE;
                             end if;
                         end if;
@@ -271,9 +294,31 @@ begin
                     sclk_sig        <= not sclk_sig;
 
                 when others => state <= IDLE;
-        end case;
-      end if;
+            end case;
+        end if;
     end if;
+end process;
+
+    process(iCLK, reset)                                    -- Divisor de clock
+        variable clk_counter    : integer range 0 to 63;
+    begin
+        if rising_edge(iCLK) then
+            if (reset = '1') then
+                clk         <= '0';
+                clk_counter := 63;
+            else
+                if (fast_clk = '1') then
+                    clk         <= not clk;
+                else
+                    if (clk_counter = 0) then
+                        clk         <= not clk;
+                        clk_counter := 63;
+                    else
+                        clk_counter := clk_counter -1;
+                    end if;
+                end if;
+            end if;
+        end if;
 end process;
 
 sclk  <= sclk_sig;
