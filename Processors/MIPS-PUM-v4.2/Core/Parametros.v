@@ -27,6 +27,7 @@ parameter ON = 1'b1,
 			OPDIVU  = 5'b10100, //20
 			OPMTHI 	= 5'b10101,	//21		2015/1
 			OPMTLO 	= 5'b10110,	//22		2015/1
+			OPSGT = 5'b10111, //23		//2016/1
 			
 /* Operacoes da ULA FP */
 			OPADDS  = 4'b0001,
@@ -92,7 +93,7 @@ parameter ON = 1'b1,
 			OPCJAL		= 6'h03,
 			OPCBEQ		= 6'h04,
 			OPCBNE		= 6'h05,
-			OPCADDI 	= 6'h08,
+			OPCADDI 		= 6'h08,
 			OPCADDIU 	= 6'h09,
 			OPCSLTI		= 6'h0A,
 			OPCSLTIU 	= 6'h0B,
@@ -102,17 +103,27 @@ parameter ON = 1'b1,
 			OPCLUI		= 6'h0F,
 			OPCCOP0		= 6'h10, // feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 			OPCFLT		= 6'h11, /*OPCODE para operacoes da FPU*/
-			OPCLW		= 6'h23,
-			OPCLB		= 6'h20,
+			OPCLW			= 6'h23,
+			OPCLB			= 6'h20,
 			OPCLBU		= 6'h24,
-			OPCLH		= 6'h21,
+			OPCLH			= 6'h21,
 			OPCLHU		= 6'h25,
-			OPCSW		= 6'h2B,
-			OPCSB		= 6'h28,
-			OPCSH		= 6'h29,
+			OPCSW			= 6'h2B,
+			OPCSB			= 6'h28,
+			OPCSH			= 6'h29,
 			OPCLWC1		= 6'h31,
 			OPCSWC1		= 6'h39,
-			OPCDUMMY = 6'h3F, // Para o MemStore e MemLoad
+			OPCDUMMY 	= 6'h3F, // Para o MemStore e MemLoad
+			OPCBGE_LTZ	= 6'h01,	// Para as instruções bgez, bgezal, bgltz, bltzal // 1/2016
+			OPCBGTZ		= 6'h07,	// 1/2016
+			OPCBLEZ		= 6'h06,	// 1/2016
+			
+/* Campo $rt */ 					// 1/2016
+			RTBGEZ		= 5'b00001,
+			RTBGEZAL		= 5'b10001,
+			RTBLTZ		= 5'b00000,
+			RTBLTZAL		= 5'b10000,
+			
 /* Campo FMT */
 			FMTS 	= 5'h10,
 			FMTW	= 5'h14,
