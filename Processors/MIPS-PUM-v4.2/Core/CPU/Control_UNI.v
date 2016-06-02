@@ -319,16 +319,16 @@ begin
 			oExcCodeCOP0 <= EXCODEINT;
 		end
 
-		OPCJAL:
+		OPCJAL:										//alterado em 1/2016 para implementar bgezal e bltzal.
 		begin
 			oRegDst <= 2'b10;
-			oOrigALU <= 2'b00;
+			oOrigALU <= 2'b11;					//alterado 1/2016 2'b00 => 2'b11.
 			oMemparaReg <= 3'b010;
 			oEscreveReg <= 1'b1;
 			oLeMem <= 1'b0;
 			oEscreveMem <= 1'b0;
 			oOrigPC <= 3'b010;				 
-			oOpALU <= 2'b00;
+			oOpALU <= 2'b11;						//alterado 1/2016 2'b00 => 2'b11.
 			oEscreveRegFPU <= 1'b0;
 			oRegDstFPU <= 2'b00;
 			oFPUparaMem <= 2'b00;
@@ -795,24 +795,46 @@ begin
 			oExcCodeCOP0 <= EXCODEINT;
 		end
 		
-		// 1/2016, Implementar intruções bgez, bgezal, bgltz, bltzal.
+		// 1/2016, Implementar intruções bgez, bgezal, bltz, bltzal.
 		OPCBGE_LTZ:
       begin
           case (iRt)
-                RTBGEZ:
+                RTBGEZ://pronto - testar na DE270
                 begin
-                    oRegDst <= 2'b00;//pronto
-                    oOrigALU <= 2'b11;//pronto
-                    oMemparaReg <= 3'b000;//pronto
-                    oEscreveReg <= 1'b0;//pronto
-                    oLeMem <= 1'b0;//pronto
-                    oEscreveMem <= 1'b0;//pronto
-                    oOrigPC <= 3'b001;//pronto
-                    oOpALU <= 2'b11;//pronto
-                    oEscreveRegFPU <= 1'b0;//pronto
-                    oRegDstFPU <= 2'b00;//pronto
-                    oFPUparaMem <= 2'b00;//pronto
-                    oDataRegFPU <= 2'b00;//pronto
+                    oRegDst <= 2'b00;
+                    oOrigALU <= 2'b11;
+                    oMemparaReg <= 3'b000;
+                    oEscreveReg <= 1'b0;
+                    oLeMem <= 1'b0;
+                    oEscreveMem <= 1'b0;
+                    oOrigPC <= 3'b001;//wiPC <= wZero ? wBranchPC: wPC4;
+                    oOpALU <= 2'b11;
+                    oEscreveRegFPU <= 1'b0;
+                    oRegDstFPU <= 2'b00;
+                    oFPUparaMem <= 2'b00;
+                    oDataRegFPU <= 2'b00;
+                    oFPFlagWrite <= 1'b0;
+                    oEscreveRegCOP0 <= 1'b0;
+                    oEretCOP0 <= 1'b0;
+                    oExcOccurredCOP0 <= wIntException;
+                    oBranchDelayCOP0 <= 1'b1;
+                    oExcCodeCOP0 <= EXCODEINT;
+                end
+					 
+					 RTBGEZAL://em progresso
+                begin
+                    oRegDst <= 2'b10; //salva em $ra
+                    oOrigALU <= 2'b11; //compara com zero
+                    oMemparaReg <= 3'b010;//wDataReg <= wPC4;  ///salva pc+4
+                    oEscreveReg <= 1'b1;//escreve
+                    oLeMem <= 1'b0;//mantem
+                    oEscreveMem <= 1'b0;//mantem
+                    oOrigPC <= 3'b001;//wiPC <= wZero ? wBranchPC: wPC4;   ///mantem
+                    oOpALU <= 2'b11;//mantem
+                    oEscreveRegFPU <= 1'b0;
+                    oRegDstFPU <= 2'b00;
+                    oFPUparaMem <= 2'b00;
+                    oDataRegFPU <= 2'b00;
                     oFPFlagWrite <= 1'b0;
                     oEscreveRegCOP0 <= 1'b0;
                     oEretCOP0 <= 1'b0;
@@ -821,6 +843,51 @@ begin
                     oExcCodeCOP0 <= EXCODEINT;
                 end
                 
+					 RTBLTZ://pronto - testar na DE270
+                begin
+                    oRegDst <= 2'b00; //pronto - rt
+                    oOrigALU <= 2'b11; //pronto - compara com zero
+                    oMemparaReg <= 3'b000; //pronto - aluresult => reg
+                    oEscreveReg <= 1'b0; //pronto - nao escreve
+                    oLeMem <= 1'b0; //pronto - nao le memoria
+                    oEscreveMem <= 1'b0; //pronto - nao escreve
+                    oOrigPC <= 3'b101; //pronto - wiPC <= ~wZero ? wBranchPC: wPC4;   ///unica diferença do BGEZ
+                    oOpALU <= 2'b11; //pronto - operacao adicionada em alucontrol
+                    oEscreveRegFPU <= 1'b0;
+                    oRegDstFPU <= 2'b00;
+                    oFPUparaMem <= 2'b00;
+                    oDataRegFPU <= 2'b00;
+                    oFPFlagWrite <= 1'b0;
+                    oEscreveRegCOP0 <= 1'b0;
+                    oEretCOP0 <= 1'b0;
+                    oExcOccurredCOP0 <= wIntException;
+                    oBranchDelayCOP0 <= 1'b1;
+                    oExcCodeCOP0 <= EXCODEINT;
+                end
+					 
+					 
+					 RTBLTZAL://em progresso
+                begin
+                    oRegDst <= 2'b11; //salva em $ra
+                    oOrigALU <= 2'b11; //compara com zero
+                    oMemparaReg <= 3'b010;//wDataReg <= wPC4;  ///salva pc+4
+                    oEscreveReg <= 1'b1;//escreve
+                    oLeMem <= 1'b0;//mantem
+                    oEscreveMem <= 1'b0;//mantem
+                    oOrigPC <= 3'b101; //pronto - wiPC <= ~wZero ? wBranchPC: wPC4;
+                    oOpALU <= 2'b11;//mantem
+                    oEscreveRegFPU <= 1'b0;
+                    oRegDstFPU <= 2'b00;
+                    oFPUparaMem <= 2'b00;
+                    oDataRegFPU <= 2'b00;
+                    oFPFlagWrite <= 1'b0;
+                    oEscreveRegCOP0 <= 1'b0;
+                    oEretCOP0 <= 1'b0;
+                    oExcOccurredCOP0 <= wIntException;
+                    oBranchDelayCOP0 <= 1'b1;
+                    oExcCodeCOP0 <= EXCODEINT;
+                end
+					 
                 // instrucao invalida
                 default:
                 begin
@@ -845,6 +912,54 @@ begin
                 end
           endcase
       end
+		
+		OPCBLEZ://testar na DE2
+		begin
+			oRegDst <= 2'b00;
+         oOrigALU <= 2'b11;
+         oMemparaReg <= 3'b000;
+         oEscreveReg <= 1'b0;
+         oLeMem <= 1'b0;
+         oEscreveMem <= 1'b0;
+         oOrigPC <= 3'b001;//wiPC <= wZero ? wBranchPC: wPC4;
+         oOpALU <= 2'b11;//operação adicionada (OPSGT - set if greater than)
+         oEscreveRegFPU <= 1'b0;
+         oRegDstFPU <= 2'b00;
+         oFPUparaMem <= 2'b00;
+         oDataRegFPU <= 2'b00;
+         oFPFlagWrite <= 1'b0;
+         oEscreveRegCOP0 <= 1'b0;
+         oEretCOP0 <= 1'b0;
+         oExcOccurredCOP0 <= wIntException;
+         oBranchDelayCOP0 <= 1'b1;
+         oExcCodeCOP0 <= EXCODEINT;
+		end
+		
+		OPCBGTZ: //Testar na DE2
+		begin
+			oRegDst <= 2'b00;
+         oOrigALU <= 2'b11;
+         oMemparaReg <= 3'b000;
+         oEscreveReg <= 1'b0;
+         oLeMem <= 1'b0;
+         oEscreveMem <= 1'b0;
+         oOrigPC <= 3'b101;//wiPC <= ~wZero ? wBranchPC: wPC4;
+         oOpALU <= 2'b11;
+         oEscreveRegFPU <= 1'b0;
+         oRegDstFPU <= 2'b00;
+         oFPUparaMem <= 2'b00;
+         oDataRegFPU <= 2'b00;
+         oFPFlagWrite <= 1'b0;
+         oEscreveRegCOP0 <= 1'b0;
+         oEretCOP0 <= 1'b0;
+         oExcOccurredCOP0 <= wIntException;
+         oBranchDelayCOP0 <= 1'b1;
+         oExcCodeCOP0 <= EXCODEINT;
+		end
+		
+		
+		
+		
 		
 		// feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 		OPCCOP0:

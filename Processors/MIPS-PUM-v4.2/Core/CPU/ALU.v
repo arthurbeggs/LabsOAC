@@ -50,6 +50,8 @@ begin
 			oALUresult	= iA - iB;
 		OPSLT:
 			oALUresult	<= iA < iB;
+		OPSGT://2016/1 - implementada para as operacoes bgtz e blez
+			oALUresult <= iA > iB;
 		OPSRL:
 			oALUresult	<= iB >> iShamt;
 		OPSRA:

@@ -219,6 +219,7 @@ FlagBank FlagBankModule(
 ALUControl ALUControlunit (
 	.iFunct(wFunct), 
 	.iOpcode(wOpcode), 
+	.iRt(waddrRt), 						// 1/2016, Implementar intruções bgez, bgezal, bgltz, bltzal.
 	.iALUOp(wCALUOp), 
 	.oControlSignal(wALUControl)
 );
@@ -305,7 +306,10 @@ Control_UNI CtrUNI (
 	.oEretCOP0(wCEretCOP0),
 	.oExcOccurredCOP0(wCExcOccurredCOP0),
 	.oBranchDelayCOP0(wCBranchDelayCOP0),
-	.oExcCodeCOP0(wCExcCodeCOP0)
+	.oExcCodeCOP0(wCExcCodeCOP0),
+	
+	// 1/2016, Implementar intruções bgez, bgezal, bgltz, bltzal.
+	.iRt(wAddrRt)
 );
 
 // feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
@@ -346,7 +350,8 @@ always @(*)
 	case(wCRegDst)
 		2'b00: wRegDst <= wAddrRt;
 		2'b01: wRegDst <= wAddrRd;
-		2'b10: wRegDst <= 5'd31; 
+		2'b10: wRegDst <= wZero ? 5'd31: 5'd0; //$ra ou $zero		1/2016
+		2'b11: wRegDst <= ~wZero ? 5'd31: 5'd0; //$ra ou $zero	1/2016
 		default:	wRegDst <= 5'd0;
 	endcase
 
@@ -357,7 +362,7 @@ always @(*)
 		2'b00: wOrigALU <= wRead2;
 		2'b01: wOrigALU <= wExtImm;
 		2'b10: wOrigALU <= wExtZeroImm;
-		2'b11: wOrigALU <= wRead2;
+		2'b11: wOrigALU <= 5'b00000;		// 1/2016
 	endcase
 
 
