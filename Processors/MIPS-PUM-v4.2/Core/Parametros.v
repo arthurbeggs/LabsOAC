@@ -27,6 +27,7 @@ parameter ON = 1'b1,
 			OPDIVU  = 5'b10100, //20
 			OPMTHI 	= 5'b10101,	//21		2015/1
 			OPMTLO 	= 5'b10110,	//22		2015/1
+			OPSGT = 5'b10111, //23		//2016/1
 			
 /* Operacoes da ULA FP */
 			OPADDS  = 4'b0001,
