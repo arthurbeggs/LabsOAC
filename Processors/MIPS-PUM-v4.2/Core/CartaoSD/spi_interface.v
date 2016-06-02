@@ -57,7 +57,8 @@ sd_controller sd1(
     .miso(SD_MISO),
     .sclk(SD_CLK),
 
-    .rd(SDReadEnable),
+    .rd(1),
+    // .rd(SDReadEnable),
     .wr(0),
     .dm_in(1),                  // data mode, 0 = write continuously, 1 = write single block
     .reset(Reset),
@@ -65,6 +66,7 @@ sd_controller sd1(
     .dout(SDData),
     .address(SDAddress),
     .iCLK(iCLK_50),
+    // .iCLK(iCLK_50),
     .idleSD(SDCtrl)
 );
 
@@ -92,7 +94,7 @@ always @ (*)
     if (wReadEnable)
     begin
         if (wAddress == SD_INTERFACE_DATA   ||  wAddress == SD_INTERFACE_CTRL)
-            wReadData   = {16'b0, SDData, SDCtrl};
+            wReadData   = {8'b0, 8'h42, SDData, SDCtrl};
         else
             wReadData   = 32'bz;
     end

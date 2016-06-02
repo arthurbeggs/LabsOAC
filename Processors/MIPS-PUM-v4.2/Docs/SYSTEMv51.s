@@ -2521,7 +2521,7 @@ sdLoop:
     bne     $t2, $zero, sdFim               # Se a qtd de bytes a serem lidos < 1, finaliza a leitura
 
 sdReadRoutine:
-    sw      $a0, 0($s0)                     # SD_INTERFACE_ADDR = $a0
+    sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0
 sdWait:
     lb      $s1, 0($s2)                     # $s1 = SDCtrl
     bne     $s1, $zero, sdWait              # $s1 ? BUSY : IDLE
