@@ -3,6 +3,7 @@ parameter ON = 1'b1,
 		  OFF = 1'b0,
 		  ZERO = 32'h0,
 		  
+		  
 /* Operacoes da ULA */
 			OPAND	= 5'b00000,	//0
 			OPOR	= 5'b00001,	//1
