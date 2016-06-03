@@ -148,7 +148,7 @@ begin
                         end if;
 
                     when CMD16 =>                               -- SET_BLOCKLEN to 1 byte
-                        cmd_out         <= x"FF500000000401";   -- DEBUG: (1 start byte + 1 data byte + 2 'FF' end bytes)
+                        cmd_out         <= x"FF500000000101";   -- DEBUG: (1 start byte + 1 data byte + 2 'FF' end bytes ?)
                         bit_counter     := 55;
                         return_state    <= POLL_CMD16;
                         state           <= SEND_CMD;
@@ -171,7 +171,7 @@ begin
                             idleSD      <= x"01";               -- BUSY
                         else
                             state       <= IDLE;
-                            idleSD      <= x"03";               -- IDLE
+                            idleSD      <= x"00";               -- IDLE
                         end if;
 
                     when READ_BLOCK =>
@@ -182,7 +182,7 @@ begin
 
                     when READ_BLOCK_WAIT =>
                         if (sclk_sig='1' and miso='0') then
-                            byte_counter    := 4;                           -- DEBUG: O valor está correto?     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            byte_counter    := 1;                           -- DEBUG: O valor está correto?     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                             bit_counter     := 7;
                             return_state    <= READ_BLOCK_DATA;
                             state           <= RECEIVE_BYTE;
@@ -201,7 +201,7 @@ begin
                             state           <= RECEIVE_BYTE;
                         end if;
 
-                    when READ_BLOCK_CRC =>
+                    when READ_BLOCK_CRC =>          -- NOTE: O primeiro byte do CRC é lido como DATA (e ignorado)
                         bit_counter     := 7;
                         return_state    <= IDLE;
                         -- address         <= std_logic_vector(unsigned(address) + x"200");
@@ -218,7 +218,7 @@ begin
                         end if;
                         sclk_sig        <= not sclk_sig;
 
-                    when RECEIVE_BYTE_WAIT =>
+                    when RECEIVE_BYTE_WAIT =>           -- DEBUG: Talvez os bytes lidos estejam sendo atropelados aqui e por isso dout está zoado
                         if (sclk_sig = '1') then
                             if (miso = '0') then
                                 recv_data       <= (others => '0');
@@ -237,11 +237,11 @@ begin
                             recv_data       <= recv_data(6 downto 0) & miso;
                             if (bit_counter = 0) then
                                 state           <= return_state;
-                                -- if (byte_counter = 0) then
+                                if (byte_counter = 1) then          -- DEBUG: Data Package
                                     -- dout            <= recv_data(6 downto 0) & miso;
                                     store_data       <= recv_data(6 downto 0) & miso;
                                     -- store_data       <= x"23";
-                                -- end if;
+                                end if;
                             else
                                 bit_counter     := bit_counter - 1;
                             end if;
