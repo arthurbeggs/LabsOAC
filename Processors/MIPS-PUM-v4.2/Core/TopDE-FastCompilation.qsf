@@ -1029,5 +1029,5 @@ set_global_assignment -name VECTOR_WAVEFORM_FILE Testes/TopDE2.vwf
 set_global_assignment -name SIGNALTAP_FILE Testes/stp1.stp
 set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_global_assignment -name CDF_FILE output_files/Chain2.cdf
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE "C:/Users/Arthur/Documents/GitHub/LabsOAC/Processors/MIPS-PUM-v4.2/Core/Testes/stp1_auto_stripped.stp"
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

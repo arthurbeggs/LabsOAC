@@ -29,6 +29,7 @@
 .eqv VGA_END_ADDR 0XFF012C00            # NOTE: 0xFF011BFF?
 .eqv VGA_QTD_BYTE 76800                 # VGA Bytes
 
+    .data
 
     .text
 main:

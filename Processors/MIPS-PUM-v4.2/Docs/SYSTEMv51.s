@@ -1,3 +1,35 @@
+#definicao do mapa de enderecamento
+.eqv Buffer0Teclado     0xFFFF0100
+.eqv Buffer1Teclado     0xFFFF0104
+.eqv TecladoxMouse      0xFFFF0110
+.eqv BufferMouse        0xFFFF0114
+.eqv RXRS232            0xFFFF0120
+.eqv TXRS232            0xFFFF0121
+.eqv CTRLRS232          0xFFFF0122
+.eqv LINHA1             0xFFFF0130
+.eqv LINHA2             0xFFFF0140
+.eqv LCDClear           0xFFFF0150
+.eqv AudioINL           0xFFFF0000
+.eqv AudioINR           0xFFFF0004
+.eqv AudioOUTL          0xFFFF0008
+.eqv AudioOUTR          0xFFFF000c
+.eqv AudioCTRL1         0xFFFF0010
+.eqv AudioCTRL2         0xFFFF0014
+
+# Sintetizador - 2015/1
+
+.eqv NoteData           0xFFFF0200
+.eqv NoteClock          0xFFFF0204
+.eqv NoteMelody         0xFFFF0208
+.eqv MusicTempo         0xFFFF020C
+.eqv MusicAddress       0xFFFF0210
+
+.eqv VGAADDRESSINI      0xFF000000
+.eqv VGAADDRESSFIM      0xFF012C00
+.eqv NUMLINHAS          240
+.eqv NUMCOLUNAS         320
+
+
     .kdata   # endereço 0x9000 0000
 kdata:
 inicioKdata:
@@ -30,36 +62,6 @@ DATA_X:         .word 0
 DATA_Y:         .word 0
 DATA_CLICKS:    .word 0
 
-#definicao do mapa de enderecamento
-.eqv Buffer0Teclado     0xFFFF0100
-.eqv Buffer1Teclado     0xFFFF0104
-.eqv TecladoxMouse      0xFFFF0110
-.eqv BufferMouse        0xFFFF0114
-.eqv RXRS232            0xFFFF0120
-.eqv TXRS232            0xFFFF0121
-.eqv CTRLRS232          0xFFFF0122
-.eqv LINHA1             0xFFFF0130
-.eqv LINHA2             0xFFFF0140
-.eqv LCDClear           0xFFFF0150
-.eqv AudioINL           0xFFFF0000
-.eqv AudioINR           0xFFFF0004
-.eqv AudioOUTL          0xFFFF0008
-.eqv AudioOUTR          0xFFFF000c
-.eqv AudioCTRL1         0xFFFF0010
-.eqv AudioCTRL2         0xFFFF0014
-
-# Sintetizador - 2015/1
-
-.eqv NoteData           0xFFFF0200
-.eqv NoteClock          0xFFFF0204
-.eqv NoteMelody         0xFFFF0208
-.eqv MusicTempo         0xFFFF020C
-.eqv MusicAddress       0xFFFF0210
-
-.eqv VGAADDRESSINI      0xFF000000
-.eqv VGAADDRESSFIM      0xFF012C00
-.eqv NUMLINHAS          240
-.eqv NUMCOLUNAS         320
 
 ##### Preparado para considerar syscall = jal ktext  para o pipeline
 
@@ -2514,7 +2516,7 @@ sdRead:
     la      $s3, 0xFFFF0255                 # SD_INTERFACE_DATA Address
     li      $t1, 1                          # Comparador de bytes a serem lidos
 sdBusy:
-    lb      $s1, 0($s2)                     # $s1 = SDCtrl
+    lbu     $s1, 0($s2)                     # $s1 = SDCtrl
     bne     $s1, $zero, sdBusy              # $s1 ? BUSY : IDLE
 sdLoop:
     slt     $t2, $a2, $t1                   # ($a2 < 1) ? 1 : 0
@@ -2523,10 +2525,10 @@ sdLoop:
 sdReadRoutine:
     sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0
 sdWait:
-    lb      $s1, 0($s2)                     # $s1 = SDCtrl
+    lbu     $s1, 0($s2)                     # $s1 = SDCtrl
     bne     $s1, $zero, sdWait              # $s1 ? BUSY : IDLE
 sdDataReady:
-    lb      $t0, 0($s3)                     # $t0 recebe byte lido do cartão SD
+    lbu     $t0, 0($s3)                     # $t0 recebe byte lido do cartão SD
     sb      $t0, 0($a1)                     # Byte lido é salvo no endereço desejado
 
 sdNextAddr:

@@ -585,7 +585,7 @@ RS232_Interface SERIAL0 (
 
 /* *************************** SD Card Interface **************************** */
 SPI_Interface SDCARD (                                  // NOTE: Nada foi testado ainda.
-    .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),       // DEBUG: ~Reset???
+    .iCLK(CLK), .iCLK_50(iCLK_50_4), .Reset(Reset),
     .SD_CLK(oSD_CLK),                   // SPI SCK
     .SD_MOSI(SD_DAT),                   // SPI MOSI
     .SD_MISO(SD_CMD),                   // SPI MISO
