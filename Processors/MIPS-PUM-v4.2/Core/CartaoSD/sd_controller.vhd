@@ -74,20 +74,21 @@ signal cmd_mode         : std_logic := '1';
 signal data_mode        : std_logic := '1';
 signal response_mode    : std_logic := '1';
 signal data_sig         : std_logic_vector(7 downto 0) := x"00";
-signal fast_clk         : std_logic := '0';                 -- fast_clk ? 50MHz : 500KHz    NOTE: As frequências de operação devem ser 400KHz na inicialização e 25MHz em IO. A fsm já divide o clock por 2
+signal fast_clk         : std_logic := '0';                 -- fast_clk ? 25MHz : 400KHz    NOTE: As frequências de operação devem ser 400KHz na inicialização e 25MHz em IO. A fsm já divide o clock por 2
 signal clk              : std_logic := '0';
 
 signal store_data       : std_logic_vector(7 downto 0) := x"52";
 
-COMPONENT clk_divider PORT (
-                            iCLK, iRst, iSpeed  : IN  STD_LOGIC;
-                            oCLK                : OUT STD_LOGIC
-); END COMPONENT;
+-- COMPONENT clk_divider PORT (
+--                             iCLK, iRst, iSpeed  : IN  STD_LOGIC;
+--                             oCLK                : OUT STD_LOGIC
+-- ); END COMPONENT;
 
 begin
-    U1: clk_divider PORT MAP (iCLK, reset, fast_clk, clk);
+    -- U1: clk_divider PORT MAP (iCLK, reset, fast_clk, clk);
 
-    process(clk, reset, dm_in)
+    process(iCLK, reset, dm_in)
+    -- process(clk, reset, dm_in)
         variable byte_counter   : integer range 0 to 4;     -- CHANGED: WRITE_DATA_SIZE     DEBUG:(1 start byte + 1 data byte + 2 'FF' end bytes)
         variable bit_counter    : integer range 0 to 160;
     begin
@@ -182,7 +183,7 @@ begin
 
                     when READ_BLOCK_WAIT =>
                         if (sclk_sig='1' and miso='0') then
-                            byte_counter    := 1;                           -- DEBUG: O valor está correto?     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                            byte_counter    := 2;                           -- DEBUG: O valor está correto?     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                             bit_counter     := 7;
                             return_state    <= READ_BLOCK_DATA;
                             state           <= RECEIVE_BYTE;
