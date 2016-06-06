@@ -23,52 +23,61 @@ sd_controller sd1(
     .miso(SD_MISO),
     .sclk(SD_CLK),
 
-    .rd(SDReadEnable),
+    .rd(1),
+    // .rd(SDReadEnable),
     .wr(0),
     .dm_in(1),                  // data mode, 0 = write continuously, 1 = write single block
     .reset(Reset),
     .din(8'b0),
     .dout(SDData),
     .address(SDAddress),
-    .iCLK(iCLK_50),
+    .iCLK(iCLK),
+    // .iCLK(iCLK_50),
     .idleSD(SDCtrl)
 );
 
 
 reg  [31:0] SDAddress;
-wire [7:0]  SDData, SDCtrl;     // [SDCtrl ? BUSY : IDLE]
-reg         SDReadEnable;
+wire [7:1]  SDData, SDCtrl;     // [SDCtrl ? BUSY : IDLE]
+wire        SDReadEnable;
 
 always @ (posedge iCLK)
     if (wWriteEnable)
     begin
         if (wAddress == SD_INTERFACE_ADDR)
-        // begin
-            SDAddress       <= wWriteData;
-            // if (SDData == 8'h00)
-            //     SDReadEnable    <= 1'b1;
-        // end
-        // else                                 //REVIEW: Modificações não compiladas
-        //     SDReadEnable    <= 1'b0;
+        begin
+            SDAddress      <= wWriteData;
+            if (SDCtrl == 8'b0)
+                SDReadEnable    <= 1'b1;
+            else
+                SDReadEnable    <= 1'b0;
+        end
+        else    SDReadEnable    <= 1'b0;    //NOTE: Talvez não seja uma ideia tão boa fazer essa proteção por hardware. Se o iCLK ~ iCLK_50 (risos), pode ser que o controlador SD não opere.
     end
 
 always @ (*)
     if (wReadEnable)
     begin
         if (wAddress == SD_INTERFACE_DATA   ||  wAddress == SD_INTERFACE_CTRL)
-            wReadData       = {16'b0, SDData, SDCtrl};
+            wReadData   = {8'b0, 8'h42, SDData, SDCtrl};
         else
-            wReadData       = 32'hzzzzzzzz;
+            wReadData   = 32'bz;
     end
-    else    wReadData       = 32'hzzzzzzzz;
-
-always @ (*)
-    if (SDData == 8'hA0)                        //REVIEW: Modificações não compiladas
-        SDReadEnable    = 1'b0;
-    else if (wAddress == SD_INTERFACE_ADDR && SDData == 8'h00)
-        SDReadEnable    = 1'b1;
+    else    wReadData   = 32'bz;
 
 
-//TODO: Arrumar o divisor de clock. A frequência fornecida ao cartão SD deve ser de 100~400KHz durante a inicialização e 10~25MHz para leitura.
+
+//TODO: Criar divisor de clock para que a frequência seja correta para cada etapa [init: 400 KHz] [pos-init: 25 MHz]    REVIEW: Implementado, mas não testado.
+
+//TODO: Quando wAddress == SD_Interface, fazer a leitura do byte no endereço wAddress do cartão SD.                     REVIEW: Implementado, mas não testado.
+
+//TODO: Adicionar input do endereço do byte a ser lido pelo sd_controller.                                              REVIEW: Implementado, mas não testado.
+
+//TODO: Implementar CMD16 no sd_controller para ler somente 1 byte.                                                     REVIEW: Implementado, mas não testado.
+
+//TODO: Criar controle que diga quando o byte está pronto para ser lido.    NOTE: Acho que resolvi o problema enviando somente o dado do cartão para SDData.
+
+//TODO: write deve ser um tri-state buffer que deve ficar em estado de alta impedância caso não se queira ler ou escrever no cartão.    REVIEW: Implementado, mas não testado.
+
 
 endmodule
