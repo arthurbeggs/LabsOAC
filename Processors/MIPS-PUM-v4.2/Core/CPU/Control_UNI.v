@@ -5,7 +5,7 @@
 
  module Control_UNI(
     input  wire        iCLK, iBranchC1,
-    input  wire [5:0]  iOp, iFunct, iRt,
+    input  wire [5:0]  iOp, iFunct, iRt,            // 1/2016. Adicionado iRt.
     input  wire [4:0]  iFmt,
     output wire        oEscreveReg, oLeMem, oEscreveMem, oEscreveRegFPU, oFPFlagWrite,
     output wire [1:0]  oRegDst, oOpALU, oOrigALU, oDataRegFPU, oRegDstFPU, oFPUparaMem,
@@ -807,7 +807,7 @@ begin
                     oEscreveReg         = 1'b0;
                     oLeMem              = 1'b0;
                     oEscreveMem         = 1'b0;
-                    oOrigPC             = 3'b001;   // wiPC <= wZero ? wBranchPC: wPC4;
+                    oOrigPC             = 3'b001;
                     oOpALU              = 2'b11;
                     oEscreveRegFPU      = 1'b0;
                     oDataRegFPU         = 2'b00;
@@ -821,16 +821,16 @@ begin
                     oExcCodeCOP0        = EXCODEINT;
                 end
 
-                RTBGEZAL://em progresso
+                RTBGEZAL:
                 begin
-                    oRegDst             = 2'b10;        //salva em $ra
-                    oOrigALU            = 2'b11;        //compara com zero
-                    oMemparaReg         = 3'b010;       //wDataReg <= wPC4;  ///salva pc+4
-                    oEscreveReg         = 1'b1;         //escreve
-                    oLeMem              = 1'b0;         //mantem
-                    oEscreveMem         = 1'b0;         //mantem
-                    oOrigPC             = 3'b001;       //wiPC <= wZero ? wBranchPC: wPC4;   ///mantem
-                    oOpALU              = 2'b11;        //mantem
+                    oRegDst             = 2'b10;
+                    oOrigALU            = 2'b11;
+                    oMemparaReg         = 3'b010;
+                    oEscreveReg         = 1'b1;
+                    oLeMem              = 1'b0;
+                    oEscreveMem         = 1'b0;
+                    oOrigPC             = 3'b001;
+                    oOpALU              = 2'b11;
                     oEscreveRegFPU      = 1'b0;
                     oRegDstFPU          = 2'b00;
                     oFPUparaMem         = 2'b00;
@@ -843,16 +843,16 @@ begin
                     oExcCodeCOP0        = EXCODEINT;
                 end
 
-                RTBLTZ://pronto - testar na DE270
+                RTBLTZ:
                 begin
-                    oRegDst             = 2'b00;        //pronto - rt
-                    oOrigALU            = 2'b11;        //pronto - compara com zero
-                    oMemparaReg         = 3'b000;       //pronto - aluresult => reg
-                    oEscreveReg         = 1'b0;         //pronto - nao escreve
-                    oLeMem              = 1'b0;         //pronto - nao le memoria
-                    oEscreveMem         = 1'b0;         //pronto - nao escreve
-                    oOrigPC             = 3'b101;       //pronto - wiPC <= ~wZero ? wBranchPC: wPC4;   ///unica diferença do BGEZ
-                    oOpALU              = 2'b11;        //pronto - operacao adicionada em alucontrol
+                    oRegDst             = 2'b00;
+                    oOrigALU            = 2'b11;
+                    oMemparaReg         = 3'b000;
+                    oEscreveReg         = 1'b0;
+                    oLeMem              = 1'b0;
+                    oEscreveMem         = 1'b0;
+                    oOrigPC             = 3'b101;
+                    oOpALU              = 2'b11;
                     oEscreveRegFPU      = 1'b0;
                     oRegDstFPU          = 2'b00;
                     oFPUparaMem         = 2'b00;
@@ -866,16 +866,16 @@ begin
                 end
 
 
-                RTBLTZAL://em progresso
+                RTBLTZAL:
                 begin
-                    oRegDst             = 2'b11;        //salva em $ra
-                    oOrigALU            = 2'b11;        //compara com zero
-                    oMemparaReg         = 3'b010;       //wDataReg <= wPC4;  ///salva pc+4
-                    oEscreveReg         = 1'b1;         //escreve
-                    oLeMem              = 1'b0;         //mantem
-                    oEscreveMem         = 1'b0;         //mantem
-                    oOrigPC             = 3'b101;       //pronto - wiPC <= ~wZero ? wBranchPC: wPC4;
-                    oOpALU              = 2'b11;        //mantem
+                    oRegDst             = 2'b11;
+                    oOrigALU            = 2'b11;
+                    oMemparaReg         = 3'b010;
+                    oEscreveReg         = 1'b1;
+                    oLeMem              = 1'b0;
+                    oEscreveMem         = 1'b0;
+                    oOrigPC             = 3'b101;
+                    oOpALU              = 2'b11;
                     oEscreveRegFPU      = 1'b0;
                     oRegDstFPU          = 2'b00;
                     oFPUparaMem         = 2'b00;
@@ -913,7 +913,8 @@ begin
             endcase
         end
 
-        OPCBLEZ://testar na DE2
+        // 1/2016
+        OPCBLEZ:
         begin
             oRegDst             = 2'b00;
             oOrigALU            = 2'b11;
@@ -921,8 +922,8 @@ begin
             oEscreveReg         = 1'b0;
             oLeMem              = 1'b0;
             oEscreveMem         = 1'b0;
-            oOrigPC             = 3'b001;       // wiPC <= wZero ? wBranchPC: wPC4;
-            oOpALU              = 2'b11;        // Operação adicionada (OPSGT - set if greater than)
+            oOrigPC             = 3'b001;
+            oOpALU              = 2'b11;
             oEscreveRegFPU      = 1'b0;
             oRegDstFPU          = 2'b00;
             oFPUparaMem         = 2'b00;
@@ -935,7 +936,7 @@ begin
             oExcCodeCOP0        = EXCODEINT;
         end
 
-        OPCBGTZ: //Testar na DE2
+        OPCBGTZ:
         begin
             oRegDst             = 2'b00;
             oOrigALU            = 2'b11;
@@ -943,7 +944,7 @@ begin
             oEscreveReg         = 1'b0;
             oLeMem              = 1'b0;
             oEscreveMem         = 1'b0;
-            oOrigPC             = 3'b101;       // wiPC <= ~wZero ? wBranchPC: wPC4;
+            oOrigPC             = 3'b101;
             oOpALU              = 2'b11;
             oEscreveRegFPU      = 1'b0;
             oRegDstFPU          = 2'b00;

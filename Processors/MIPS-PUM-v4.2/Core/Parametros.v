@@ -115,7 +115,7 @@ parameter
     OPCLWC1     = 6'h31,
     OPCSWC1     = 6'h39,
     OPCDUMMY    = 6'h3F,                // Para o MemStore e MemLoad
-    OPCBGE_LTZ  = 6'h01,                // Para as instruções bgez, bgezal, bgltz, bltzal // 1/2016
+    OPCBGE_LTZ  = 6'h01,                // 1/2016: Para as instruções bgez, bgezal, bgltz, bltzal
     OPCBGTZ     = 6'h07,                // 1/2016
     OPCBLEZ     = 6'h06,                // 1/2016
 
