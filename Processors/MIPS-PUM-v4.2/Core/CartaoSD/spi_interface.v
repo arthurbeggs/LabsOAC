@@ -52,7 +52,7 @@ always @ (posedge iCLK)
             else
                 SDReadEnable    <= 1'b0;
         end
-        else    SDReadEnable    <= 1'b0;    //NOTE: Talvez não seja uma ideia tão boa fazer essa proteção por hardware. Se o iCLK ~ iCLK_50 (risos), pode ser que o controlador SD não opere.
+        else    SDReadEnable    <= 1'b0;
     end
 
 always @ (*)
@@ -67,17 +67,9 @@ always @ (*)
 
 
 
-//TODO: Criar divisor de clock para que a frequência seja correta para cada etapa [init: 400 KHz] [pos-init: 25 MHz]    REVIEW: Implementado, mas não testado.
+//TODO: Criar divisor de clock para que a frequência seja correta para cada etapa [init: 400 KHz] [pos-init: 25 MHz]    REVIEW: Implementado, mas não testado nem integrado
 
-//TODO: Quando wAddress == SD_Interface, fazer a leitura do byte no endereço wAddress do cartão SD.                     REVIEW: Implementado, mas não testado.
-
-//TODO: Adicionar input do endereço do byte a ser lido pelo sd_controller.                                              REVIEW: Implementado, mas não testado.
-
-//TODO: Implementar CMD16 no sd_controller para ler somente 1 byte.                                                     REVIEW: Implementado, mas não testado.
-
-//TODO: Criar controle que diga quando o byte está pronto para ser lido.    NOTE: Acho que resolvi o problema enviando somente o dado do cartão para SDData.
-
-//TODO: write deve ser um tri-state buffer que deve ficar em estado de alta impedância caso não se queira ler ou escrever no cartão.    REVIEW: Implementado, mas não testado.
+//FIXME: Consertar ativação do SDReadEnable.
 
 
 endmodule
