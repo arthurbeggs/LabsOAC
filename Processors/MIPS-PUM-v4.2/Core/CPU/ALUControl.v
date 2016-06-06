@@ -101,10 +101,18 @@ begin
                     oControlSignal  = OPXOR;
                 OPCLUI:
                     oControlSignal  = OPLUI;
+                OPCJAL:                                     //2016/1
+                    oControlSignal  = OPAND;
+                OPCBLEZ,                                    //2016/1
+                OPCBGTZ:
+                    oControlSignal <= OPSGT;
                 OPCBGE_LTZ:
                 begin
                     case (iRt)
-                        RTBGEZ:
+                        RTBGEZ,
+                        RTBGEZAL,
+                        RTBLTZ,
+                        RTBLTZAL:
                             oControlSignal  = OPSLT;
                         default:
                             oControlSignal  = 5'b00000;
