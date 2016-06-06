@@ -6,7 +6,7 @@
 -- Tested on Xilinx Spartan 3 hardware, using Transcend and SanDisk Ultra II cards
 -- Read states are derived from the Apple II emulator by Stephen Edwards
 
--- Edited by Arthur Matos to read a single byte from a SD card in May 2016.
+-- Edited by Arthur Matos to read a single byte from a SDSC card in May 2016.
 -- Now it does NOT work with SDHC & SDXC cards that must read a full 512 bytes sector.
 -- Write operations were corrupted with the changes made.
 

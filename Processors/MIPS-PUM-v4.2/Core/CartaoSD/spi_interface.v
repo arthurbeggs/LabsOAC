@@ -43,23 +43,30 @@ always @ (posedge iCLK)
     if (wWriteEnable)
     begin
         if (wAddress == SD_INTERFACE_ADDR)
-        begin
-            SDAddress      <= wWriteData;
-            SDReadEnable   <= 1'b1;
-        end
-        else
-            SDReadEnable   <= 1'b0;
+        // begin
+            SDAddress       <= wWriteData;
+            // if (SDData == 8'h00)
+            //     SDReadEnable    <= 1'b1;
+        // end
+        // else                                 //REVIEW: Modificações não compiladas
+        //     SDReadEnable    <= 1'b0;
     end
 
 always @ (*)
     if (wReadEnable)
     begin
         if (wAddress == SD_INTERFACE_DATA   ||  wAddress == SD_INTERFACE_CTRL)
-            wReadData   = {16'b0, SDData, SDCtrl};
+            wReadData       = {16'b0, SDData, SDCtrl};
         else
-            wReadData   = 32'hzzzzzzzz;
+            wReadData       = 32'hzzzzzzzz;
     end
-    else    wReadData   = 32'hzzzzzzzz;
+    else    wReadData       = 32'hzzzzzzzz;
+
+always @ (*)
+    if (SDData == 8'hA0)                        //REVIEW: Modificações não compiladas
+        SDReadEnable    = 1'b0;
+    else if (wAddress == SD_INTERFACE_ADDR && SDData == 8'h00)
+        SDReadEnable    = 1'b1;
 
 
 //TODO: Arrumar o divisor de clock. A frequência fornecida ao cartão SD deve ser de 100~400KHz durante a inicialização e 10~25MHz para leitura.

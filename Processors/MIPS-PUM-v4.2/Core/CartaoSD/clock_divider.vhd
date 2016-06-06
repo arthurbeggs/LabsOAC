@@ -26,7 +26,7 @@ begin
             if (iReset = '1') then
                 tmp         <= '1';
                 clk_counter <= 0;
-            elsif (iSpeed = '1' and clk_counter = 2) then       -- DEBUG: Testar valores entre 1 e 3
+            elsif (iSpeed = '1' and clk_counter = 3) then       -- DEBUG: Testar valores entre 1 e 4
                 tmp         <= not tmp;
                 clk_counter <= 0;
             elsif (iSpeed = '0' and clk_counter = 125) then     -- DEBUG: Testar valores entre 60 e 200
