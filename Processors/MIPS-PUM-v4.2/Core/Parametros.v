@@ -3,7 +3,6 @@ parameter ON = 1'b1,
 		  OFF = 1'b0,
 		  ZERO = 32'h0,
 		  
-		  
 /* Operacoes da ULA */
 			OPAND	= 5'b00000,	//0
 			OPOR	= 5'b00001,	//1
@@ -115,7 +114,7 @@ parameter ON = 1'b1,
 			OPCLWC1		= 6'h31,
 			OPCSWC1		= 6'h39,
 			OPCDUMMY 	= 6'h3F, // Para o MemStore e MemLoad
-			OPCBGE_LTZ	= 6'h01,	// Para as instruções bgez, bgezal, bgltz, bltzal // 1/2016
+			OPCBGE_LTZ	= 6'h01, // 1/2016 // Para as instruções bgez, bgezal, bgltz, bltzal
 			OPCBGTZ		= 6'h07,	// 1/2016
 			OPCBLEZ		= 6'h06,	// 1/2016
 			

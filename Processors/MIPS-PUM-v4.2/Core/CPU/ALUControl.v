@@ -17,7 +17,7 @@ module ALUControl (iFunct, iOpcode, iRt, iALUOp, oControlSignal);
 
 
 /* I/O type definition */
-input wire [5:0] iFunct, iOpcode, iRt;
+input wire [5:0] iFunct, iOpcode, iRt;			// 1/2016. adicionado iRt.
 input wire [1:0] iALUOp;
 output reg [4:0] oControlSignal;
 
