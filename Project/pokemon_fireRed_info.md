@@ -7,6 +7,16 @@ Criar um Remake do jogo Pokemon Fire Red em Mips
  - [GBA-Pokemon-Engine](https://github.com/Jambo51/GBA-Pokemon-Engine)
  - [Open Source Pokemon Engine](http://www.romhack.me/pages/365/)
  - [GBA-Pokemon-Hacking](https://github.com/TheUnknownCylon/GBA-Pokemon-Hacking)
+ - [Atari Archives](http://www.atariarchives.org/agagd/chapter4.php)
+ - [MIPS - Music Sequence](http://karnbianco.co.uk/portfolio/mips-assembly-music-sequencer/)
+ - [ROM Hack Tools](http://www.pokemonhackersonline.com/showthread.php?t=14153-HackPack-Pok-mon-Gen-3-Tool-Pack-XSE-A-Trainer-A-Map-tons-more)
+ - [Rom Hack GBA Tools link](http://www.mediafire.com/download/b4p3sxplx3c7vqi/ROM+Hackers+GBA+Tool+Pack.zip)
+ - [Bulbapedia - Gen3](http://bulbapedia.bulbagarden.net/wiki/Generation_III)
+  - [Structure Details](http://bulbapedia.bulbagarden.net/wiki/Save_data_structure_in_Generation_III)
+ - [Map Editor](https://github.com/shinyquagsire23/MEH)
+  - [Post About](http://www.pokecommunity.com/showthread.php?t=316345)
+ - [Sprites](http://veekun.com/dex/downloads)
+ - [Using XML files in SNES](http://ludumdare.com/compo/2014/06/23/creating-my-first-nes-game/)
 
 ## Estrutura
 
@@ -60,3 +70,12 @@ Criar um Remake do jogo Pokemon Fire Red em Mips
  - Imagem
  - Animação de Fogo
  - Animação Texto
+
+#### Caixas de Texto
+  - Bordas
+  - Background
+  - Conteúdo
+   - Texto Simples
+   - Opção Menu
+    - Texto
+   - Imagens
