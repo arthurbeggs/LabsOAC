@@ -40,19 +40,24 @@ wire [7:0]  SDData, SDCtrl;     // [SDCtrl ? BUSY : IDLE]
 reg         SDReadEnable;
 
 always @ (posedge iCLK)
+begin
     if (wWriteEnable)
     begin
         if (wAddress == SD_INTERFACE_ADDR)
-        // begin
             SDAddress       <= wWriteData;
-            // if (SDData == 8'h00)
-            //     SDReadEnable    <= 1'b1;
-        // end
-        // else                                 //REVIEW: Modificações não compiladas
-        //     SDReadEnable    <= 1'b0;
     end
+end
+
+always @ (posedge iCLK)
+begin
+    if (SDData == 8'h80 || SDData == 8'h90 || SDData == 8'hA0)
+        SDReadEnable    = 1'b0;
+    else if (wAddress == SD_INTERFACE_ADDR && SDData == 8'h00)
+        SDReadEnable    = 1'b1;
+end
 
 always @ (*)
+begin
     if (wReadEnable)
     begin
         if (wAddress == SD_INTERFACE_DATA   ||  wAddress == SD_INTERFACE_CTRL)
@@ -61,14 +66,6 @@ always @ (*)
             wReadData       = 32'hzzzzzzzz;
     end
     else    wReadData       = 32'hzzzzzzzz;
-
-always @ (*)
-    if (SDData == 8'hA0)                        //REVIEW: Modificações não compiladas
-        SDReadEnable    = 1'b0;
-    else if (wAddress == SD_INTERFACE_ADDR && SDData == 8'h00)
-        SDReadEnable    = 1'b1;
-
-
-//TODO: Arrumar o divisor de clock. A frequência fornecida ao cartão SD deve ser de 100~400KHz durante a inicialização e 10~25MHz para leitura.
+end
 
 endmodule
