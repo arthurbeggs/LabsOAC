@@ -1,0 +1,1692 @@
+DEPTH = 2048;
+WIDTH = 32;
+ADDRESS_RADIX = HEX;
+DATA_RADIX = HEX;
+CONTENT
+BEGIN
+
+00000000 : 23bdfff8;  % 69: exceptionHandling: addi $sp,$sp,-8 %
+00000001 : afa10000;  % 70: 	sw $at,0($sp) %
+00000002 : afbf0004;  % 71: 	sw $ra,4($sp) %
+00000003 : 201a0020;  % 72: 	addi $k0, $zero, 32 # default syscall exception=8*4 %
+00000004 : 401a6800;  % 73: 	mfc0 $k0, $13  #nao esta implementada no pipe %
+00000005 : 00000000;  % 74: 	nop  #nao retirar! %
+00000006 : 335a007c;  % 75: 	andi $k0, $k0, 0x007C %
+00000007 : 001ad082;  % 76: 	srl $k0, $k0, 2 %
+00000008 : 201b000c;  % 78: 	addi $k1, $zero, 12 # overflow na ULA %
+00000009 : 137a0010;  % 79: 	beq $k1, $k0, ALUOverflowException %
+0000000a : 201b000f;  % 81: 	addi $k1, $zero, 15 # excecao de ponto flutuante %
+0000000b : 137a000f;  % 82: 	beq $k1, $k0, FPALUException %
+0000000c : 201b0000;  % 84: 	addi $k1, $zero, 0 # interrupcao %
+0000000d : 137a000e;  % 85: 	beq $k1, $k0, interruptException %
+0000000e : 201b000a;  % 87: 	addi $k1, $zero, 10 # instrucao reservada ou invalida %
+0000000f : 137a00ba;  % 88: 	beq $k1, $k0, instructionException %
+00000010 : 201b0008;  % 90: 	addi $k1, $zero, 8 # syscall %
+00000011 : 137a00ca;  % 91: 	beq $k1, $k0, syscallException %
+00000012 : 8fbf0004;  % 93: endException:	lw $ra,4($sp) %
+00000013 : 8fa10000;  % 94: 		lw $at,0($sp) %
+00000014 : 23bd0008;  % 95: 		addi $sp,$sp,8 %
+00000015 : 401a7000;  % 97: 		mfc0 $k0,$14    #### EPC + 4     #nao esta implementada no pipe %
+00000016 : 235a0004;  % 98: 		addi $k0,$k0,4 %
+00000017 : 409a7000;  % 99: 		mtc0 $k0,$14  #nao esta implementada no pipe %
+00000018 : 42000018;  % 100: 		eret          #nao esta implementada no pipe %
+00000019 : 03e00008;  % 101: 		jr $ra  #para o caso do eret nao estar implementado (pipeline) %
+0000001a : 08000012;  % 103: ALUOverflowException: 	j endException %
+0000001b : 08000012;  % 107: FPALUException: 	j endException %
+0000001c : 401a6800;  % 111: interruptException: 	mfc0 $k0, $13 %
+0000001d : 335aff00;  % 112: 	andi $k0, $k0, 0xFF00 %
+0000001e : 001ad202;  % 113: 	srl $k0, $k0, 8 %
+0000001f : 335b0001;  % 115: 	andi $k1, $k0, 0x0001 %
+00000020 : 17600076;  % 116: 	bne $k1, $zero, keyboardInterrupt %
+00000021 : 335b0002;  % 118: 	andi $k1, $k0, 0x0002 %
+00000022 : 17600006;  % 119: 	bne $k1, $zero, audioInterrupt %
+00000023 : 335b0004;  % 121: 	andi $k1, $k0, 0x0004 %
+00000024 : 17600005;  % 122: 	bne $k1, $zero, mouseInterrupt	 %
+00000025 : 335b0008;  % 124: 	andi $k1, $k0, 0x0008  #verificar se nao  seria 0x0008 %
+00000026 : 17600001;  % 125: 	bne $k1, $zero, counterInterrupt %
+00000027 : 08000012;  % 127: 	j endException %
+00000028 : 08000012;  % 129: counterInterrupt: 	j endException %
+00000029 : 08000012;  % 132: audioInterrupt: 	j endException %
+0000002a : 3c01ffff;  % 136: mouseInterrupt:	la $k0,0xFFFF0114 #endereço do buffer_mouse %
+0000002b : 343a0114;  % 136:  %
+0000002c : 00000000;  % 137: 	nop %
+0000002d : 00000000;  % 138: 	nop %
+0000002e : 8f5a0000;  % 139: 	lw $k0,0($k0) #carrega o buffer em k0 %
+0000002f : 00000000;  % 140: 	nop %
+00000030 : 00000000;  % 141: 	nop %
+00000031 : 335b00ff;  % 142: 	andi $k1,$k0,0xFF %
+00000032 : 23bdfff8;  % 144: 	addi $sp,$sp,-8 %
+00000033 : afa80000;  % 145: 	sw $t0,0($sp) %
+00000034 : afa90004;  % 146: 	sw $t1,4($sp) %
+00000035 : 3c0100ff;  % 151: 	li $k1,0x00ff0000 %
+00000036 : 343b0000;  % 151:  %
+00000037 : 00000000;  % 152: 	nop %
+00000038 : 00000000;  % 153: 	nop %
+00000039 : 035bd824;  % 154: 	and $k1,$k0,$k1 %
+0000003a : 00000000;  % 155: 	nop %
+0000003b : 00000000;  % 156: 	nop %
+0000003c : 001bdc02;  % 157: 	srl $k1,$k1,16 %
+0000003d : 33680001;  % 159: 	andi $t0,$k1,1 %
+0000003e : 24090000;  % 161: 	li $t1,0 %
+0000003f : 11000001;  % 162: 	beq $t0,$zero,MOUSEPULAESQ %
+00000040 : 2409000f;  % 163: 	li $t1,0xF %
+00000041 : 33680002;  % 165: 	MOUSEPULAESQ: andi $t0,$k1,2 %
+00000042 : 00000000;  % 166: 	nop %
+00000043 : 00000000;  % 167: 	nop %
+00000044 : 00084042;  % 168: 	srl $t0,$t0,1 %
+00000045 : 11000001;  % 170: 	beq $t0,$zero,MOUSEPULADIR %
+00000046 : 352900f0;  % 171: 	ori $t1,$t1,0xF0 %
+00000047 : 33680004;  % 173: 	MOUSEPULADIR: andi $t0,$k1,4 %
+00000048 : 00084082;  % 174: 	srl $t0,$t0,2 %
+00000049 : 11000003;  % 176: 	beq $t0,$zero,MOUSEPULAMEIO %
+0000004a : 35290f00;  % 177: 	ori $t1,$t1,0xF00 %
+0000004b : 00000000;  % 178: 	nop %
+0000004c : 00000000;  % 179: 	nop %
+0000004d : 3c019000;  % 180: 	MOUSEPULAMEIO: sw $t1,DATA_CLICKS($zero)    ########### ENDERECO ERRADO!!!!!!! %
+0000004e : 00200821;  % 180:  %
+0000004f : ac2907ac;  % 180:  %
+00000050 : 33680010;  % 183: 	andi $t0,$k1,0x10 %
+00000051 : 00000000;  % 184: 	nop %
+00000052 : 00000000;  % 185: 	nop %
+00000053 : 00084102;  % 186: 	srl $t0,$t0,4 #t0=(sinal) %
+00000054 : 3409ff00;  % 187: 	la $t1,0x0000ff00 %
+00000055 : 00000000;  % 188: 	nop %
+00000056 : 00000000;  % 189: 	nop %
+00000057 : 013a4824;  % 190: 	and $t1,$t1,$k0 %
+00000058 : 00094a02;  % 191: 	srl $t1,$t1,8 %
+00000059 : 11000004;  % 192: 	beq $t0,$zero,pulasinalmousex %
+0000005a : 2408ff00;  % 193: 	la $t0,0xffffff00 %
+0000005b : 00000000;  % 194: 	nop %
+0000005c : 00000000;  % 195: 	nop %
+0000005d : 01284825;  % 196: 	or $t1,$t1,$t0 %
+0000005e : 3c019000;  % 198: 	pulasinalmousex: lw $t0,DATA_X($zero)    ################ ENDERECO ERRADO %
+0000005f : 00200821;  % 198:  %
+00000060 : 8c2807a4;  % 198:  %
+00000061 : 00000000;  % 199: 	nop %
+00000062 : 00000000;  % 200: 	nop %
+00000063 : 01094020;  % 201: 	add $t0,$t0,$t1 %
+00000064 : 24090140;  % 202: 	li $t1,320 %
+00000065 : 00000000;  % 203: 	nop %
+00000066 : 00000000;  % 204: 	nop %
+00000067 : 0109482a;  % 205: 	slt $t1,$t0,$t1 %
+00000068 : 15200001;  % 206: 	bne $t1,$zero,mouseliberax320 %
+00000069 : 24080140;  % 207: 	li $t0,320 %
+0000006a : 24090000;  % 209: 	mouseliberax320: li $t1,0 %
+0000006b : 0109482a;  % 210: 	slt $t1,$t0,$t1 %
+0000006c : 11200001;  % 211: 	beq $t1,$zero,mouseliberax0 %
+0000006d : 24080000;  % 212: 	li $t0,0 %
+0000006e : 3c019000;  % 214: 	mouseliberax0: sw $t0,DATA_X($zero)    ############END ERRADO %
+0000006f : 00200821;  % 214:  %
+00000070 : ac2807a4;  % 214:  %
+00000071 : 33680020;  % 217: 	andi $t0,$k1,0x20 %
+00000072 : 00000000;  % 218: 	nop %
+00000073 : 00000000;  % 219: 	nop %
+00000074 : 00084142;  % 220: 	srl $t0,$t0,5 #t0=(sinal) %
+00000075 : 240900ff;  % 221: 	la $t1,0x000000ff %
+00000076 : 013a4824;  % 222: 	and $t1,$t1,$k0 %
+00000077 : 11000004;  % 223: 	beq $t0,$zero,pulasinalmousey %
+00000078 : 2408ff00;  % 224: 	la $t0,0xffffff00 %
+00000079 : 00000000;  % 225: 	nop %
+0000007a : 00000000;  % 226: 	nop %
+0000007b : 01284825;  % 227: 	or $t1,$t1,$t0 %
+0000007c : 01294827;  % 230: 	pulasinalmousey: nor $t1,$t1,$t1 %
+0000007d : 21290001;  % 231: 	addi $t1,$t1,1 #t1=delta y %
+0000007e : 3c019000;  % 232: 	lw $t0,DATA_Y($zero)              ############# ENDERECO ERRADO %
+0000007f : 00200821;  % 232:  %
+00000080 : 8c2807a8;  % 232:  %
+00000081 : 01094020;  % 233: 	add $t0,$t0,$t1 %
+00000082 : 240900f0;  % 234: 	li $t1,240 %
+00000083 : 00000000;  % 235: 	nop %
+00000084 : 00000000;  % 236: 	nop %
+00000085 : 0109482a;  % 237: 	slt $t1,$t0,$t1 %
+00000086 : 15200001;  % 238: 	bne $t1,$zero,mouseliberay240 %
+00000087 : 240800f0;  % 239: 	li $t0,240 %
+00000088 : 24090000;  % 241: 	mouseliberay240: li $t1,0 %
+00000089 : 00000000;  % 242: 	nop %
+0000008a : 00000000;  % 243: 	nop %
+0000008b : 0109482a;  % 244: 	slt $t1,$t0,$t1 %
+0000008c : 11200001;  % 245: 	beq $t1,$zero,mouseliberay0 %
+0000008d : 24080000;  % 246: 	li $t0,0 %
+0000008e : 3c019000;  % 248: 	mouseliberay0: sw $t0,DATA_Y($zero)    ####################END ERRADO %
+0000008f : 00200821;  % 248:  %
+00000090 : ac2807a8;  % 248:  %
+00000091 : 00000000;  % 249: 	nop %
+00000092 : 00000000;  % 250: 	nop %
+00000093 : 8fa80000;  % 251: 	lw $t0,0($sp) %
+00000094 : 8fa90004;  % 252: 	lw $t1,4($sp) %
+00000095 : 23bd0008;  % 253: 	addi $sp,$sp,8 %
+00000096 : 08000012;  % 255: 	j endException %
+00000097 : 23bdfff8;  % 259: keyboardInterrupt: addi $sp, $sp, -8 %
+00000098 : afa40000;  % 260: 	sw $a0, 0($sp) %
+00000099 : afa20004;  % 261: 	sw $v0, 4($sp) %
+0000009a : 3c019000;  % 264: 	la $a0, eventQueueEndPtr %
+0000009b : 342407a0;  % 264:  %
+0000009c : 00000000;  % 265: 	nop %
+0000009d : 00000000;  % 266: 	nop %
+0000009e : 8c840000;  % 267: 	lw $a0, 0($a0) %
+0000009f : 0c0000ba;  % 268: 	jal eventQueueIncrementPointer %
+000000a0 : 3c019000;  % 269: 	la $k0, eventQueueBeginPtr %
+000000a1 : 343a079c;  % 269:  %
+000000a2 : 00000000;  % 270: 	nop %
+000000a3 : 00000000;  % 271: 	nop %
+000000a4 : 8f5a0000;  % 272: 	lw $k0, 0($k0) %
+000000a5 : 00000000;  % 273: 	nop %
+000000a6 : 00000000;  % 274: 	nop %
+000000a7 : 1342000e;  % 275: 	beq $k0, $v0, keyboardInterruptEnd %
+000000a8 : 3c01ffff;  % 278: 	la $k0, 0xFFFF0100 %
+000000a9 : 343a0100;  % 278:  %
+000000aa : 00000000;  % 279: 	nop %
+000000ab : 00000000;  % 280: 	nop %
+000000ac : 8f5a0000;  % 281: 	lw $k0, 0($k0) %
+000000ad : 00000000;  % 282: 	nop %
+000000ae : 00000000;  % 283: 	nop %
+000000af : 001ac821;  % 284: 	move $t9, $k0 %
+000000b0 : ac9a0000;  % 287: 	sw $k0, 0($a0) %
+000000b1 : 3c019000;  % 288: 	la $k0, eventQueueEndPtr %
+000000b2 : 343a07a0;  % 288:  %
+000000b3 : 00000000;  % 289: 	nop %
+000000b4 : 00000000;  % 290: 	nop %
+000000b5 : af420000;  % 291: 	sw $v0, 0($k0) %
+000000b6 : 8fa40000;  % 293: 	keyboardInterruptEnd: lw $a0, 0($sp) %
+000000b7 : 8fa20004;  % 294: 	lw $v0, 4($sp) %
+000000b8 : 23bd0008;  % 295: 	addi $sp, $sp, 8 %
+000000b9 : 08000012;  % 297: 	j endException	 %
+000000ba : 20820004;  % 300: 	eventQueueIncrementPointer: addi $v0, $a0, 4 %
+000000bb : 3c019000;  % 301: 	la $t0, eventQueueEndAddr %
+000000bc : 34280798;  % 301:  %
+000000bd : 00000000;  % 302: 	nop %
+000000be : 00000000;  % 303: 	nop %
+000000bf : 8d080000;  % 304: 	lw $t0, 0($t0) %
+000000c0 : 00000000;  % 305: 	nop %
+000000c1 : 00000000;  % 306: 	nop %
+000000c2 : 11020001;  % 307: 	beq $t0, $v0, eventQueueIncrementPointerIf %
+000000c3 : 03e00008;  % 308: 	jr $ra %
+000000c4 : 3c019000;  % 310: 	eventQueueIncrementPointerIf: la $v0, eventQueueBeginAddr %
+000000c5 : 34220794;  % 310:  %
+000000c6 : 00000000;  % 311: 	nop %
+000000c7 : 00000000;  % 312: 	nop %
+000000c8 : 8c420000;  % 313: 	lw $v0, 0($v0) %
+000000c9 : 03e00008;  % 314: 	jr $ra %
+000000ca : 3c019000;  % 319: instructionException: la $t0, instructionMessage %
+000000cb : 34280748;  % 319:  %
+000000cc : 00000000;  % 320: 	nop %
+000000cd : 00000000;  % 321: 	nop %
+000000ce : 3c01ffff;  % 322: 	la $t9, 0xFFFF0130 %
+000000cf : 34390130;  % 322:  %
+000000d0 : 00000000;  % 323: 	nop %
+000000d1 : 00000000;  % 324: 	nop %
+000000d2 : af200020;  % 325: 	sw $zero, 0x20($t9) %
+000000d3 : 81090000;  % 326: 	lb $t1,0($t0)   #primeiro caractere %
+000000d4 : 00000000;  % 327: 	nop %
+000000d5 : 00000000;  % 328: 	nop %
+000000d6 : 112000d8;  % 329: 	instructionExceptionLoop: beq $t1,$zero, goToExit   ## fim da string %
+000000d7 : a3290000;  % 330: 	sb $t1,0($t9) %
+000000d8 : 21080001;  % 331: 	addi $t0,$t0,1 %
+000000d9 : 23390001;  % 332: 	addi $t9,$t9,1 %
+000000da : 81090000;  % 333: 	lb $t1,0($t0)	 %
+000000db : 080000d6;  % 334: 	j instructionExceptionLoop %
+000000dc : 23bdfef8;  % 339: syscallException: addi $sp, $sp, -264   			# Salva todos os registradores na pilha %
+000000dd : afa10000;  % 340: 	sw $1,0($sp) %
+000000de : afa20004;  % 341: 	sw $2,4($sp) %
+000000df : afa30008;  % 342: 	sw $3,8($sp) %
+000000e0 : afa4000c;  % 343: 	sw $4,12($sp) %
+000000e1 : afa50010;  % 344: 	sw $5,16($sp) %
+000000e2 : afa60014;  % 345: 	sw $6,20($sp) %
+000000e3 : afa70018;  % 346: 	sw $7,24($sp) %
+000000e4 : afa8001c;  % 347: 	sw $8,28($sp) %
+000000e5 : afa90020;  % 348: 	sw $9,32($sp) %
+000000e6 : afaa0024;  % 349: 	sw $10,36($sp) %
+000000e7 : afab0028;  % 350: 	sw $11,40($sp) %
+000000e8 : afac002c;  % 351: 	sw $12,44($sp) %
+000000e9 : afad0030;  % 352: 	sw $13,48($sp) %
+000000ea : afae0034;  % 353: 	sw $14,52($sp) %
+000000eb : afaf0038;  % 354: 	sw $15,56($sp) %
+000000ec : afb0003c;  % 355: 	sw $16,60($sp) %
+000000ed : afb10040;  % 356: 	sw $17,64($sp) %
+000000ee : afb20044;  % 357: 	sw $18,68($sp) %
+000000ef : afb30048;  % 358: 	sw $19,72($sp) %
+000000f0 : afb4004c;  % 359: 	sw $20,76($sp) %
+000000f1 : afb50050;  % 360: 	sw $21,80($sp) %
+000000f2 : afb60054;  % 361: 	sw $22,84($sp) %
+000000f3 : afb70058;  % 362: 	sw $23,88($sp) %
+000000f4 : afb8005c;  % 363: 	sw $24,92($sp) %
+000000f5 : afb90060;  % 364: 	sw $25,96($sp) %
+000000f6 : afba0064;  % 365: 	sw $26,100($sp) %
+000000f7 : afbb0068;  % 366: 	sw $27,104($sp) %
+000000f8 : afbc006c;  % 367: 	sw $28,108($sp) %
+000000f9 : afbd0070;  % 368: 	sw $29,112($sp) %
+000000fa : afbe0074;  % 369: 	sw $30,116($sp) %
+000000fb : afbf0078;  % 370: 	sw $31,120($sp) %
+000000fc : e7a0007c;  % 371: 	swc1 $f0,124($sp) %
+000000fd : e7a10080;  % 372: 	swc1 $f1,128($sp) %
+000000fe : e7a20084;  % 373: 	swc1 $f2,132($sp) %
+000000ff : e7a30088;  % 374: 	swc1 $f3,136($sp) %
+00000100 : e7a4008c;  % 375: 	swc1 $f4,140($sp) %
+00000101 : e7a50090;  % 376: 	swc1 $f5,144($sp) %
+00000102 : e7a60094;  % 377: 	swc1 $f6,148($sp) %
+00000103 : e7a70098;  % 378: 	swc1 $f7,152($sp) %
+00000104 : e7a8009c;  % 379: 	swc1 $f8,156($sp) %
+00000105 : e7a900a0;  % 380: 	swc1 $f9,160($sp) %
+00000106 : e7aa00a4;  % 381: 	swc1 $f10,164($sp) %
+00000107 : e7ab00a8;  % 382: 	swc1 $f11,168($sp) %
+00000108 : e7ac00ac;  % 383: 	swc1 $f12,172($sp) %
+00000109 : e7ad00b0;  % 384: 	swc1 $f13,176($sp) %
+0000010a : e7ae00b4;  % 385: 	swc1 $f14,180($sp) %
+0000010b : e7af00b8;  % 386: 	swc1 $f15,184($sp) %
+0000010c : e7b000bc;  % 387: 	swc1 $f16,188($sp) %
+0000010d : e7b100c0;  % 388: 	swc1 $f17,192($sp) %
+0000010e : e7b200c4;  % 389: 	swc1 $f18,196($sp) %
+0000010f : e7b300c8;  % 390: 	swc1 $f19,200($sp) %
+00000110 : e7b400cc;  % 391: 	swc1 $f20,204($sp) %
+00000111 : e7b500d0;  % 392: 	swc1 $f21,208($sp) %
+00000112 : e7b600d4;  % 393: 	swc1 $f22,212($sp) %
+00000113 : e7b700d8;  % 394: 	swc1 $f23,216($sp) %
+00000114 : e7b800dc;  % 395: 	swc1 $f24,220($sp) %
+00000115 : e7b900e0;  % 396: 	swc1 $f25,224($sp) %
+00000116 : e7ba00e4;  % 397: 	swc1 $f26,228($sp) %
+00000117 : e7bb00e8;  % 398: 	swc1 $f27,232($sp) %
+00000118 : e7bc00ec;  % 399: 	swc1 $f28,236($sp) %
+00000119 : e7bd00f0;  % 400: 	swc1 $f29,240($sp) %
+0000011a : e7be00f4;  % 401: 	swc1 $f30,244($sp) %
+0000011b : e7bf00f8;  % 402: 	swc1 $f31,248($sp) %
+0000011c : 0000c810;  % 404: 	mfhi $t9 %
+0000011d : afb900fc;  % 405: 	sw $t9, 252($sp) %
+0000011e : 0000c812;  % 406: 	mflo $t9 %
+0000011f : afb90100;  % 407: 	sw $t9, 256($sp) %
+00000120 : 00004020;  % 410:     add $t0, $zero, $zero %
+00000121 : 00004820;  % 411:     add $t1, $zero, $zero %
+00000122 : 00005020;  % 412:     add $t2, $zero, $zero %
+00000123 : 00005820;  % 413:     add $t3, $zero, $zero %
+00000124 : 00006020;  % 414:     add $t4, $zero, $zero %
+00000125 : 00006820;  % 415:     add $t5, $zero, $zero %
+00000126 : 00007020;  % 416:     add $t6, $zero, $zero %
+00000127 : 00007820;  % 417:     add $t7, $zero, $zero %
+00000128 : 0000c020;  % 418:     add $t8, $zero, $zero %
+00000129 : 0000c820;  % 419:     add $t9, $zero, $zero %
+0000012a : 2008000a;  % 422: 	addi $t0,$zero, 10 %
+0000012b : 11020083;  % 423: 	beq $t0,$v0,goToExit		# syscall exit %
+0000012c : 20080001;  % 425: 	addi $t0, $zero, 1				# sycall 1 = print int %
+0000012d : 11020082;  % 426: 	beq $t0, $v0, goToPrintInt %
+0000012e : 20080065;  % 427: 	addi $t0, $zero, 101				# sycall 1 = print int %
+0000012f : 11020080;  % 428: 	beq $t0, $v0, goToPrintInt %
+00000130 : 20080002;  % 430: 	addi $t0, $zero, 2				# syscall 2 = print float %
+00000131 : 11020084;  % 431: 	beq $t0, $v0, goToPrintFloat %
+00000132 : 20080066;  % 432: 	addi $t0, $zero, 102				# syscall 2 = print float %
+00000133 : 11020082;  % 433: 	beq $t0, $v0, goToPrintFloat %
+00000134 : 20080004;  % 435: 	addi $t0, $zero, 4				# syscall 4 = print string %
+00000135 : 1102007c;  % 436: 	beq $t0, $v0, goToPrintString %
+00000136 : 20080068;  % 437: 	addi $t0, $zero, 104				# syscall 4 = print string %
+00000137 : 1102007a;  % 438: 	beq $t0, $v0, goToPrintString %
+00000138 : 20080005;  % 440: 	addi $t0, $zero, 5				# syscall 5 = read int %
+00000139 : 11020089;  % 441: 	beq $t0, $v0, goToReadInt %
+0000013a : 20080069;  % 442: 	addi $t0, $zero, 105				# syscall 5 = read int %
+0000013b : 11020087;  % 443: 	beq $t0, $v0, goToReadInt %
+0000013c : 20080006;  % 445: 	addi $t0, $zero, 6				# syscall 6 = read float %
+0000013d : 11020089;  % 446: 	beq $t0, $v0, goToReadFloat %
+0000013e : 2008006a;  % 447: 	addi $t0, $zero, 106				# syscall 6 = read float %
+0000013f : 11020087;  % 448: 	beq $t0, $v0, goToReadFloat %
+00000140 : 20080008;  % 450: 	addi $t0, $zero, 8				# syscall 8 = read string %
+00000141 : 11020083;  % 451: 	beq $t0, $v0, goToReadString %
+00000142 : 2008006c;  % 452: 	addi $t0, $zero, 108				# syscall 8 = read string %
+00000143 : 11020081;  % 453: 	beq $t0, $v0, goToReadString %
+00000144 : 2008000b;  % 455: 	addi $t0, $zero, 11				# syscall 11 = print char %
+00000145 : 1102006e;  % 456: 	beq $t0, $v0, goToPrintChar %
+00000146 : 2008006f;  % 457: 	addi $t0, $zero, 111				# syscall 11 = print char %
+00000147 : 1102006c;  % 458: 	beq $t0, $v0, goToPrintChar %
+00000148 : 2008000c;  % 460: 	addi $t0, $zero, 12				# syscall 12 = read char %
+00000149 : 11020077;  % 461: 	beq $t0, $v0, goToReadChar %
+0000014a : 20080070;  % 462: 	addi $t0, $zero, 112				# syscall 12 = read char %
+0000014b : 11020075;  % 463: 	beq $t0, $v0, goToReadChar %
+0000014c : 2008002d;  % 469: 	addi $t0,$zero,45				# syscall 45 = plot %
+0000014d : 1102006f;  % 470: 	beq $t0,$v0, goToPlot %
+0000014e : 2008002e;  % 472: 	addi $t0,$zero,46				# syscall 46 = getplot %
+0000014f : 1102006f;  % 473: 	beq $t0,$v0, goToGetPlot %
+00000150 : 2008001f;  % 476: 	addi $t0, $zero, 31				# syscall 31 = MIDI out %
+00000151 : 11020077;  % 477: 	beq $t0, $v0, goToMidiOut			# Generate tone and return immediately %
+00000152 : 20080083;  % 478:     addi $t0, $zero, 131				# syscall 31 = MIDI out %
+00000153 : 11020075;  % 479: 	beq $t0, $v0, goToMidiOut %
+00000154 : 20080021;  % 484: 	addi $t0, $zero, 33				# syscall 33 = MIDI out synchronous %
+00000155 : 11020075;  % 485: 	beq $t0, $v0, goToMidiOutSync			# Generate tone and return upon tone completion %
+00000156 : 20080085;  % 486:     addi $t0, $zero, 133				# syscall 33 = MIDI out synchronous %
+00000157 : 11020073;  % 487: 	beq $t0, $v0, goToMidiOutSync %
+00000158 : 2008002d;  % 489: 	addi $t0,$zero,45				# syscall 45 = plot %
+00000159 : 11020063;  % 490: 	beq $t0,$v0, goToPlot %
+0000015a : 2008002e;  % 492: 	addi $t0,$zero,46				# syscall 46 = getplot %
+0000015b : 11020063;  % 493: 	beq $t0,$v0, goToGetPlot %
+0000015c : 2008002f;  % 495: 	addi $t0, $zero, 47				# syscall 47 = inkey %
+0000015d : 1102006f;  % 496: 	beq $t0, $v0, goToInKey %
+0000015e : 20080030;  % 498: 	addi $t0,$zero, 48				# syscall 48 = CLS		 %
+0000015f : 1102006f;  % 499: 	beq $t0, $v0, goToCLS %
+00000160 : 20080096;  % 501: 	addi $t0,$zero, 150				# syscall 50 = pop event		 %
+00000161 : 1102006f;  % 502: 	beq $t0, $v0, goToPopEvent %
+00000162 : 8fa10000;  % 507: 	lw $1,0($sp) %
+00000163 : 8fa30008;  % 509: 	lw $3,8($sp) %
+00000164 : 8fa60014;  % 512: 	lw $6,20($sp) %
+00000165 : 8fa70018;  % 513: 	lw $7,24($sp) %
+00000166 : 8fa8001c;  % 514: 	lw $8,28($sp) %
+00000167 : 8fa90020;  % 515: 	lw $9,32($sp) %
+00000168 : 8faa0024;  % 516: 	lw $10,36($sp) %
+00000169 : 8fab0028;  % 517: 	lw $11,40($sp) %
+0000016a : 8fac002c;  % 518: 	lw $12,44($sp) %
+0000016b : 8fad0030;  % 519: 	lw $13,48($sp) %
+0000016c : 8fae0034;  % 520: 	lw $14,52($sp) %
+0000016d : 8faf0038;  % 521: 	lw $15,56($sp) %
+0000016e : 8fb0003c;  % 522: 	lw $16,60($sp) %
+0000016f : 8fb10040;  % 523: 	lw $17,64($sp) %
+00000170 : 8fb20044;  % 524: 	lw $18,68($sp) %
+00000171 : 8fb30048;  % 525: 	lw $19,72($sp) %
+00000172 : 8fb4004c;  % 526: 	lw $20,76($sp) %
+00000173 : 8fb50050;  % 527: 	lw $21,80($sp) %
+00000174 : 8fb60054;  % 528: 	lw $22,84($sp) %
+00000175 : 8fb70058;  % 529: 	lw $23,88($sp) %
+00000176 : 8fb8005c;  % 530: 	lw $24,92($sp) %
+00000177 : 8fb90060;  % 531: 	lw $25,96($sp) %
+00000178 : 8fba0064;  % 532: 	lw $26,100($sp) %
+00000179 : 8fbb0068;  % 533: 	lw $27,104($sp) %
+0000017a : 8fbc006c;  % 534: 	lw $28,108($sp) %
+0000017b : 8fbd0070;  % 535: 	lw $29,112($sp) %
+0000017c : 8fbe0074;  % 536: 	lw $30,116($sp) %
+0000017d : 8fbf0078;  % 537: 	lw $31,120($sp) %
+0000017e : c7a10080;  % 539: 	lwc1 $f1,128($sp) %
+0000017f : c7a20084;  % 540: 	lwc1 $f2,132($sp) %
+00000180 : c7a30088;  % 541: 	lwc1 $f3,136($sp) %
+00000181 : c7a4008c;  % 542: 	lwc1 $f4,140($sp) %
+00000182 : c7a50090;  % 543: 	lwc1 $f5,144($sp) %
+00000183 : c7a60094;  % 544: 	lwc1 $f6,148($sp) %
+00000184 : c7a70098;  % 545: 	lwc1 $f7,152($sp) %
+00000185 : c7a8009c;  % 546: 	lwc1 $f8,156($sp) %
+00000186 : c7a900a0;  % 547: 	lwc1 $f9,160($sp) %
+00000187 : c7aa00a4;  % 548: 	lwc1 $f10,164($sp) %
+00000188 : c7ab00a8;  % 549: 	lwc1 $f11,168($sp) %
+00000189 : c7ac00ac;  % 550: 	lwc1 $f12,172($sp) %
+0000018a : c7ad00b0;  % 551: 	lwc1 $f13,176($sp) %
+0000018b : c7ae00b4;  % 552: 	lwc1 $f14,180($sp) %
+0000018c : c7af00b8;  % 553: 	lwc1 $f15,184($sp) %
+0000018d : c7b000bc;  % 554: 	lwc1 $f16,188($sp) %
+0000018e : c7b100c0;  % 555: 	lwc1 $f17,192($sp) %
+0000018f : c7b200c4;  % 556: 	lwc1 $f18,196($sp) %
+00000190 : c7b300c8;  % 557: 	lwc1 $f19,200($sp) %
+00000191 : c7b400cc;  % 558: 	lwc1 $f20,204($sp) %
+00000192 : c7b500d0;  % 559: 	lwc1 $f21,208($sp) %
+00000193 : c7b600d4;  % 560: 	lwc1 $f22,212($sp) %
+00000194 : c7b700d8;  % 561: 	lwc1 $f23,216($sp) %
+00000195 : c7b800dc;  % 562: 	lwc1 $f24,220($sp) %
+00000196 : c7b900e0;  % 563: 	lwc1 $f25,224($sp) %
+00000197 : c7ba00e4;  % 564: 	lwc1 $f26,228($sp) %
+00000198 : c7bb00e8;  % 565: 	lwc1 $f27,232($sp) %
+00000199 : c7bc00ec;  % 566: 	lwc1 $f28,236($sp) %
+0000019a : c7bd00f0;  % 567: 	lwc1 $f29,240($sp) %
+0000019b : c7be00f4;  % 568: 	lwc1 $f30,244($sp) %
+0000019c : c7bf00f8;  % 569: 	lwc1 $f31,248($sp) %
+0000019d : 8fb900fc;  % 571: 	lw $t9, 252($sp) %
+0000019e : 03200011;  % 572: 	mthi $t9 %
+0000019f : 8fb90100;  % 573: 	lw $t9, 256($sp) %
+000001a0 : 03200013;  % 574: 	mtlo $t9 %
+000001a1 : 8fb90060;  % 575: 	lw $t9, 96($sp) %
+000001a2 : 23bd0108;  % 576: 	addi $sp, $sp, 264	 %
+000001a3 : 08000012;  % 578: 	j endException %
+000001a4 : 3c01ffff;  % 581: goToExit1: la $t9, 0xFFFF0130  # escreve FIM no LCD  <= RETIREI mudar o goToExit1  %
+000001a5 : 34390130;  % 581:  %
+000001a6 : 00000000;  % 582: 	nop %
+000001a7 : 00000000;  % 583: 	nop %
+000001a8 : a3200020;  % 584: 	sb $zero, 0x20($t9)  #limpa %
+000001a9 : 24080046;  % 585: 	li $t0,0x46 %
+000001aa : a3280007;  % 586: 	sb $t0,0x07($t9) %
+000001ab : 24080049;  % 587: 	li $t0,0x49 %
+000001ac : a3280008;  % 588: 	sb $t0,0x08($t9) %
+000001ad : 2408004d;  % 589: 	li $t0,0x4D %
+000001ae : a3280009;  % 590: 	sb $t0,0x09($t9) %
+000001af : 080001af;  % 592: goToExit: j goToExit  ########### syscall 10 %
+000001b0 : 0c0001d3;  % 594: goToPrintInt: jal printInt			# chama printInt %
+000001b1 : 08000162;  % 595: 	j endSyscall %
+000001b2 : 0c00020a;  % 597: goToPrintString: jal printString		# chama printString %
+000001b3 : 08000162;  % 598: 	j endSyscall			 %
+000001b4 : 0c000223;  % 600: goToPrintChar: jal printChar			#chama printChar %
+000001b5 : 08000162;  % 601: 	j endSyscall %
+000001b6 : 3c019000;  % 603: goToPrintFloat: la $s6, FloatBuffer   #add $s6, $zero, $zero		#chama float e printstring %
+000001b7 : 3436076c;  % 603:  %
+000001b8 : 0c00043b;  % 604: 	jal printFloat %
+000001b9 : 3c019000;  % 605: 	la $a0,FloatBuffer %
+000001ba : 3424076c;  % 605:  %
+000001bb : 0c00020a;  % 606: 	jal printString %
+000001bc : 08000162;  % 607: 	j endSyscall %
+000001bd : 0c000272;  % 609: goToPlot: jal Plot %
+000001be : 08000162;  % 610: 	j endSyscall %
+000001bf : 0c00027f;  % 612: goToGetPlot: jal GetPlot %
+000001c0 : 08000162;  % 613: 	j endSyscall %
+000001c1 : 0c00028c;  % 615: goToReadChar: jal readChar			#chama readChar %
+000001c2 : 08000162;  % 616: 	j endSyscall %
+000001c3 : 0c0002ee;  % 618: goToReadInt: jal readInt			#chama readInt %
+000001c4 : 08000162;  % 619: 	j endSyscall %
+000001c5 : 0c000341;  % 621: goToReadString: jal readString			#chama readString %
+000001c6 : 08000162;  % 622: 		j endSyscall %
+000001c7 : 0c00059a;  % 624: goToReadFloat:  jal readFloat			#chama readFloat %
+000001c8 : 08000162;  % 625: backReadFloat: 	j endSyscall %
+000001c9 : 0c0003af;  % 629: goToMidiOut: jal midiOut				#chama MIDIout %
+000001ca : 08000162;  % 630: 	j endSyscall %
+000001cb : 0c0003c4;  % 632: goToMidiOutSync: jal midiOutSync				#chama MIDIoutSync %
+000001cc : 08000162;  % 633: 	j endSyscall %
+000001cd : 0c0003e0;  % 635: goToInKey: jal inKey				#chama inKey %
+000001ce : 08000162;  % 636: 	j endSyscall %
+000001cf : 0c000412;  % 638: goToCLS: jal CLS				#chama CLS %
+000001d0 : 08000162;  % 639: 	j endSyscall %
+000001d1 : 0c000420;  % 641: goToPopEvent: jal popEvent			#chama popEvent %
+000001d2 : 08000162;  % 642: 	j endSyscall %
+000001d3 : 23bdfffc;  % 654: printInt: addi $sp, $sp, -4   				# salva $ra %
+000001d4 : afbf0000;  % 655: 	sw $ra, 0($sp) %
+000001d5 : 14800007;  % 658: 	bne $a0, $zero, printNotZero				# chama printNotZero %
+000001d6 : 20040030;  % 660: 	printZero: addi $a0, $zero, 48				# Imprime 0 %
+000001d7 : 0c000223;  % 661: 		jal printChar %
+000001d8 : 8fbf0000;  % 663: printIntEnd:	lw $ra, 0($sp)						#retorna %
+000001d9 : 23bd0004;  % 664: 		addi $sp, $sp, 4 %
+000001da : 00000000;  % 665: 		nop %
+000001db : 00000000;  % 666: 		nop %
+000001dc : 03e00008;  % 667: 		jr $ra %
+000001dd : 00044020;  % 669: printNotZero: add $t0, $zero, $a0			# $t0 contem o valor do inteiro a ser impresso %
+000001de : 2009000a;  % 670: 		addi $t1, $zero, 10					# $t1 eh uma constante 10 %
+000001df : 0100c82a;  % 671: 		slt $t9, $t0, $zero					# $t0 < 0 ? %
+000001e0 : 1320000d;  % 672: 		beq $t9, $zero, PrintIntContinue	# verifica se o valor eh negativo.  %
+000001e1 : 2004002d;  % 674: 		addi $a0, $zero, 45					# Negativo, imprime um '-' na tela %
+000001e2 : 23bdfff4;  % 676: 		addi $sp, $sp, -12 %
+000001e3 : afbf0008;  % 677: 		sw $ra, 8($sp) %
+000001e4 : afa90004;  % 678: 		sw $t1, 4($sp) %
+000001e5 : afa80000;  % 679: 		sw $t0, 0($sp)						# salva regs %
+000001e6 : 0c000223;  % 681: 		jal printChar						# imprime ASCII 45 %
+000001e7 : 8fbf0008;  % 683: 		lw $ra, 8($sp)						# recupera regs %
+000001e8 : 8fa90004;  % 684: 		lw $t1, 4($sp) %
+000001e9 : 8fa80000;  % 685: 		lw $t0, 0($sp) %
+000001ea : 23bd000c;  % 686: 		addi $sp, $sp, 12 %
+000001eb : 00084022;  % 688: 		sub $t0, $zero, $t0					# Torna $t0 positivo %
+000001ec : 20a50008;  % 689: 		addi $a1, $a1, 8					# incrementa a coluna %
+000001ed : 00005820;  % 690: 		add $t3, $zero, $zero				# $t3=0 %
+000001ee : 1100000b;  % 692: PrintIntContinue: beq $t0, $zero, PrintIntPop		# se $t0 é zero, nao há mais digitos para imprimir %
+000001ef : 0109001a;  % 694: 		div $t0, $t1					# divide o valor por 10 %
+000001f0 : 00000000;  % 695: 		nop %
+000001f1 : 00000000;  % 696: 		nop %
+000001f2 : 00004012;  % 697: 		mflo $t0						# $t0 contem o valor dividido por 10 %
+000001f3 : 00005010;  % 698: 		mfhi $t2						# $t2 contem o ultimo digito a ser impresso %
+000001f4 : 00000000;  % 699: 		nop %
+000001f5 : 00000000;  % 700: 		nop %
+000001f6 : 23bdfffc;  % 701: 		addi $sp, $sp, -4 %
+000001f7 : afaa0000;  % 702: 		sw $t2, 0($sp)					# empilha $t2 %
+000001f8 : 216b0001;  % 704: 		addi $t3, $t3, 1				# conta quantos elementos (digitos) estão na pilha %
+000001f9 : 080001ee;  % 705: 		j PrintIntContinue				# volta para ser dividido e empilhado de novo %
+000001fa : 1160ffdd;  % 707: PrintIntPop: beq $t3, $zero, printIntEnd	# ultimo digito endPrintInt %
+000001fb : 8fa40000;  % 709: 		lw $a0, 0($sp)					# le valor da pilha e coloca em $a0 %
+000001fc : 23bd0004;  % 710: 		addi $sp, $sp, 4 %
+000001fd : 00000000;  % 711: 		nop			#hazard lw addi %
+000001fe : 20840030;  % 712: 		addi $a0, $a0, 48				# código ASCII do dígito = numero + 48 %
+000001ff : 00000000;  % 713: 		nop %
+00000200 : 23bdfff8;  % 714: 		addi $sp, $sp, -8				# salva regs %
+00000201 : afab0000;  % 715: 		sw $t3, 0($sp) %
+00000202 : afbf0004;  % 716: 		sw $ra, 4($sp) %
+00000203 : 0c000223;  % 718: 		jal printChar					# imprime digito %
+00000204 : 8fbf0004;  % 720: 		lw $ra, 4($sp)					# recupera regs %
+00000205 : 8fab0000;  % 721: 		lw $t3, 0($sp) %
+00000206 : 23bd0008;  % 722: 		addi $sp, $sp, 8 %
+00000207 : 20a50008;  % 724: 		addi $a1, $a1, 8				# incrementa a coluna %
+00000208 : 216bffff;  % 725: 		addi $t3, $t3, -1				# decrementa contador %
+00000209 : 080001fa;  % 726: 		j PrintIntPop					# volta %
+0000020a : 23bdfffc;  % 741: printString:	addi $sp, $sp, -4			# salva $ra %
+0000020b : afbf0000;  % 742: 		sw $ra, 0($sp) %
+0000020c : 00044021;  % 744: 		move $t0, $a0					# $t0=endereco da string %
+0000020d : 81040000;  % 746: ForPrintString:	lb $a0, 0($t0)			# le em $a0 o caracter a ser impresso %
+0000020e : 10800010;  % 753: 		beq $a0, $zero, EndForPrintString	# string ASCIIZ termina com NULL %
+0000020f : 23bdfffc;  % 755: 		addi $sp, $sp, -4				# salva $t0 %
+00000210 : afa80000;  % 756: 		sw $t0, 0($sp) %
+00000211 : 0c000223;  % 760: 		jal printChar					# imprime char %
+00000212 : 8fa80000;  % 763: 		lw $t0, 0($sp)					# recupera $t0				 %
+00000213 : 23bd0004;  % 764: 		addi $sp, $sp, 4 %
+00000214 : 20a50008;  % 767: 		addi $a1, $a1, 8				# incrementa a coluna %
+00000215 : 00000000;  % 768: 		nop %
+00000216 : 00000000;  % 769: 		nop %
+00000217 : 28bb0139;  % 770: 		slti $k1,$a1,313   #320-8 %
+00000218 : 00000000;  % 771: 		nop %
+00000219 : 00000000;  % 772: 		nop %
+0000021a : 17600002;  % 773: 		bne $k1,$zero,NaoPulaLinha %
+0000021b : 20c60008;  % 774: 		addi $a2,$a2,8					#incrementa a linha %
+0000021c : 00002821;  % 775: 		move $a1,$zero %
+0000021d : 21080001;  % 782: 		addi $t0,$t0,1 %
+0000021e : 0800020d;  % 783: 		j ForPrintString				# loop %
+0000021f : 8fbf0000;  % 785: EndForPrintString: lw $ra, 0($sp)		# recupera $ra %
+00000220 : 23bd0004;  % 786: 		addi $sp, $sp, 4 %
+00000221 : 00000000;  % 787: 		nop %
+00000222 : 03e00008;  % 788: 		jr $ra							# fim printString %
+00000223 : 30edff00;  % 812: printChar:	andi $t5,$a3,0xFF00				# cor fundo %
+00000224 : 30ee00ff;  % 813: 		andi $t6,$a3,0x00FF				# cor frente %
+00000225 : 000d6a02;  % 814: 		srl $t5,$t5,8 %
+00000226 : 288c0020;  % 816: 		slti $t4,$a0,32 %
+00000227 : 15800003;  % 817: 		bne $t4,$zero, NAOIMPRIMIVEL %
+00000228 : 288c007e;  % 818: 		slti $t4,$a0,126 %
+00000229 : 11800001;  % 819: 		beq $t4,$zero, NAOIMPRIMIVEL %
+0000022a : 0800022c;  % 820: 		j IMPRIMIVEL %
+0000022b : 24040020;  % 821: NAOIMPRIMIVEL:	li $a0,32 %
+0000022c : 24010140;  % 825: IMPRIMIVEL:	li $at, 320 %
+0000022d : 00260018;  % 826: 		mult $at, $a2 %
+0000022e : 00000000;  % 827: 		nop %
+0000022f : 00000000;  % 828: 		nop %
+00000230 : 00006012;  % 829: 		mflo $t4 %
+00000231 : 00000000;  % 830: 		nop %
+00000232 : 00000000;  % 831: 		nop %
+00000233 : 01856020;  % 832: 		add $t4, $t4, $a1				# t4 = 256(y) + x %
+00000234 : 00000000;  % 833: 		nop %
+00000235 : 00000000;  % 834: 		nop %
+00000236 : 218c0007;  % 835: 		addi $t4, $t4, 7				# t4 = 256(y) + (x+7) %
+00000237 : 3c01ff00;  % 836: 		la $t8, 0xFF000000		# Endereco de inicio da memoria VGA %
+00000238 : 34380000;  % 836:  %
+00000239 : 00000000;  % 837: 		nop %
+0000023a : 00000000;  % 838: 		nop %
+0000023b : 01986020;  % 839: 		add $t4, $t4, $t8				# t4 = endereco de impressao do ultimo pixel da primeira linha do char %
+0000023c : 208affe0;  % 841: 		addi $t2, $a0, -32				# indice do char na memoria %
+0000023d : 00000000;  % 842: 		nop %
+0000023e : 00000000;  % 843: 		nop %
+0000023f : 000a50c0;  % 844: 		sll $t2, $t2, 3					# offset em bytes em relacao ao endereco inicial %
+00000240 : 3c019000;  % 846: 		la $t3,kdata %
+00000241 : 342b0000;  % 846:  %
+00000242 : 00000000;  % 847: 		nop %
+00000243 : 00000000;  % 848: 		nop %
+00000244 : 014b5020;  % 849: 		add $t2,$t2,$t3   #pseudo .kdata		 %
+00000245 : 00000000;  % 851: 		nop %
+00000246 : 00000000;  % 852: 		nop %
+00000247 : 8d4b0000;  % 853: 		lw $t3, 0($t2)					# carrega a primeira word do char %
+00000248 : 20080004;  % 854: 		addi $t0, $zero, 4				# i = 4 %
+00000249 : 00000000;  % 855: 		nop %
+0000024a : 00000000;  % 856: 		nop %
+0000024b : 11000010;  % 857: forChar1I: beq $t0, $zero, endForChar1I	# if(i == 0) end for i %
+0000024c : 20090008;  % 858: 		addi $t1, $zero, 8				# j = 8 %
+0000024d : 00000000;  % 859: 		nop %
+0000024e : 00000000;  % 860: 		nop %
+0000024f : 11200009;  % 862:      forChar1J: beq $t1, $zero, endForChar1J	# if(j == 0) end for j %
+00000250 : 31790001;  % 865: 		andi $t9,$t3,0x0001 %
+00000251 : 000b5842;  % 866: 		srl $t3, $t3, 1				# t3 = t3/2  ??????????????????? %
+00000252 : 13200002;  % 868: 		beq $t9, $zero, printCharPixelbg1 %
+00000253 : a18e0000;  % 869: 		sb $t6, 0($t4)		#imprime pixel com cor de frente %
+00000254 : 08000256;  % 870: 		j endCharPixel1	 %
+00000255 : a18d0000;  % 871: printCharPixelbg1:	sb $t5, 0($t4)  #imprime pixel com cor de fundo %
+00000256 : 2129ffff;  % 872: endCharPixel1:  addi $t1, $t1, -1				# j-- %
+00000257 : 218cffff;  % 873: 		addi $t4, $t4, -1				# t4 aponta um pixel para a esquerda %
+00000258 : 0800024f;  % 874: 		j forChar1J %
+00000259 : 2108ffff;  % 876: endForChar1J:  addi $t0, $t0, -1				# i-- %
+0000025a : 218c0148;  % 878: 		addi $t4,$t4,328   # 2**12 + 8 %
+0000025b : 0800024b;  % 879: 		j forChar1I %
+0000025c : 8d4b0004;  % 881: endForChar1I: lw $t3, 4($t2)					# carrega a segunda word do char %
+0000025d : 20080004;  % 883: 		addi $t0, $zero, 4				# i = 4 %
+0000025e : 00000000;  % 884: 		nop %
+0000025f : 00000000;  % 885: 		nop %
+00000260 : 11000010;  % 886: forChar2I:	 beq $t0, $zero, endForChar2I	# if(i == 0) end for i %
+00000261 : 20090008;  % 887: 		addi $t1, $zero, 8				# j = 8 %
+00000262 : 00000000;  % 888: 		nop %
+00000263 : 00000000;  % 889: 		nop %
+00000264 : 11200009;  % 890: 	forChar2J: beq $t1, $zero, endForChar2J	# if(j == 0) end for j %
+00000265 : 31790001;  % 893: 			andi $t9,$t3,0x0001 %
+00000266 : 000b5842;  % 894: 			srl $t3, $t3, 1					# t3 = t3/2 %
+00000267 : 13200002;  % 896: 			beq $t9, $zero, printCharPixelbg2 %
+00000268 : a18e0000;  % 897: 			sb $t6, 0($t4) %
+00000269 : 0800026b;  % 898: 			j endCharPixel2 %
+0000026a : a18d0000;  % 900: printCharPixelbg2: sb $t5, 0($t4) %
+0000026b : 2129ffff;  % 902:  endCharPixel2:	addi $t1, $t1, -1				# j-- %
+0000026c : 218cffff;  % 903: 		addi $t4, $t4, -1				# t4 aponta um pixel para a esquerda %
+0000026d : 08000264;  % 904: 		j forChar2J %
+0000026e : 2108ffff;  % 906: 	endForChar2J:	addi $t0, $t0, -1				# i-- %
+0000026f : 218c0148;  % 908: 			addi $t4,$t4,328 %
+00000270 : 08000260;  % 909: 		j forChar2I %
+00000271 : 03e00008;  % 911: endForChar2I: jr $ra %
+00000272 : 24010140;  % 923: Plot: li $at,320   %
+00000273 : 00a10018;  % 924: 	mult $a1,$at %
+00000274 : 00000000;  % 925: 	nop %
+00000275 : 00000000;  % 926: 	nop %
+00000276 : 00002812;  % 927: 	mflo $a1 %
+00000277 : 00852020;  % 928: 	add $a0,$a0,$a1 %
+00000278 : 3c01ff00;  % 929: 	la $a1, 0xFF000000   #endereco VGA %
+00000279 : 34250000;  % 929:  %
+0000027a : 00000000;  % 930: 	nop %
+0000027b : 00000000;  % 931: 	nop %
+0000027c : 00852025;  % 932: 	or $a0,$a0,$a1 %
+0000027d : a0860000;  % 933: 	sb $a2,0($a0) %
+0000027e : 03e00008;  % 934: 	jr $ra %
+0000027f : 24010140;  % 945: GetPlot:li $at,320 %
+00000280 : 00a10018;  % 946: 	mult $a1,$at %
+00000281 : 00000000;  % 947: 	nop %
+00000282 : 00000000;  % 948: 	nop %
+00000283 : 00002812;  % 949: 	mflo $a1 %
+00000284 : 00852020;  % 950: 	add $a0,$a0,$a1 %
+00000285 : 3c01ff00;  % 951: 	la $a1, 0xFF000000  #endereco VGA %
+00000286 : 34250000;  % 951:  %
+00000287 : 00000000;  % 952: 	nop %
+00000288 : 00000000;  % 953: 	nop %
+00000289 : 00852025;  % 954: 	or $a0,$a0,$a1 %
+0000028a : 80860000;  % 955: 	lb $a2,0($a0) %
+0000028b : 03e00008;  % 956: 	jr $ra %
+0000028c : 3c01ffff;  % 968: readChar: la $t0,0xFFFF0100 %
+0000028d : 34280100;  % 968:  %
+0000028e : 00000000;  % 969: 	nop %
+0000028f : 00000000;  % 970: 	nop %
+00000290 : 3c01ffff;  % 973: 	la $t1,0xFFFF0104 %
+00000291 : 34290104;  % 973:  %
+00000292 : 00000000;  % 974: 	nop %
+00000293 : 00000000;  % 975: 	nop %
+00000294 : 200f0012;  % 978: 	addi $t7, $zero, 0x12 #carrega o shift %
+00000295 : 00000000;  % 979: 	nop %
+00000296 : 00000000;  % 980: 	nop %
+00000297 : 201800f0;  % 981: 	addi $t8, $zero, 0xF0 #carrega o F0 %
+00000298 : 00000000;  % 982: 	nop %
+00000299 : 00000000;  % 983: 	nop %
+0000029a : 0000c820;  % 984: 	add $t9, $zero, $zero #shif precionado %
+0000029b : 8d0e0000;  % 986: 	lw $t6, 0($t0) %
+0000029c : 8d0a0000;  % 987: loopReadChar: lw $t2, 0($t0) %
+0000029d : 00000000;  % 988: 	nop %
+0000029e : 00000000;  % 989: 	nop %
+0000029f : 114e0004;  % 990: 	beq $t2, $t6, atualizaBufferChar # testa se o buffer foi modificado %
+000002a0 : 00000000;  % 991: 	nop %
+000002a1 : 00000000;  % 992: 	nop %
+000002a2 : 00000000;  % 993: 	nop %
+000002a3 : 080002a9;  % 994: 	j modificado %
+000002a4 : 01407020;  % 996: atualizaBufferChar: add $t6, $t2, $zero %
+000002a5 : 00000000;  % 997: 	nop %
+000002a6 : 00000000;  % 998: 	nop %
+000002a7 : 00000000;  % 999: 	nop %
+000002a8 : 0800029c;  % 1000: 	j loopReadChar %
+000002a9 : 314c00ff;  % 1002: modificado: andi $t4, $t2, 0xFF %
+000002aa : 00000000;  % 1003: 	nop %
+000002ab : 00000000;  % 1004: 	nop %
+000002ac : 200d0012;  % 1005: 	addi $t5, $zero, 0x12 %
+000002ad : 00000000;  % 1006: 	nop %
+000002ae : 00000000;  % 1007: 	nop %
+000002af : 118d003a;  % 1008: 	beq $t4, $t5, shiftindahouse %
+000002b0 : 314c00ff;  % 1011: 	andi $t4, $t2, 0xFF %
+000002b1 : 00000000;  % 1012: 	nop %
+000002b2 : 00000000;  % 1013: 	nop %
+000002b3 : 1198fff0;  % 1014: 	beq $t4, $t8, atualizaBufferChar %
+000002b4 : 314cff00;  % 1017: 	andi $t4, $t2, 0xFF00 %
+000002b5 : 00000000;  % 1018: 	nop %
+000002b6 : 00000000;  % 1019: 	nop %
+000002b7 : 3c010000;  % 1020: 	addi $t5, $zero, 0xF000 %
+000002b8 : 3421f000;  % 1020:  %
+000002b9 : 00016820;  % 1020:  %
+000002ba : 00000000;  % 1021: 	nop %
+000002bb : 00000000;  % 1022: 	nop %
+000002bc : 118d0002;  % 1023: 	beq $t4, $t5, continua	#tecla foi solta %
+000002bd : 01407020;  % 1024: 	add $t6, $t2, $zero %
+000002be : 0800029c;  % 1025: 	j loopReadChar %
+000002bf : 314c00ff;  % 1028: continua: andi $t4, $t2, 0xFF #ultima tecla inserida %
+000002c0 : 00000000;  % 1029: 	nop %
+000002c1 : 00000000;  % 1030: 	nop %
+000002c2 : 118f0027;  % 1031: 	beq $t4, $t7, shiftindahouse #se valor é shift %
+000002c3 : 200d0001;  % 1033: 	addi $t5, $zero, 1 %
+000002c4 : 00000000;  % 1034: 	nop %
+000002c5 : 00000000;  % 1035: 	nop %
+000002c6 : 132d0010;  % 1036: 	beq $t9, $t5, enderecoShift %
+000002c7 : 000c6080;  % 1038: 	sll $t4, $t4, 2 #mult 4 %
+000002c8 : 3c019000;  % 1039: 	la $t5,inicioKdata %
+000002c9 : 342d0000;  % 1039:  %
+000002ca : 00000000;  % 1040: 	nop %
+000002cb : 00000000;  % 1041: 	nop %
+000002cc : 018d6020;  % 1042: 	add $t4, $t4, $t5 #inicio endereco na memoria .kdata %
+000002cd : 00000000;  % 1043: 	nop %
+000002ce : 00000000;  % 1044: 	nop %
+000002cf : 218c0318;  % 1045: 	addi $t4, $t4, 0x318 #final da string para o printChar sem shit %
+000002d0 : 00000000;  % 1046: 	nop %
+000002d1 : 00000000;  % 1047: 	nop %
+000002d2 : 8d8d0000;  % 1048: 	lw $t5, 0($t4) %
+000002d3 : 00000000;  % 1049: 	nop %
+000002d4 : 00000000;  % 1050: 	nop %
+000002d5 : 11a0ffce;  % 1051: 	beq $t5, $zero, atualizaBufferChar %
+000002d6 : 080002ec;  % 1053: 	j ReadCharEnd %
+000002d7 : 314c00ff;  % 1055: enderecoShift: andi $t4, $t2, 0xFF #ultima tecla inserida %
+000002d8 : 000c6080;  % 1057: 	sll $t4, $t4, 2 #mult 4 %
+000002d9 : 00000000;  % 1058: 	nop %
+000002da : 00000000;  % 1059: 	nop %
+000002db : 3c019000;  % 1060: 	la $t5,inicioKdata %
+000002dc : 342d0000;  % 1060:  %
+000002dd : 00000000;  % 1061: 	nop %
+000002de : 00000000;  % 1062: 	nop %
+000002df : 018d6020;  % 1063: 	add $t4, $t4, $t5 #inicio endereco na memoria .kdata %
+000002e0 : 00000000;  % 1064: 	nop %
+000002e1 : 00000000;  % 1065: 	nop %
+000002e2 : 218c0530;  % 1066: 	addi $t4, $t4, 0x530 #final da string para o printChar com shift %
+000002e3 : 00000000;  % 1067: 	nop %
+000002e4 : 00000000;  % 1068: 	nop %
+000002e5 : 8d8d0000;  % 1069: 	lw $t5, 0($t4) %
+000002e6 : 00000000;  % 1070: 	nop %
+000002e7 : 00000000;  % 1071: 	nop %
+000002e8 : 11a0ffbb;  % 1072: 	beq $t5, $zero, atualizaBufferChar %
+000002e9 : 080002ec;  % 1074: 	j ReadCharEnd %
+000002ea : 20190001;  % 1076: shiftindahouse: addi, $t9, $zero, 1 %
+000002eb : 080002a4;  % 1077: 	j atualizaBufferChar %
+000002ec : 000d1020;  % 1079: ReadCharEnd: add $v0, $zero, $t5 #coloca em v0 o valor em ascii da tecla %
+000002ed : 03e00008;  % 1080: 	jr $ra %
+000002ee : 20020000;  % 1089: readInt: addi $v0, $zero, 0 %
+000002ef : 200f0000;  % 1090: 	addi $t7, $zero, 0 %
+000002f0 : 3c01ffff;  % 1094: 	la $t0, 0xFFFF0100 %
+000002f1 : 34280100;  % 1094:  %
+000002f2 : 00000000;  % 1095: 	nop %
+000002f3 : 00000000;  % 1096: 	nop %
+000002f4 : 3c01ffff;  % 1099: 	la $t1, 0xFFFF0104 %
+000002f5 : 34290104;  % 1099:  %
+000002f6 : 00000000;  % 1100: 	nop %
+000002f7 : 00000000;  % 1101: 	nop %
+000002f8 : 8d180000;  % 1104: 	lw $t8, 0($t0)	#buffer inicial %
+000002f9 : 8d190000;  % 1105: 	lw $t9, 0 ($t0)	#buffer inicial %
+000002fa : 8d0a0000;  % 1107: loopReadInt: lw $t2, 0($t0) %
+000002fb : 00000000;  % 1108: 	nop %
+000002fc : 00000000;  % 1109: 	nop %
+000002fd : 1158003b;  % 1110: 	beq $t2, $t8, atualizaBuffer %
+000002fe : 8d2b0000;  % 1111: 	lw $t3, 0($t1) %
+000002ff : 314cff00;  % 1115: 	andi $t4, $t2, 0xFF00 %
+00000300 : 3c010000;  % 1116: 	addi $t5, $zero, 0xF000 %
+00000301 : 3421f000;  % 1116:  %
+00000302 : 00016820;  % 1116:  %
+00000303 : 00000000;  % 1117: 	nop %
+00000304 : 00000000;  % 1118: 	nop %
+00000305 : 118d0001;  % 1119: 	beq $t4, $t5, continuaInt %
+00000306 : 08000339;  % 1120: 	j atualizaBuffer %
+00000307 : 314c00ff;  % 1122: continuaInt: andi $t4, $t2, 0x000000FF %
+00000308 : 200d00f0;  % 1125: 	addi $t5, $zero, 0xF0 %
+00000309 : 00000000;  % 1126: 	nop %
+0000030a : 00000000;  % 1127: 	nop %
+0000030b : 118d002d;  % 1128: 	beq $t4, $t5, atualizaBuffer %
+0000030c : 200d005a;  % 1131: 	addi $t5, $zero, 0x5a %
+0000030d : 00000000;  % 1132: 	nop %
+0000030e : 00000000;  % 1133: 	nop %
+0000030f : 118d002c;  % 1134: 	beq $t4, $t5, fimReadInt1 #pressionado o enter %
+00000310 : 000c6080;  % 1137: 	sll $t4, $t4, 2 #mult 4 %
+00000311 : 3c019000;  % 1138: 	la $t5,inicioKdata %
+00000312 : 342d0000;  % 1138:  %
+00000313 : 00000000;  % 1139: 	nop %
+00000314 : 00000000;  % 1140: 	nop %
+00000315 : 018d6020;  % 1141: 	add $t4, $t4, $t5 #inicio endereco na memoria .kdata %
+00000316 : 218c0318;  % 1142: 	addi $t4, $t4, 0x318 #final da string para o printChar %
+00000317 : 00000000;  % 1143: 	nop %
+00000318 : 00000000;  % 1144: 	nop %
+00000319 : 8d8d0000;  % 1145: 	lw $t5, 0($t4) #posicao na memoria %
+0000031a : 200e002f;  % 1148: 	addi $t6, $zero, 0x2f #inicio dos inteiros - 1 %
+0000031b : 00000000;  % 1149: 	nop %
+0000031c : 00000000;  % 1150: 	nop %
+0000031d : 01cd602a;  % 1151: 	slt $t4, $t6, $t5 %
+0000031e : 1180000f;  % 1152: 	beq $t4, $zero, naoInteiro %
+0000031f : 21ce000b;  % 1153: 	addi $t6, $t6, 0xB #final dos inteiros %
+00000320 : 00000000;  % 1154: 	nop %
+00000321 : 00000000;  % 1155: 	nop %
+00000322 : 01ae602a;  % 1156: 	slt $t4, $t5, $t6 %
+00000323 : 1180000a;  % 1157: 	beq $t4, $zero, naoInteiro %
+00000324 : 31ad000f;  % 1160: 	andi $t5, $t5, 0xF #0x31 = 1, so depende dos bits finais %
+00000325 : 200c000a;  % 1161: 	addi $t4, $zero, 10 %
+00000326 : 00000000;  % 1162: 	nop %
+00000327 : 00000000;  % 1163: 	nop  %
+00000328 : 004c0018;  % 1164: 	mult $v0, $t4 #numero vezes 10 (unidade, dezena, centena...) %
+00000329 : 00000000;  % 1165: 	nop %
+0000032a : 00000000;  % 1166: 	nop %
+0000032b : 00001012;  % 1167: 	mflo $v0 %
+0000032c : 004d1020;  % 1168: 	add $v0, $v0, $t5 %
+0000032d : 08000339;  % 1170: 	j atualizaBuffer %
+0000032e : 200c002d;  % 1172: naoInteiro: addi $t4, $zero, 0x2D %
+0000032f : 00000000;  % 1173: 	nop %
+00000330 : 00000000;  % 1174: 	nop %
+00000331 : 118d0001;  % 1175: 	beq $t4, $t5, negativo %
+00000332 : 08000339;  % 1177: 	j atualizaBuffer %
+00000333 : 0002782a;  % 1179: negativo: slt $t7, $zero, $v0 %
+00000334 : 200e0001;  % 1180: 	addi $t6, $zero, 1 %
+00000335 : 00000000;  % 1181: 	nop %
+00000336 : 00000000;  % 1182: 	nop %
+00000337 : 11ee0001;  % 1183: 	beq $t7, $t6, atualizaBuffer %
+00000338 : 200f0001;  % 1184: 	addi $t7, $zero, 1 #1 para negativo %
+00000339 : 000ac020;  % 1186: atualizaBuffer: add $t8, $zero, $t2	#copia o buffer atual para variavel de buffer anterior %
+0000033a : 000bc820;  % 1187: 	add $t9, $zero, $t3	#copia o buffer atual para variavel de buffer anterior %
+0000033b : 080002fa;  % 1189: 	j loopReadInt %
+0000033c : 11e00001;  % 1191: fimReadInt1: beq $t7, $zero, fimReadInt2 %
+0000033d : 00021022;  % 1192: 	sub $v0, $zero, $v0 %
+0000033e : 000ac020;  % 1194: fimReadInt2: add $t8, $zero, $t2	#copia o buffer atual para variavel de buffer anterior %
+0000033f : 000bc820;  % 1195: 	add $t9, $zero, $t3	#copia o buffer atual para variavel de buffer anterior %
+00000340 : 03e00008;  % 1197: 	jr $ra #fim readInt %
+00000341 : 00047020;  % 1206: readString: add $t6, $zero, $a0 	#end inicial string %
+00000342 : 20010001;  % 1207: 	sub $t7, $a1, 1 	#tamanho maximo menos 1 (guarda para 0x00) %
+00000343 : 00a17822;  % 1207:  %
+00000344 : 000f7880;  % 1208: 	sll $t7, $t7, 2		#tamanho maximo multiplicado por 4 %
+00000345 : 00004820;  % 1209: 	add $t1, $zero, $zero	#contador de caracteres (de 4 em 4) %
+00000346 : 0000d021;  % 1210: 	move $k0,$zero	#contador de 4 %
+00000347 : 24020000;  % 1211: 	li $v0,0  #flag de ultimo zero %
+00000348 : 3c01ffff;  % 1214: 	la $t0,0xFFFF0100 %
+00000349 : 34280100;  % 1214:  %
+0000034a : 00000000;  % 1215: 	nop %
+0000034b : 00000000;  % 1216: 	nop %
+0000034c : 8d180000;  % 1218: 	lw $t8, 0($t0)		#buffer1 inicial %
+0000034d : 11e9005e;  % 1220: loopReadString: beq $t7, $t1, fimReadString %
+0000034e : 8d0a0000;  % 1222: 	lw $t2, 0($t0) %
+0000034f : 00000000;  % 1223: 	nop %
+00000350 : 00000000;  % 1224: 	nop %
+00000351 : 00000000;  % 1225: 	nop %
+00000352 : 11580056;  % 1226: 	beq $t2, $t8, atualizaBufferString %
+00000353 : 314cff00;  % 1229: 	andi $t4, $t2, 0xFF00 %
+00000354 : 3c010000;  % 1230: 	addi $t5, $zero, 0xF000 %
+00000355 : 3421f000;  % 1230:  %
+00000356 : 00016820;  % 1230:  %
+00000357 : 00000000;  % 1231: 	nop %
+00000358 : 00000000;  % 1232: 	nop %
+00000359 : 118d0001;  % 1233: 	beq $t4, $t5, continuaString %
+0000035a : 080003a9;  % 1234: 	j atualizaBufferString %
+0000035b : 314c00ff;  % 1236: continuaString: andi $t4, $t2, 0x00FF %
+0000035c : 200d00f0;  % 1239: 	addi $t5, $zero, 0xF0 %
+0000035d : 00000000;  % 1240: 	nop %
+0000035e : 00000000;  % 1241: 	nop %
+0000035f : 00000000;  % 1242: 	nop %
+00000360 : 118d0048;  % 1243: 	beq $t4, $t5, atualizaBufferString %
+00000361 : 200d005a;  % 1246: 	addi $t5, $zero, 0x5a %
+00000362 : 00000000;  % 1247: 	nop %
+00000363 : 00000000;  % 1248: 	nop %
+00000364 : 00000000;  % 1249: 	nop %
+00000365 : 118d0046;  % 1250: 	beq $t4, $t5, fimReadString #pressionado o enter %
+00000366 : 000c6080;  % 1253: 	sll $t4, $t4, 2 	#mult 4 %
+00000367 : 3c019000;  % 1255: 	la $t5,inicioKdata %
+00000368 : 342d0000;  % 1255:  %
+00000369 : 00000000;  % 1256: 	nop %
+0000036a : 00000000;  % 1257: 	nop %
+0000036b : 018d6020;  % 1258: 	add $t4, $t4, $t5 #inicio endereco na memoria .kdata %
+0000036c : 00000000;  % 1259: 	nop %
+0000036d : 00000000;  % 1260: 	nop %
+0000036e : 218c0318;  % 1261: 	addi $t4, $t4, 0x318 	#final da string para o printChar %
+0000036f : 00000000;  % 1262: 	nop %
+00000370 : 00000000;  % 1263: 	nop %
+00000371 : 00000000;  % 1264: 	nop %
+00000372 : 8d8d0000;  % 1265: 	lw $t5, 0($t4) 		#posicao na memoria %
+00000373 : 00000000;  % 1266: 	nop %
+00000374 : 00000000;  % 1267: 	nop %
+00000375 : 00000000;  % 1268: 	nop %
+00000376 : 11a00032;  % 1269: 	beq $t5, $zero, atualizaBufferString %
+00000377 : 01c96020;  % 1271: VoltaZeroString: add $t4, $t6, $t1 	#endereco para escrita %
+00000378 : 00000000;  % 1272: 	nop %
+00000379 : 00000000;  % 1273: 	nop %
+0000037a : 8d990000;  % 1277: 	lw $t9, 0($t4)	#le o que tem no endereco %
+0000037b : 24060000;  % 1279: 	li $a2,0 %
+0000037c : 00000000;  % 1280: 	nop %
+0000037d : 00000000;  % 1281: 	nop %
+0000037e : 13460020;  % 1282: 	beq $k0,$a2,Jzero %
+0000037f : 24060001;  % 1283: 	li $a2,1 %
+00000380 : 00000000;  % 1284: 	nop %
+00000381 : 00000000;  % 1285: 	nop %
+00000382 : 13460016;  % 1286: 	beq $k0,$a2,Jum %
+00000383 : 00000000;  % 1287: 	nop %
+00000384 : 00000000;  % 1288: 	nop %
+00000385 : 24060002;  % 1289: 	li $a2,2 %
+00000386 : 00000000;  % 1290: 	nop %
+00000387 : 00000000;  % 1291: 	nop %
+00000388 : 13460008;  % 1292: 	beq $k0,$a2,Jdois %
+00000389 : 3c0100ff;  % 1294: Jtres:	la $k1,0x00FFFFFF %
+0000038a : 343bffff;  % 1294:  %
+0000038b : 00000000;  % 1295: 	nop %
+0000038c : 00000000;  % 1296: 	nop %
+0000038d : 000d6e00;  % 1299: 	sll $t5,$t5,24 %
+0000038e : 241a0000;  % 1300: 	li $k0,0 %
+0000038f : 24070004;  % 1301: 	li $a3,4 %
+00000390 : 080003a5;  % 1302: 	j Jsai %
+00000391 : 3c01ff00;  % 1303: Jdois:	la $k1,0xFF00FFFF %
+00000392 : 343bffff;  % 1303:  %
+00000393 : 00000000;  % 1304: 	nop %
+00000394 : 00000000;  % 1305: 	nop %
+00000395 : 000d6c00;  % 1308: 	sll $t5,$t5,16 %
+00000396 : 241a0003;  % 1309: 	li $k0,3 %
+00000397 : 24070000;  % 1310: 	li $a3,0 %
+00000398 : 080003a5;  % 1311: 	j Jsai %
+00000399 : 3c01ffff;  % 1312: Jum:	la $k1,0xFFFF00FF %
+0000039a : 343b00ff;  % 1312:  %
+0000039b : 000d6a00;  % 1315: 	sll $t5,$t5,8 %
+0000039c : 24070000;  % 1316: 	li $a3,0 %
+0000039d : 241a0002;  % 1317: 	li $k0,2 %
+0000039e : 080003a5;  % 1318: 	j Jsai %
+0000039f : 241bff00;  % 1319: Jzero: la $k1,0xFFFFFF00 %
+000003a0 : 00000000;  % 1320: 	nop %
+000003a1 : 00000000;  % 1321: 	nop %
+000003a2 : 000d6800;  % 1324: 	sll $t5,$t5,0  %
+000003a3 : 241a0001;  % 1325: 	li $k0,1 %
+000003a4 : 24070000;  % 1326: 	li $a3,0 %
+000003a5 : 033bc824;  % 1328: Jsai:	and $t9,$t9,$k1 %
+000003a6 : 01b96825;  % 1329: 	or $t5,$t5,$t9 %
+000003a7 : ad8d0000;  % 1332: PPULA:	sw $t5, 0($t4) 		#guarda char valido %
+000003a8 : 01274820;  % 1334: 	add $t1, $t1, $a3 	#caractere inserido, atualiza contador %
+000003a9 : 000ac020;  % 1336: atualizaBufferString: add $t8, $zero, $t2	#copia o buffer atual para variavel de buffer anterior %
+000003aa : 1040ffa2;  % 1337: 	beq $v0,$zero,loopReadString %
+000003ab : 03e00008;  % 1341: 	jr $ra %
+000003ac : 24020001;  % 1344: fimReadString: li $v0,1 #ultimo %
+000003ad : 240d0000;  % 1345: 	li $t5,0 #zero %
+000003ae : 08000377;  % 1346: 	j VoltaZeroString %
+000003af : 3c01ffff;  % 1369:     la $t0, 0xFFFF0200 %
+000003b0 : 34280200;  % 1369:  %
+000003b1 : 00004820;  % 1370:     add $t1, $zero, $zero %
+000003b2 : 30ca000f;  % 1375:     andi $t2, $a2, 0x0000000F %
+000003b3 : 000a56c0;  % 1376:     sll $t2, $t2, 27 %
+000003b4 : 012a4825;  % 1377:     or $t1, $t1, $t2 %
+000003b5 : 30ea007f;  % 1380:     andi $t2, $a3, 0x0000007F %
+000003b6 : 000a5500;  % 1381:     sll $t2, $t2, 20 %
+000003b7 : 012a4825;  % 1382:     or $t1, $t1, $t2 %
+000003b8 : 308a007f;  % 1385:     andi $t2, $a0, 0x0000007F %
+000003b9 : 000a5340;  % 1386:     sll $t2, $t2, 13 %
+000003ba : 012a4825;  % 1387:     or $t1, $t1, $t2 %
+000003bb : 30aa1fff;  % 1390:     andi $t2, $a1, 0x00001FFF %
+000003bc : 012a4825;  % 1391:     or $t1, $t1, $t2 %
+000003bd : 080003be;  % 1394:     j SintMidOut %
+000003be : ad090000;  % 1397:     sw $t1, 0($t0) %
+000003bf : 3c01ffff;  % 1400:     la $t2, 0xFFFF0204 %
+000003c0 : 342a0204;  % 1400:  %
+000003c1 : 8d4b0000;  % 1402:     lw $t3, 0($t2) %
+000003c2 : 1160fffe;  % 1403:     beq $t3, $zero, Check_AUD_DACLRCK %
+000003c3 : 03e00008;  % 1404:     jr $ra %
+000003c4 : 3c01ffff;  % 1425:     la $t0, 0xFFFF0200 %
+000003c5 : 34280200;  % 1425:  %
+000003c6 : 00004820;  % 1426:     add $t1, $zero, $zero %
+000003c7 : 3c018000;  % 1429:     ori $t1, $t1, 0x80000000 %
+000003c8 : 34210000;  % 1429:  %
+000003c9 : 01214825;  % 1429:  %
+000003ca : 30ca000f;  % 1432:     andi $t2, $a2, 0x0000000F %
+000003cb : 000a56c0;  % 1433:     sll $t2, $t2, 27 %
+000003cc : 012a4825;  % 1434:     or $t1, $t1, $t2 %
+000003cd : 30ea007f;  % 1437:     andi $t2, $a3, 0x0000007F %
+000003ce : 000a5500;  % 1438:     sll $t2, $t2, 20 %
+000003cf : 012a4825;  % 1439:     or $t1, $t1, $t2 %
+000003d0 : 308a007f;  % 1442:     andi $t2, $a0, 0x0000007F %
+000003d1 : 000a5340;  % 1443:     sll $t2, $t2, 13 %
+000003d2 : 012a4825;  % 1444:     or $t1, $t1, $t2 %
+000003d3 : 30aa1fff;  % 1447:     andi $t2, $a1, 0x00001FFF %
+000003d4 : 012a4825;  % 1448:     or $t1, $t1, $t2 %
+000003d5 : 080003d6;  % 1451:     j SintMidOutSync %
+000003d6 : ad090000;  % 1454:     sw $t1, 0($t0) %
+000003d7 : 3c01ffff;  % 1457:     la $t2, 0xFFFF0204 %
+000003d8 : 342a0204;  % 1457:  %
+000003d9 : 3c01ffff;  % 1458:     la $t4, 0xFFFF0208 %
+000003da : 342c0208;  % 1458:  %
+000003db : 8d4b0000;  % 1461:     lw $t3, 0($t2) %
+000003dc : 1160fffe;  % 1462:     beq $t3, $zero, Check_AUD_DACLRCKSync %
+000003dd : 8d8d0000;  % 1464:     lw $t5, 0($t4) %
+000003de : 15a0fffe;  % 1465:     bne $t5, $zero, Melody %
+000003df : 03e00008;  % 1466:     jr $ra %
+000003e0 : 20020000;  % 1477: inKey: addi $v0, $zero, 0 %
+000003e1 : 20030000;  % 1478: 	addi $v1, $zero, 0 %
+000003e2 : 3c01ffff;  % 1481: 	la $t0,0xFFFF0100 %
+000003e3 : 34280100;  % 1481:  %
+000003e4 : 00000000;  % 1482: 	nop %
+000003e5 : 00000000;  % 1483: 	nop %
+000003e6 : 3c01ffff;  % 1486: 	la $t1, 0xFFFF0104 %
+000003e7 : 34290104;  % 1486:  %
+000003e8 : 00000000;  % 1487: 	nop %
+000003e9 : 00000000;  % 1488: 	nop %
+000003ea : 8d180000;  % 1491: 	lw $t8, 0($t0)	#buffer inicial %
+000003eb : 8d390000;  % 1492: 	lw $t9, 0 ($t1)	#buffer inicial %
+000003ec : 8d0a0000;  % 1494: loopInKey: lw $t2, 0($t0) %
+000003ed : 8d2b0000;  % 1496: 	lw $t3, 0($t1) %
+000003ee : 3c0100ff;  % 1509: 	andi $t4, $t2, 0xFF0000     #pseudo %
+000003ef : 34210000;  % 1509:  %
+000003f0 : 01416024;  % 1509:  %
+000003f1 : 00000000;  % 1510: 	nop %
+000003f2 : 00000000;  % 1511: 	nop %
+000003f3 : 000c6402;  % 1512: 	srl $t4, $t4, 16 %
+000003f4 : 000c6080;  % 1513: 	sll $t4, $t4, 2 #mult 4 %
+000003f5 : 3c019000;  % 1514: 	la $t5, inicioKdata %
+000003f6 : 342d0000;  % 1514:  %
+000003f7 : 00000000;  % 1515: 	nop %
+000003f8 : 00000000;  % 1516: 	nop %
+000003f9 : 018d6020;  % 1517: 	add $t4, $t4, $t5 #inicio endereco na memoria %
+000003fa : 00000000;  % 1518: 	nop %
+000003fb : 00000000;  % 1519: 	nop %
+000003fc : 218c0318;  % 1520: 	addi $t4, $t4, 0x318 #final da string para o printChar %
+000003fd : 00000000;  % 1521: 	nop %
+000003fe : 00000000;  % 1522: 	nop %
+000003ff : 8d8d0000;  % 1523: 	lw $t5, 0($t4) #posicao na memoria %
+00000400 : 000d1020;  % 1524: 	add $v0, $zero, $t5 %
+00000401 : 314c00ff;  % 1526: 	andi $t4, $t2, 0xFF %
+00000402 : 00000000;  % 1527: 	nop %
+00000403 : 00000000;  % 1528: 	nop %
+00000404 : 000c6080;  % 1529: 	sll $t4, $t4, 2 #mult 4 %
+00000405 : 3c019000;  % 1530: 	la $t5, inicioKdata %
+00000406 : 342d0000;  % 1530:  %
+00000407 : 00000000;  % 1531: 	nop %
+00000408 : 00000000;  % 1532: 	nop %
+00000409 : 018d6020;  % 1533: 	add $t4, $t4, $t5 #inicio endereco na memoria %
+0000040a : 00000000;  % 1534: 	nop %
+0000040b : 00000000;  % 1535: 	nop %
+0000040c : 218c0318;  % 1536: 	addi $t4, $t4, 0x318 #final da string para o printChar %
+0000040d : 00000000;  % 1537: 	nop %
+0000040e : 00000000;  % 1538: 	nop %
+0000040f : 8d8d0000;  % 1539: 	lw $t5, 0($t4) #posicao na memoria %
+00000410 : 000d1820;  % 1540: 	add $v1, $zero, $t5 %
+00000411 : 03e00008;  % 1542: 	jr $ra %
+00000412 : 3c01ff00;  % 1551: CLS:	la $t6,0xFF000000  # Memoria VGA %
+00000413 : 342e0000;  % 1551:  %
+00000414 : 00000000;  % 1552: 	nop %
+00000415 : 00000000;  % 1553: 	nop %
+00000416 : 3c01ff01;  % 1554: 	la $t2,0xFF012C00 %
+00000417 : 342a2c00;  % 1554:  %
+00000418 : 00000000;  % 1555: 	nop %
+00000419 : 00000000;  % 1556: 	nop %
+0000041a : 114e0004;  % 1557: Fort3:  beq $t2,$t6, Endt3 %
+0000041b : a1c40000;  % 1558: 	sb $a0,0($t6) %
+0000041c : 21ce0001;  % 1559: 	addi $t6, $t6, 1 %
+0000041d : 00000000;  % 1560: 	nop %
+0000041e : 0800041a;  % 1561: 	j Fort3 %
+0000041f : 03e00008;  % 1562: Endt3:  jr $ra %
+00000420 : 23bdfff4;  % 1573: popEvent: addi $sp, $sp, -12 %
+00000421 : afa40000;  % 1574: 	sw $a0, 0($sp) %
+00000422 : afb00004;  % 1575: 	sw $s0, 4($sp) %
+00000423 : afbf0008;  % 1576: 	sw $ra, 8($sp) %
+00000424 : 3c019000;  % 1579: 	la $s0, eventQueueBeginPtr %
+00000425 : 3430079c;  % 1579:  %
+00000426 : 00000000;  % 1580: 	nop %
+00000427 : 00000000;  % 1581: 	nop %
+00000428 : 8e1a0000;  % 1582: 	lw $k0, 0($s0) %
+00000429 : 3c019000;  % 1583: 	la $k1, eventQueueEndPtr %
+0000042a : 343b07a0;  % 1583:  %
+0000042b : 00000000;  % 1584: 	nop %
+0000042c : 00000000;  % 1585: 	nop %
+0000042d : 8f7b0000;  % 1586: 	lw $k1, 0($k1) %
+0000042e : 24020000;  % 1587: 	li $v0, 0 %
+0000042f : 00000000;  % 1588: 	nop %
+00000430 : 135b0005;  % 1589: 	beq $k0, $k1, popEventEnd %
+00000431 : 001a2021;  % 1592: 	move $a0, $k0 %
+00000432 : 0c0000ba;  % 1593: 	jal eventQueueIncrementPointer %
+00000433 : ae020000;  % 1594: 	sw $v0, 0($s0) %
+00000434 : 24020001;  % 1595: 	li $v0, 1 %
+00000435 : 8f430000;  % 1596: 	lw $v1, 0($k0) %
+00000436 : 8fbf0008;  % 1598: popEventEnd: lw $ra, 8($sp) %
+00000437 : 8fb00004;  % 1599: 	lw $s0, 4($sp) %
+00000438 : 8fa40000;  % 1600: 	lw $a0, 0($sp) %
+00000439 : 23bd000c;  % 1601: 	addi $sp, $sp, 12 %
+0000043a : 03e00008;  % 1602: 	jr $ra %
+0000043b : 3c017f80;  % 1613: printFloat: li $t0, 0x7F800000 %
+0000043c : 34280000;  % 1613:  %
+0000043d : 00084402;  % 1614: srl $t0, $t0, 16 %
+0000043e : 44096000;  % 1615: mfc1 $t1, $f12 %
+0000043f : 00094c02;  % 1616: srl $t1, $t1, 16 %
+00000440 : 01095022;  % 1617: sub $t2, $t0, $t1 %
+00000441 : 114000e6;  % 1618: beqz $t2, INFINITYPLUS %
+00000442 : 3c01ff80;  % 1620: li $t0, 0xFF800000 %
+00000443 : 34280000;  % 1620:  %
+00000444 : 00084402;  % 1621: srl $t0, $t0, 16 %
+00000445 : 44096000;  % 1622: mfc1 $t1, $f12 %
+00000446 : 00094c02;  % 1623: srl $t1, $t1, 16 %
+00000447 : 01095022;  % 1624: sub $t2, $t0, $t1 %
+00000448 : 114000e8;  % 1625: beqz $t2, INFINITYMINUS %
+00000449 : 44086000;  % 1627: mfc1 $t0, $f12 %
+0000044a : 240900ff;  % 1628: li $t1, 0xFF %
+0000044b : 00094dc0;  % 1629: sll $t1, $t1, 23 %
+0000044c : 01095024;  % 1631: and $t2, $t0, $t1 %
+0000044d : 15400003;  % 1633: bnez $t2, continue %
+0000044e : 24150030;  % 1634: li $s5, 0x00000030 #"0\0" %
+0000044f : aed50000;  % 1635: sw $s5, 0($s6) %
+00000450 : 03e00008;  % 1636: jr $ra  ### return printFloat %
+00000451 : 23bdfffc;  % 1638: continue: addi $sp, $sp, -4 %
+00000452 : afbf0000;  % 1639: sw $ra, 0($sp) %
+00000453 : 0c000540;  % 1640: jal OBTAIN_MANTISSA_EXP %
+00000454 : 8fbf0000;  % 1641: lw $ra, 0($sp) %
+00000455 : 23bd0004;  % 1642: addi $sp, $sp, 4 %
+00000456 : 20010080;  % 1644: seq $t9, $s2, 128 %
+00000457 : 0241c823;  % 1644:  %
+00000458 : 34010001;  % 1644:  %
+00000459 : 0321c82b;  % 1644:  %
+0000045a : 24080001;  % 1646: li $t0, 1 %
+0000045b : 12280005;  % 1647: beq $s1, $t0, seNegativo %
+0000045c : 3c013649;  % 1649: li $t0, 0x3649539C #3e-6 %
+0000045d : 3428539c;  % 1649:  %
+0000045e : 44887800;  % 1650: mtc1 $t0, $f15 %
+0000045f : 460f5280;  % 1651: sePositivo:add.s $f10, $f10, $f15 %
+00000460 : 08000462;  % 1652: j continue100 %
+00000461 : 460f5281;  % 1653: seNegativo: sub.s $f10, $f10, $f15 %
+00000462 : 0018c022;  % 1655: continue100: neg $t8,$t8 %
+00000463 : 03387024;  % 1656: and $t6, $t9, $t8 %
+00000464 : 15c000d5;  % 1657: bnez $t6, NAN %
+00000465 : 20010001;  % 1660: seq $t0, $s1, 1 %
+00000466 : 02214023;  % 1660:  %
+00000467 : 34010001;  % 1660:  %
+00000468 : 0101402b;  % 1660:  %
+00000469 : 001db821;  % 1661: move $s7, $sp #para recuperar sp depois %
+0000046a : 11000003;  % 1662: beqz $t0, CONTINUE1 %
+0000046b : 2408002d;  % 1663: addiu $t0, $zero, '-' #Save Signal ASCII %
+0000046c : 0100a825;  % 1664: or $s5, $t0, $zero #first byte saved %
+0000046d : 08000470;  % 1665: j CONTINUE2 %
+0000046e : 2408002b;  % 1667: CONTINUE1: addiu $t0, $zero, '+' %
+0000046f : 0100a825;  % 1668: or $s5, $t0, $zero #first byte saved %
+00000470 : 20010001;  % 1673: CONTINUE2: seq $t8, $s1, 1 %
+00000471 : 0221c023;  % 1673:  %
+00000472 : 34010001;  % 1673:  %
+00000473 : 0301c02b;  % 1673:  %
+00000474 : 13000004;  % 1674: beqz $t8, normalizaPraCima %
+00000475 : 3c01bf80;  % 1675: li $t0, 0xBF800000 # -1 %
+00000476 : 34280000;  % 1675:  %
+00000477 : 4488c800;  % 1676: mtc1 $t0, $f25 # -1.0 %
+00000478 : 46195282;  % 1677: mul.s $f10, $f10, $f25 #turns it positive %
+00000479 : 3c013f80;  % 1679: normalizaPraCima: li $t0, 0x3F800000 #1 %
+0000047a : 34280000;  % 1679:  %
+0000047b : 4488b800;  % 1680: mtc1 $t0, $f23 %
+0000047c : 3c014120;  % 1681: li $t0, 0x41200000 #10 %
+0000047d : 34280000;  % 1681:  %
+0000047e : 4488c000;  % 1682: mtc1 $t0, $f24 %
+0000047f : 4617503c;  % 1683: c.lt.s $f10, $f23 #vÃª se mantissa Ã© menor que 1 %
+00000480 : 4500000b;  % 1684: bc1f NOTZERO %
+00000481 : 460ac282;  % 1685: mul.s $f10, $f24, $f10 %
+00000482 : 2294ffff;  % 1686: addi $s4, $s4, -1 #decrementa o expoente por 1 %
+00000483 : 08000479;  % 1687: j normalizaPraCima %
+00000484 : 3c014120;  % 1689: normalizaPraBaixo: li $t0, 0x41200000 #10 %
+00000485 : 34280000;  % 1689:  %
+00000486 : 4488c000;  % 1690: mtc1 $t0, $f24 %
+00000487 : 4618503c;  % 1691: c.lt.s $f10, $f24 #vÃª se mantissa Ã© menor que 1 %
+00000488 : 45010003;  % 1692: bc1t NOTZERO %
+00000489 : 46185283;  % 1693: div.s $f10, $f10, $f24 %
+0000048a : 22940001;  % 1694: addi $s4, $s4, +1 #decrementa o expoente por 1 %
+0000048b : 08000484;  % 1695: j normalizaPraBaixo %
+0000048c : 3c014120;  % 1697: NOTZERO: li $t0, 0x41200000 #10 %
+0000048d : 34280000;  % 1697:  %
+0000048e : 44887000;  % 1698: mtc1 $t0, $f14 %
+0000048f : 460e503c;  % 1699: c.lt.s $f10, $f14 %
+00000490 : 45010002;  % 1700: bc1t CONTINUE3 %
+00000491 : 460e5283;  % 1701: div.s $f10, $f10, $f14 #dividir por 10, pois f10 era maior que 10 %
+00000492 : 26940001;  % 1702: addiu $s4, $s4, 1 # adicionar 1 ao expoente na base 10 depois desta divisao %
+00000493 : 46005024;  % 1704: CONTINUE3: cvt.w.s $f0, $f10 %
+00000494 : 44080000;  % 1705: mfc1 $t0, $f0 %
+00000495 : 46800660;  % 1706: cvt.s.w $f25, $f0 %
+00000496 : 460ac83e;  % 1707: c.le.s $f25, $f10 %
+00000497 : 45010001;  % 1708: bc1t a1 %
+00000498 : 2108ffff;  % 1709: addi $t0, $t0, -1 %
+00000499 : 21080030;  % 1710: a1: addi $t0, $t0, '0' #Inicio dos caracteres de numeros, 48 = '0' %
+0000049a : 00084200;  % 1711: sll $t0, $t0, 8 %
+0000049b : 02a8a825;  % 1713: or $s5, $s5, $t0 # second byte saved %
+0000049c : 00084202;  % 1714: srl $t0, $t0, 8 %
+0000049d : 2409002e;  % 1716: li $t1, '.' # o ponto!! %
+0000049e : 00094c00;  % 1717: sll $t1, $t1, 16 %
+0000049f : 02a9a825;  % 1718: or $s5, $s5, $t1 # third byte save %
+000004a0 : 00094c02;  % 1719: srl $t1, $t1, 16 %
+000004a1 : 20010030;  % 1721: sub $t0, $t0, '0' %
+000004a2 : 01014022;  % 1721:  %
+000004a3 : 44888800;  % 1722: mtc1 $t0, $f17 # Pega valor truncado do coprocessador 1 %
+000004a4 : 46808c60;  % 1723: cvt.s.w $f17, $f17 #torna valor em float %
+000004a5 : 46115281;  % 1724: sub.s $f10, $f10, $f17 # Subtrai do valor da mantissa, deixando o numero como 0.ABCDEF %
+000004a6 : 460e5282;  % 1725: mul.s $f10, $f10, $f14 # numero fica A.BCDEFX %
+000004a7 : 46005024;  % 1727: cvt.w.s $f0, $f10 %
+000004a8 : 44080000;  % 1728: mfc1 $t0, $f0 # Salva A em t0 %
+000004a9 : 46800660;  % 1729: cvt.s.w $f25, $f0 %
+000004aa : 460ac83e;  % 1730: c.le.s $f25, $f10 %
+000004ab : 45010001;  % 1731: bc1t a2 %
+000004ac : 2108ffff;  % 1732: addi $t0, $t0, -1 %
+000004ad : 21080030;  % 1733: a2: addi $t0, $t0, '0' %
+000004ae : 00084600;  % 1734: sll $t0, $t0, 24 %
+000004af : 02a8a825;  % 1735: or $s5, $s5, $t0 # fourth byte save %
+000004b0 : 00084602;  % 1736: srl $t0, $t0, 24 %
+000004b1 : aed50000;  % 1737: sw $s5, 0($s6) #four bytes group saved %
+000004b2 : 20010030;  % 1739: sub $t0, $t0, '0' %
+000004b3 : 01014022;  % 1739:  %
+000004b4 : 44888800;  % 1740: mtc1 $t0, $f17 # Pega valor truncado do coprocessador 1 %
+000004b5 : 46808c60;  % 1741: cvt.s.w $f17, $f17 #torna valor em float %
+000004b6 : 46115281;  % 1742: sub.s $f10, $f10, $f17 # Subtrai do valor da mantissa, deixando o numero como 0.BCDEFX %
+000004b7 : 460e5282;  % 1743: mul.s $f10, $f10, $f14 # numero fica B.CDEFXX %
+000004b8 : 46005024;  % 1745: cvt.w.s $f0, $f10 %
+000004b9 : 44080000;  % 1746: mfc1 $t0, $f0 # Salva B em t0 %
+000004ba : 46800660;  % 1747: cvt.s.w $f25, $f0 %
+000004bb : 460ac83e;  % 1748: c.le.s $f25, $f10 %
+000004bc : 45010001;  % 1749: bc1t a3 %
+000004bd : 2108ffff;  % 1750: addi $t0, $t0, -1 %
+000004be : 21080030;  % 1751: a3: addi $t0, $t0, '0' %
+000004bf : 0100a825;  % 1752: or $s5, $t0, $zero # first byte saved %
+000004c0 : 20010030;  % 1754: sub $t0, $t0, '0' %
+000004c1 : 01014022;  % 1754:  %
+000004c2 : 44888800;  % 1755: mtc1 $t0, $f17 # Pega valor truncado do coprocessador 1 %
+000004c3 : 46808c60;  % 1756: cvt.s.w $f17, $f17 #torna valor em float %
+000004c4 : 46115281;  % 1757: sub.s $f10, $f10, $f17 # Subtrai do valor da mantissa, deixando o numero como 0.CDEFXX %
+000004c5 : 460e5282;  % 1758: mul.s $f10, $f10, $f14 # numero fica C.DEFXXX %
+000004c6 : 46005024;  % 1761: cvt.w.s $f0, $f10 %
+000004c7 : 44080000;  % 1762: mfc1 $t0, $f0 # Salva C em t0 %
+000004c8 : 46800660;  % 1763: cvt.s.w $f25, $f0 %
+000004c9 : 460ac83e;  % 1764: c.le.s $f25, $f10 %
+000004ca : 45010001;  % 1765: bc1t a4 %
+000004cb : 2108ffff;  % 1766: addi $t0, $t0, -1 %
+000004cc : 21080030;  % 1767: a4: addi $t0, $t0, '0' %
+000004cd : 00084200;  % 1768: sll $t0, $t0, 8 %
+000004ce : 02a8a825;  % 1769: or $s5, $s5, $t0 # second byte saved %
+000004cf : 00084202;  % 1770: srl $t0, $t0, 8 %
+000004d0 : 20010030;  % 1772: sub $t0, $t0, '0' %
+000004d1 : 01014022;  % 1772:  %
+000004d2 : 44888800;  % 1773: mtc1 $t0, $f17 # Pega valor truncado do coprocessador 1 %
+000004d3 : 46808c60;  % 1774: cvt.s.w $f17, $f17 #torna valor em float %
+000004d4 : 46115281;  % 1775: sub.s $f10, $f10, $f17 # Subtrai do valor da mantissa, deixando o numero como 0.DEFXXX %
+000004d5 : 460e5282;  % 1776: mul.s $f10, $f10, $f14 # numero fica D.EFXXXX %
+000004d6 : 46005024;  % 1778: cvt.w.s $f0, $f10 %
+000004d7 : 44080000;  % 1779: mfc1 $t0, $f0 # Salva D em t0 %
+000004d8 : 46800660;  % 1780: cvt.s.w $f25, $f0 %
+000004d9 : 460ac83e;  % 1781: c.le.s $f25, $f10 %
+000004da : 45010001;  % 1782: bc1t a5 %
+000004db : 2108ffff;  % 1783: addi $t0, $t0, -1 %
+000004dc : 21080030;  % 1784: a5: addi $t0, $t0, '0' %
+000004dd : 00084400;  % 1785: sll $t0, $t0, 16 %
+000004de : 02a8a825;  % 1786: or $s5, $s5, $t0 # third byte saved %
+000004df : 00084402;  % 1787: srl $t0, $t0, 16 %
+000004e0 : 20010030;  % 1789: sub $t0, $t0, '0' %
+000004e1 : 01014022;  % 1789:  %
+000004e2 : 44888800;  % 1790: mtc1 $t0, $f17 # Pega valor truncado do coprocessador 1 %
+000004e3 : 46808c60;  % 1791: cvt.s.w $f17, $f17 #torna valor em float %
+000004e4 : 46115281;  % 1792: sub.s $f10, $f10, $f17 # Subtrai do valor da mantissa, deixando o numero como 0.EFXXXX %
+000004e5 : 460e5282;  % 1793: mul.s $f10, $f10, $f14 # numero fica E.FXXXX %
+000004e6 : 46005024;  % 1795: cvt.w.s $f0, $f10 %
+000004e7 : 44080000;  % 1796: mfc1 $t0, $f0 # Salva E em t0 %
+000004e8 : 46800660;  % 1797: cvt.s.w $f25, $f0 %
+000004e9 : 460ac83e;  % 1798: c.le.s $f25, $f10 %
+000004ea : 45010001;  % 1799: bc1t a6 %
+000004eb : 2108ffff;  % 1800: addi $t0, $t0, -1 %
+000004ec : 21080030;  % 1801: a6: addi $t0, $t0, '0' %
+000004ed : 00084600;  % 1802: sll $t0, $t0, 24 %
+000004ee : 02a8a825;  % 1803: or $s5, $s5, $t0 # fourth byte saved %
+000004ef : 00084602;  % 1804: srl $t0, $t0, 24 %
+000004f0 : aed50004;  % 1805: sw $s5, 4($s6) #more four bytes saved %
+000004f1 : 20010030;  % 1807: sub $t0, $t0, '0' %
+000004f2 : 01014022;  % 1807:  %
+000004f3 : 44888800;  % 1808: mtc1 $t0, $f17 # Pega valor truncado do coprocessador 1 %
+000004f4 : 46808c60;  % 1809: cvt.s.w $f17, $f17 #torna valor em float %
+000004f5 : 46115281;  % 1810: sub.s $f10, $f10, $f17 # Subtrai do valor da mantissa, deixando o nÃƒÂºmero como 0.FXXXXX %
+000004f6 : 460e5282;  % 1811: mul.s $f10, $f10, $f14 # numero fica F.XXXXX %
+000004f7 : 46005024;  % 1813: cvt.w.s $f0, $f10 %
+000004f8 : 44080000;  % 1814: mfc1 $t0, $f0 # Salva F em t0 %
+000004f9 : 46800660;  % 1815: cvt.s.w $f25, $f0 %
+000004fa : 460ac83e;  % 1816: c.le.s $f25, $f10 %
+000004fb : 45010001;  % 1817: bc1t a7 %
+000004fc : 2108ffff;  % 1818: addi $t0, $t0, -1 %
+000004fd : 21080030;  % 1819: a7: addi $t0, $t0, '0' %
+000004fe : 0100a825;  % 1820: or $s5, $t0, $zero %
+000004ff : 24080045;  % 1823: OUT_LOOP_DEPOIS_DA_VIRGULA: li $t0, 'E' %
+00000500 : 00084200;  % 1824: sll $t0, $t0, 8 %
+00000501 : 02a8a825;  % 1825: or $s5, $s5, $t0 # second byte saved %
+00000502 : 00084202;  % 1826: srl $t0, $t0, 8 %
+00000503 : 001dc021;  % 1828: move $t8, $sp %
+00000504 : 23180009;  % 1829: addi $t8, $t8, 9 %
+00000505 : 2409000a;  % 1830: li $t1, 10 %
+00000506 : 0014c82a;  % 1831: sgt $t9, $s4, $0 #O expoente e maior que 0? Se sim, t9 = 1 %
+00000507 : 17200005;  % 1832: bnez $t9, EXPOENTE_CHAR1 %
+00000508 : 2409002d;  % 1833: li $t1, '-' %
+00000509 : 00094c00;  % 1834: sll $t1, $t1, 16 %
+0000050a : 02a9a825;  % 1835: or $s5, $s5, $t1 # third byte saved %
+0000050b : 00094c02;  % 1836: srl $t1, $t1, 16 %
+0000050c : 08000511;  % 1838: j EXPOENTE_CHAR %
+0000050d : 2409002b;  % 1840: EXPOENTE_CHAR1: li $t1, '+' %
+0000050e : 00094c00;  % 1841: sll $t1, $t1, 16 %
+0000050f : 02a9a825;  % 1842: or $s5, $s5, $t1 # third byte saved %
+00000510 : 00094c02;  % 1843: srl $t1, $t1, 16 %
+00000511 : 2409000a;  % 1845: EXPOENTE_CHAR: li $t1, 10 %
+00000512 : 2a8d0000;  % 1846: slti $t5, $s4, 0 %
+00000513 : 11a00002;  % 1847: beqz $t5, EXPONENT %
+00000514 : 0280a027;  % 1848: not $s4, $s4 %
+00000515 : 22940001;  % 1849: addi $s4, $s4, 1 %
+00000516 : 0289001a;  % 1851: EXPONENT: div $s4, $t1 %
+00000517 : 00004012;  % 1852: mflo $t0 # exp10 / 10 %
+00000518 : 25080030;  % 1855: addiu $t0, $t0, '0' %
+00000519 : 00084600;  % 1856: sll $t0, $t0, 24 %
+0000051a : 02a8a825;  % 1857: or $s5, $s5, $t0 # fourth byte saved %
+0000051b : 00084602;  % 1858: srl $t0, $t0, 24 %
+0000051c : aed50008;  % 1859: sw $s5, 8($s6) %
+0000051d : 00004010;  % 1861: mfhi $t0 %
+0000051e : 25080030;  % 1867: addiu $t0, $t0, '0' %
+0000051f : 0100a825;  % 1868: or $s5, $t0, $zero # first byte saved %
+00000520 : 2408000a;  % 1870: li $t0, '\n' %
+00000521 : 00084200;  % 1871: sll $t0, $t0, 8 %
+00000522 : 02a8a825;  % 1872: or $s5, $s5, $t0 # second byte saved %
+00000523 : 24080000;  % 1874: li $t0, '\0' %
+00000524 : 00084400;  % 1875: sll $t0, $t0, 16 %
+00000525 : 02a8a825;  % 1876: or $s5, $s5, $t0 # third byte saved %
+00000526 : aed5000c;  % 1877: sw $s5, 12($s6) %
+00000527 : 0800053f;  % 1879: j endPrintFloat %
+00000528 : 3c01666e;  % 1881: INFINITYPLUS: li $s5, 0x666E4920 #" Inf" %
+00000529 : 34354920;  % 1881:  %
+0000052a : aed50000;  % 1882: sw $s5, 0($s6) %
+0000052b : 3c017469;  % 1883: li $s5, 0x74696E69 #"init" %
+0000052c : 34356e69;  % 1883:  %
+0000052d : aed50004;  % 1884: sw $s5, 4($s6) %
+0000052e : 24150079;  % 1885: li $s5, 0x00000079 #"y\0" %
+0000052f : aed50008;  % 1886: sw $s5, 8($s6) %
+00000530 : 03e00008;  % 1888: jr $ra %
+00000531 : 3c01666e;  % 1890: INFINITYMINUS: li $s5, 0x666E492D #" Inf" %
+00000532 : 3435492d;  % 1890:  %
+00000533 : aed50000;  % 1891: sw $s5, 0($s6) %
+00000534 : 3c017469;  % 1892: li $s5, 0x74696E69 #"init" %
+00000535 : 34356e69;  % 1892:  %
+00000536 : aed50004;  % 1893: sw $s5, 4($s6) %
+00000537 : 24150079;  % 1894: li $s5, 0x00000079 #"y\0" %
+00000538 : aed50008;  % 1895: sw $s5, 8($s6) %
+00000539 : 03e00008;  % 1897: jr $ra %
+0000053a : 3c01004e;  % 1899: NAN: li $s5, 0x004E614E #"\NaN\0" %
+0000053b : 3435614e;  % 1899:  %
+0000053c : aed50000;  % 1900: sw $s5, 0($s6) %
+0000053d : 03e00008;  % 1901: jr $ra %
+0000053e : 0800053f;  % 1903: j endPrintFloat %
+0000053f : 03e00008;  % 1904: endPrintFloat: jr $ra %
+00000540 : 44106000;  % 1910: OBTAIN_MANTISSA_EXP: mfc1 $s0, $f12 #Take number in IEEE 754 %
+00000541 : 00108fc2;  % 1913: srl $s1, $s0, 31 # t1 = sign %
+00000542 : 001095c2;  % 1916: srl $s2, $s0, 23 %
+00000543 : 325200ff;  % 1917: andi $s2, $s2, 0xFF %
+00000544 : 2252ff81;  % 1918: addi $s2, $s2, -127 %
+00000545 : 24080001;  % 1923: li $t0, 1 %
+00000546 : 000845c0;  % 1924: sll $t0, $t0, 23 %
+00000547 : 2108ffff;  % 1925: addi $t0, $t0, -1 # t0 = (1<<23) - 1 %
+00000548 : 01109824;  % 1926: and $s3, $t0, $s0 # man = x & ((1<<23) - 1) %
+00000549 : 21080001;  % 1928: addi $t0, $t0, 1 %
+0000054a : 01139825;  % 1929: or $s3, $t0, $s3 # man |= (1 << 23) %
+0000054b : 2248007f;  % 1932: addi $t0, $s2, 127 %
+0000054c : 000845c0;  % 1933: sll  $t0, $t0, 23 %
+0000054d : 02084822;  % 1934: sub  $t1, $s0, $t0 # x - ((exp+127) << 23) %
+0000054e : 2408007f;  % 1936: li $t0, 0x7f %
+0000054f : 000845c0;  % 1937: sll $t0, $t0, 23 %
+00000550 : 01284825;  % 1938: or $t1, $t1, $t0 # s4 |= 0x7f << 23 %
+00000551 : 44895000;  % 1939: mtc1 $t1, $f10 # mantissa sem expoente incompleta = f10 %
+00000552 : 4492f000;  % 1944: mtc1 $s2, $f30 %
+00000553 : 4680f7a0;  % 1945: cvt.s.w $f30, $f30 # float(exponent) %
+00000554 : 3c013f31;  % 1946: li $t0, 0x3F317218 #ln(2) %
+00000555 : 34287218;  % 1946:  %
+00000556 : 44880800;  % 1947: mtc1 $t0, $f1 #ln(2) %
+00000557 : 44921000;  % 1948: mtc1 $s2, $f2 #take exponent %
+00000558 : 468010a0;  % 1949: cvt.s.w $f2, $f2 # Convert to single precision %
+00000559 : 46011082;  % 1950: mul.s $f2, $f2, $f1 # f2 = n ln(2) %
+0000055a : 3c013e9a;  % 1953: li $t0, 0x3E9A209B #log(2) %
+0000055b : 3428209b;  % 1953:  %
+0000055c : 44880800;  % 1954: mtc1 $t0, $f1 %
+0000055d : 44921000;  % 1956: mtc1 $s2, $f2 #take exponent %
+0000055e : 468010a0;  % 1957: cvt.s.w $f2, $f2 # Convert to single precision %
+0000055f : 46020882;  % 1958: mul.s $f2, $f1, $f2 # f %
+00000560 : 3c01bf80;  % 1959: li $t0, 0xBF800000 #-1 %
+00000561 : 34280000;  % 1959:  %
+00000562 : 44882800;  % 1960: mtc1 $t0, $f5 # -1 %
+00000563 : 4480b800;  % 1963: mtc1 $zero,$f23 # lwc1 $f23, 0x0 %
+00000564 : 4617103c;  % 1964: c.lt.s $f2, $f23 #checa se f < 0 %
+00000565 : 46001106;  % 1965: mov.s $f4, $f2  %
+00000566 : 45010004;  % 1967: bc1t menorQueZero %
+00000567 : 3c01bf80;  % 1968: li $t0, 0xBF800000 %
+00000568 : 34280000;  % 1968:  %
+00000569 : 46002124;  % 1969: maiorQueZero: cvt.w.s $f4, $f4 # se x > 0, ceil(f) = trunca(x) %
+0000056a : 08000570;  % 1970: 	j salvaFloor %
+0000056b : 3c01bf79;  % 1972: menorQueZero: li $t0, 0xBF79999A # se x < 0, floor(f) = trunca(x-0.975) %
+0000056c : 3428999a;  % 1972:  %
+0000056d : 4488b800;  % 1973: 	mtc1 $t0, $f23 #f23 = 0.975 %
+0000056e : 46172100;  % 1974: 	add.s $f4, $f4, $f23 %
+0000056f : 46002124;  % 1975: 	cvt.w.s $f4, $f4 %
+00000570 : 44142000;  % 1977: salvaFloor: mfc1 $s4, $f4 # save ceil(f) %
+00000571 : 46802120;  % 1978: cvt.s.w $f4, $f4 %
+00000572 : 3c014013;  % 1981: li $t0, 0x40135D8E # ln(10) %
+00000573 : 34285d8e;  % 1981:  %
+00000574 : 44880800;  % 1982: mtc1 $t0, $f1 %
+00000575 : 46012102;  % 1984: mul.s $f4, $f4, $f1 # floor(f)*ln(10) %
+00000576 : 3c013f31;  % 1986: li $t0, 0x3F317218 #ln(2) %
+00000577 : 34287218;  % 1986:  %
+00000578 : 44880800;  % 1987: mtc1 $t0, $f1 # ln(2) %
+00000579 : 44921000;  % 1988: mtc1 $s2, $f2 #take exponent %
+0000057a : 468010a0;  % 1989: cvt.s.w $f2, $f2 # Convert to single precision %
+0000057b : 460110c2;  % 1990: mul.s $f3, $f2, $f1 # n ln(2) %
+0000057c : 46041f81;  % 1991: sub.s $f30, $f3, $f4 # f30 = n ln(2) - floor(f)*ln(10) %
+0000057d : 001fb821;  % 1995: move $s7, $ra %
+0000057e : 0c000582;  % 1996: jal EXP # 2 ^ exp2 / 10 ^ exp10 %
+0000057f : 0017f821;  % 1997: move $ra, $s7 %
+00000580 : 460afa82;  % 1998: mul.s $f10, $f31, $f10 #f10 = MANTISSA NA BASE 10 %
+00000581 : 03e00008;  % 2000: END_OBTAIN_MANTISSA: jr $ra %
+00000582 : 2409001e;  % 2005: EXP: li $t1, 30 %
+00000583 : 44800800;  % 2007: mtc1 $zero,$f1  # lwc1 $f1, 0x0#f1 = 0 %
+00000584 : 4600f086;  % 2008: mov.s $f2, $f30 #f2 = x %
+00000585 : 3c013f80;  % 2009: li $t0, 0x3F800000 # 1 %
+00000586 : 34280000;  % 2009:  %
+00000587 : 4488f800;  % 2010: mtc1 $t0, $f31 # 1.0 %
+00000588 : 461effc0;  % 2012: add.s $f31, $f31, $f30 #exp($f30) = 1 + x %
+00000589 : 00004021;  % 2013: move $t0, $zero #index = 0 %
+0000058a : 21080001;  % 2014: addi $t0, $t0, 1 #index = 1 %
+0000058b : 44882800;  % 2015: mtc1 $t0, $f5 #f5 = t0 %
+0000058c : 46802960;  % 2016: cvt.s.w $f5, $f5 #f5 = float(t0) = factorial(index) %
+0000058d : 21080001;  % 2019: FOR: addi $t0, $t0, 1 # i = i + 1 %
+0000058e : 44881800;  % 2020: mtc1 $t0, $f3 # f2 = index %
+0000058f : 468018e0;  % 2021: cvt.s.w $f3, $f3 # f3 = float(index) %
+00000590 : 46032942;  % 2024: mul.s $f5, $f5, $f3 #factorial(index) %
+00000591 : 461e1082;  % 2028: mul.s $f2, $f2, $f30 # f2 = x^n %
+00000592 : 46051103;  % 2029: div.s $f4, $f2, $f5 # f4 = x^n / factorial(index) %
+00000593 : 4604ffc0;  % 2033: add.s $f31, $f31, $f4 %
+00000594 : 0128502a;  % 2037: sle $t2, $t0, $t1 %
+00000595 : 34010001;  % 2037:  %
+00000596 : 002a5023;  % 2037:  %
+00000597 : 11400001;  % 2038: beqz $t2, END %
+00000598 : 0800058d;  % 2039: j FOR %
+00000599 : 03e00008;  % 2041: END: jr $ra %
+0000059a : 3c019000;  % 2049: readFloat: la $a0, FloatBuffer  # buffer caracteres %
+0000059b : 3424076c;  % 2049:  %
+0000059c : 24050020;  % 2050: 	li $a1,32  #numero maximo de digitos %
+0000059d : 24020008;  % 2051: 	li $v0,8             # read string %
+0000059e : 0c000341;  % 2052: 	jal readString        #syscall %
+0000059f : 00048821;  % 2054: 	move $s1, $a0	 %
+000005a0 : 00009821;  % 2056: 	move $s3, $0		# $s3 = contador de caracteres na parte fracionaria %
+000005a1 : 0000a021;  % 2057: 	move $s4, $0		# $s4 = flag para sinal do numero %
+000005a2 : 240c0000;  % 2058: 	li $t4, 0		# $t4 = total inteiro (int) %
+000005a3 : 240d0000;  % 2059: 	li $t5, 0		# $t5 = total float %
+000005a4 : 2409000a;  % 2060: 	li $t1, 10		# $t1 = valor a ser dividido %
+000005a5 : 44893800;  % 2061: 	mtc1 $t1, $f7		# convertendo ele para float %
+000005a6 : 468039e0;  % 2062: 	cvt.s.w $f7, $f7 %
+000005a7 : 44800000;  % 2063: 	mtc1 $0, $f0		# zerando o registrador $f0 que eh o resultado final %
+000005a8 : 24080000;  % 2065: 	li $t0, 0x0		#vou salvando os valores parciais aqui %
+000005a9 : 44880800;  % 2066: 	mtc1 $t0, $f1 %
+000005aa : 3c014120;  % 2068: 	li $t0, 0x41200000 	#valor 10 fixo %
+000005ab : 34280000;  % 2068:  %
+000005ac : 44881000;  % 2069: 	mtc1 $t0, $f2 %
+000005ad : 3c014120;  % 2071: 	li $t0, 0x41200000 	#multiplos de 10 %
+000005ae : 34280000;  % 2071:  %
+000005af : 44881800;  % 2072: 	mtc1 $t0, $f3 %
+000005b0 : 24080000;  % 2074: 	li $t0, 0x0		#vou salvando os valores parciais aqui %
+000005b1 : 44886800;  % 2075: 	mtc1 $t0, $f13 %
+000005b2 : 0011c821;  % 2078: 	move $t9, $s1 %
+000005b3 : 001fc021;  % 2079: 	move $t8, $ra %
+000005b4 : 0c000674;  % 2080: 	jal loadbytet0 %
+000005b5 : 0018f821;  % 2081: 	move $ra, $t8 %
+000005b6 : 2001002b;  % 2082: 	beq $t0, '+', floop1 %
+000005b7 : 10280003;  % 2082:  %
+000005b8 : 2001002d;  % 2083: 	bne $t0, '-', floopE	# '-' = 45 Se for negativo prossegue, se nao ir para loop1 %
+000005b9 : 14280002;  % 2083:  %
+000005ba : 24140001;  % 2084: 	li $s4, 1		# $s4 sinalizado 1 como negativo %
+000005bb : 22310001;  % 2085: floop1:	addi $s1, $s1, 1	# avanca o ponteiro da pilha %
+000005bc : 0011b821;  % 2087: floopE:	move $s7, $s1 %
+000005bd : 0017c821;  % 2088: floop2:	move $t9, $s7 %
+000005be : 001fc021;  % 2089: 	move $t8, $ra %
+000005bf : 0c000674;  % 2090: 	jal loadbytet0 %
+000005c0 : 0018f821;  % 2091: 	move $ra, $t8 %
+000005c1 : 20010000;  % 2092: 	beq $t0, 0, floop3	#'\0' = 0 quando elemento atual da pilha for 0 pule para loop1 %
+000005c2 : 1028000b;  % 2092:  %
+000005c3 : 2001002e;  % 2093: 	beq $t0, 46, floop3	# '.' = 46 quanto elemento atual da pilha for . ou seja acabou os numeros inteiros va para loop1 %
+000005c4 : 10280009;  % 2093:  %
+000005c5 : 2001000a;  % 2094: 	beq $t0, 10, floop3 %
+000005c6 : 10280007;  % 2094:  %
+000005c7 : 20010045;  % 2095: 	beq $t0, 'E', floop3 %
+000005c8 : 10280005;  % 2095:  %
+000005c9 : 20010065;  % 2096: 	beq $t0, 'e', floop3 %
+000005ca : 10280003;  % 2096:  %
+000005cb : 2108ffd0;  % 2097: 	addi $t0, $t0, -48	# subtrai-se 48 para encontrar o numero inteiro de 0 a 9 segundo a tabela ascii %
+000005cc : 26f70001;  % 2108: isNum:	addiu $s7, $s7, 1 %
+000005cd : 080005bd;  % 2109: 	j floop2 %
+000005ce : 02f14022;  % 2111: floop3:	sub $t0, $s7, $s1 #numero total de casas decimais da parte inteira %
+000005cf : 2108ffff;  % 2112: 	addi $t0, $t0, -1 %
+000005d0 : 00087821;  % 2113: 	move $t7, $t0 %
+000005d1 : 24120000;  % 2114: 	li $s2, 0 #make sure doesn't use part of E algorithm %
+000005d2 : 001fc021;  % 2115: 	move $t8, $ra %
+000005d3 : 0c000654;  % 2116: 	jal n10 # 10**n is salved in f31 after this %
+000005d4 : 0018f821;  % 2117: 	move $ra, $t8 %
+000005d5 : 4600f946;  % 2118: 	mov.s $f5, $f31 %
+000005d6 : 0011c821;  % 2123: 	move $t9, $s1 %
+000005d7 : 001fc021;  % 2124: 	move $t8, $ra %
+000005d8 : 0c000674;  % 2125: 	jal loadbytet0 %
+000005d9 : 0018f821;  % 2126: 	move $ra, $t8 %
+000005da : 20010000;  % 2127: 	beq $t0, 0, final	#'\0' = 0 quando elemento atual da pilha for 0 pule para end1p1 %
+000005db : 10280063;  % 2127:  %
+000005dc : 2001002e;  % 2128: 	beq $t0, 46, endlp2	# '.' = 46 quanto elemento atual da pilha for . ou seja acabou os numeros inteiros va para end1p2 %
+000005dd : 1028000e;  % 2128:  %
+000005de : 2001000a;  % 2129: 	beq $t0, 10, final	# \n %
+000005df : 1028005f;  % 2129:  %
+000005e0 : 20010045;  % 2130: 	beq $t0, 'E', stepE1 %
+000005e1 : 10280026;  % 2130:  %
+000005e2 : 20010065;  % 2131: 	beq $t0, 'e', stepE1 %
+000005e3 : 10280024;  % 2131:  %
+000005e4 : 2108ffd0;  % 2132: 	addi $t0, $t0, -48	# subtrai-se 48 para encontrar o numero inteiro de 0 a 9 segundo a tabela ascii %
+000005e5 : 44883800;  % 2134: 	mtc1 $t0, $f7		#passes read number from stack to c1 %
+000005e6 : 468039e0;  % 2135: 	cvt.s.w $f7, $f7	#converts it to floating point number %
+000005e7 : 460728c2;  % 2136: 	mul.s $f3, $f5, $f7 	#contains 10**n * (char) %
+000005e8 : 46022943;  % 2137: 	div.s $f5, $f5, $f2 	#makes 10**(n-1) %
+000005e9 : 46030840;  % 2138: 	add.s $f1, $f1, $f3 	#adding, adding... %
+000005ea : 22310001;  % 2140: 	addi $s1, $s1, 1	# avanca o ponteiro da pilha %
+000005eb : 080005d6;  % 2142: 	j loop1			# pula para loop1 %
+000005ec : 22310001;  % 2145: endlp2:	addi $s1, $s1, 1	# avanca o ponteiro da pilha %
+000005ed : 3c014120;  % 2147: 	li $t0, 0x41200000 %
+000005ee : 34280000;  % 2147:  %
+000005ef : 44882800;  % 2148: 	mtc1 $t0, $f5 %
+000005f0 : 3c013f80;  % 2149: 	li $t0, 0x3F800000 %
+000005f1 : 34280000;  % 2149:  %
+000005f2 : 44881800;  % 2150: 	mtc1 $t0, $f3 %
+000005f3 : 0011c821;  % 2152: loop2:	move $t9, $s1 %
+000005f4 : 001fc021;  % 2153: 	move $t8, $ra %
+000005f5 : 0c000674;  % 2154: 	jal loadbytet0 %
+000005f6 : 0018f821;  % 2155: 	move $ra, $t8		# le $t0 %
+000005f7 : 20010065;  % 2156: 	beq $t0, 'e', stepE1	#'\0' = 0 quando elemento atual da pilha for 0 pule para end1p1 %
+000005f8 : 1028000f;  % 2156:  %
+000005f9 : 20010045;  % 2157: 	beq $t0, 'E', stepE1 %
+000005fa : 1028000d;  % 2157:  %
+000005fb : 20010000;  % 2158: 	beq $t0, '\0', final %
+000005fc : 10280042;  % 2158:  %
+000005fd : 2001000a;  % 2159: 	beq $t0, '\n', final %
+000005fe : 10280040;  % 2159:  %
+000005ff : 2108ffd0;  % 2160: 	addi $t0, $t0, -48	# subtrai-se 48 para encontrar o numero inteiro de 0 a 9 segundo a tabela ascii %
+00000600 : 460310c2;  % 2162: 	mul.s $f3, $f2, $f3 #multiples of 10 %
+00000601 : 44883800;  % 2163: 	mtc1 $t0, $f7	    #take number to c1 %
+00000602 : 468039e0;  % 2164: 	cvt.s.w $f7, $f7    #convert to floating point %
+00000603 : 46033ac3;  % 2165: 	div.s $f11, $f7, $f3 #a part of fractionary number %
+00000604 : 460b0840;  % 2166: 	add.s $f1, $f1, $f11 %
+00000605 : 22730001;  % 2168: 	addi $s3, $s3, 1	# soma 1 ao #s3, contador de caracteres da parte fracionaria %
+00000606 : 22310001;  % 2169: 	addi $s1, $s1, 1	# avanca o ponteiro da pilha %
+00000607 : 080005f3;  % 2171: 	j loop2			# volta para loop2 %
+00000608 : 22310001;  % 2173: stepE1: addi $s1, $s1, 1 %
+00000609 : 0011c821;  % 2175: 	move $t9, $s1 %
+0000060a : 001fc021;  % 2176: 	move $t8, $ra %
+0000060b : 0c000674;  % 2177: 	jal loadbytet0 %
+0000060c : 0018f821;  % 2178: 	move $ra, $t8		# $t0 = elemento atual da pilha %
+0000060d : 2001002b;  % 2179: 	beq $t0, '+', stepE2 %
+0000060e : 10280003;  % 2179:  %
+0000060f : 2001002d;  % 2180: 	bne $t0, '-', stepEE	# '-' = 45 Se for negativo prossegue, se nï¿½o ir para loop1 %
+00000610 : 14280002;  % 2180:  %
+00000611 : 24120001;  % 2181: 	li $s2, 1		# $s2 sinalizado 1 como negativo %
+00000612 : 22310001;  % 2183: stepE2:	addi $s1, $s1, 1	# avanca o ponteiro da pilha %
+00000613 : 0011b821;  % 2187: stepEE:	move $s7, $s1 %
+00000614 : 0017c821;  % 2188: stepE3:	move $t9, $s7 %
+00000615 : 001fc021;  % 2189: 	move $t8, $ra %
+00000616 : 0c000674;  % 2190: 	jal loadbytet0 %
+00000617 : 0018f821;  % 2191: 	move $ra, $t8		# le o numero da pilha %
+00000618 : 20010000;  % 2192: 	beq $t0, 0, stepE4	#'\0' = 0 quando elemento atual da pilha for 0 pule para loop1 %
+00000619 : 10280007;  % 2192:  %
+0000061a : 2001002e;  % 2193: 	beq $t0, 46, stepE4	# '.' = 46 quanto elemento atual da pilha for . ou seja acabou os numeros inteiros va para loop1 %
+0000061b : 10280005;  % 2193:  %
+0000061c : 2001000a;  % 2194: 	beq $t0, 10, stepE4	# \n %
+0000061d : 10280003;  % 2194:  %
+0000061e : 2108ffd0;  % 2195: 	addi $t0, $t0, -48	# subtrai-se 48 para encontrar o numero inteiro de 0 a 9 segundo a tabela ascii %
+0000061f : 26f70001;  % 2196: 	addiu $s7, $s7, 1 %
+00000620 : 08000614;  % 2197: 	j stepE3 %
+00000621 : 02f14022;  % 2199: stepE4:	sub $t0, $s7, $s1 #numero total de casas decimais depois de E %
+00000622 : 2108ffff;  % 2200: 	addi $t0, $t0, -1 %
+00000623 : 4488f000;  % 2201: 	mtc1 $t0, $f30 %
+00000624 : 00087821;  % 2202: 	move $t7, $t0 %
+00000625 : 0012a821;  % 2203: 	move $s5, $s2 %
+00000626 : 24120000;  % 2204: 	li $s2, 0 #estava tendo problema com s2... %
+00000627 : 001fc021;  % 2205: 	move $t8, $ra %
+00000628 : 0c000654;  % 2206: 	jal n10 # 10**n is salved in f31 after this %
+00000629 : 0018f821;  % 2207: 	move $ra, $t8 %
+0000062a : 00159021;  % 2208: 	move $s2, $s5 #retorna s2 ao valor original %
+0000062b : 4600f946;  % 2209: 	mov.s $f5, $f31 %
+0000062c : 3c014120;  % 2212: li $t0, 0x41200000 %
+0000062d : 34280000;  % 2212:  %
+0000062e : 44882800;  % 2213: mtc1 $t0, $f5 %
+0000062f : 0011c821;  % 2214: stepE5:	move $t9, $s1 %
+00000630 : 001fc021;  % 2215: 	move $t8, $ra %
+00000631 : 0c000674;  % 2216: 	jal loadbytet0 %
+00000632 : 0018f821;  % 2217: 	move $ra, $t8	# le o numero da pilha %
+00000633 : 20010000;  % 2218: 	beq $t0, 0, final	#'\0' = 0 quando elemento atual da pilha for 0 pule para end1p1 %
+00000634 : 1028000a;  % 2218:  %
+00000635 : 2001000a;  % 2219: 	beq $t0, 10, final	# '\n' %
+00000636 : 10280008;  % 2219:  %
+00000637 : 2108ffd0;  % 2220: 	addi $t0, $t0, -48	# subtrai-se 48 para encontrar o numero inteiro de 0 a 9 segundo a tabela ascii %
+00000638 : 44883800;  % 2222: 	mtc1 $t0, $f7		#passes read number from stack to c1 %
+00000639 : 468039e0;  % 2223: 	cvt.s.w $f7, $f7	#converts it to floating point number %
+0000063a : 460728c2;  % 2224: 	mul.s $f3, $f5, $f7 	#contains 10**n * (char) %
+0000063b : 46022943;  % 2225: 	div.s $f5, $f5, $f2 	#makes 10**(n-1) %
+0000063c : 46036b40;  % 2226: 	add.s $f13, $f13, $f3 	#adding, adding... %
+0000063d : 22310001;  % 2228: 	addi $s1, $s1, 1	# avanca o ponteiro da pilha %
+0000063e : 0800062f;  % 2230: 	j stepE5			# pula para loop1 %
+0000063f : 44945000;  % 2232: final:  mtc1 $s4, $f10 #s4 is signal, then f10 will be signal %
+00000640 : 468052a0;  % 2233: 	cvt.s.w $f10, $f10 %
+00000641 : 1680000c;  % 2234: 	bnez $s4, sign	#change signal if s4 != 0 %
+00000642 : 44927000;  % 2236: go_on1: mtc1 $s2, $f14 #s2 is signal of exponent, then f10 will be signal %
+00000643 : 468073a0;  % 2237: 	cvt.s.w $f14, $f14 %
+00000644 : 1640000e;  % 2238: 	bnez $s2, signE	#change signal if s4 != 0 %
+00000645 : 46006b64;  % 2240: go_on2:	cvt.w.s $f13, $f13 %
+00000646 : 440f6800;  % 2241: 	mfc1 $t7, $f13 %
+00000647 : 46006b64;  % 2242: 	cvt.w.s $f13, $f13 %
+00000648 : 001fc021;  % 2243: 	move $t8, $ra %
+00000649 : 0c000654;  % 2244: 	jal n10 %
+0000064a : 0018f821;  % 2245: 	move $ra, $t8 %
+0000064b : 461f0842;  % 2246: 	mul.s $f1, $f1, $f31 %
+0000064c : 46000806;  % 2249: print:	mov.s $f0, $f1 #mov.s $f12, $f1 %
+0000064d : 080001c8;  % 2252: 	j backReadFloat %
+0000064e : 3c01bf80;  % 2258: sign:	li $t0, 0xBF800000 #-1 %
+0000064f : 34280000;  % 2258:  %
+00000650 : 44885000;  % 2259: 	mtc1 $t0, $f10 %
+00000651 : 460a0842;  % 2260: 	mul.s $f1, $f1, $f10 %
+00000652 : 08000642;  % 2261: 	j go_on1 %
+00000653 : 08000645;  % 2263: signE:	j go_on2 #isso nao e mais necessario... so volte %
+00000654 : 23bdffec;  % 2269: n10:	addi $sp,$sp,-20  #Argumento esta em t7 = n, saida em 10**n = $f31#Argumento esta em t7 = n, saida em 10**n = $f31 %
+00000655 : afbf0000;  % 2270: 	sw $ra,0($sp) %
+00000656 : afa80004;  % 2271: 	sw $t0,4($sp) %
+00000657 : afaf0008;  % 2272: 	sw $t7,8($sp) %
+00000658 : e7a0000c;  % 2273: 	swc1 $f0,12($sp) %
+00000659 : e7af0010;  % 2274: 	swc1 $f15,16($sp) %
+0000065a : 3c014120;  % 2276: 	li $t0, 0x41200000 #10 %
+0000065b : 34280000;  % 2276:  %
+0000065c : 44880000;  % 2277: 	mtc1 $t0, $f0 %
+0000065d : 3c013f80;  % 2278: 	li $t0, 0x3F800000 #1 %
+0000065e : 34280000;  % 2278:  %
+0000065f : 4488f800;  % 2279: 	mtc1 $t0, $f31 %
+00000660 : 16400004;  % 2280: 	bnez $s2, multiply_neg %
+00000661 : 11e0000b;  % 2282: multiply_pos: 	beqz $t7, END2 #a0 e o valor de n, vai subtraindo ate chegar em 0 ai vai para fim %
+00000662 : 4600ffc2;  % 2283: 	mul.s $f31, $f31, $f0 %
+00000663 : 21efffff;  % 2284: 	addi $t7, $t7, -1 %
+00000664 : 08000661;  % 2285: 	j multiply_pos %
+00000665 : 11e00003;  % 2287: multiply_neg:	beqz $t7, invert #a0 e o valor de n, vai subtraindo ate chegar em 0 ai vai para fim %
+00000666 : 4600ffc2;  % 2288: 	mul.s $f31, $f31, $f0 %
+00000667 : 21efffff;  % 2289: 	addi $t7, $t7, -1 %
+00000668 : 08000665;  % 2290: 	j multiply_neg %
+00000669 : 3c013f80;  % 2292: invert: li $t0, 0x3F800000 #1 %
+0000066a : 34280000;  % 2292:  %
+0000066b : 44887800;  % 2293: 	mtc1 $t0, $f15 %
+0000066c : 461f7fc3;  % 2295: 	div.s $f31, $f15, $f31 # 1 / 10 ** n %
+0000066d : 8fbf0000;  % 2297: END2: 	lw $ra,0($sp) %
+0000066e : 8fa80004;  % 2298: 	lw $t0,4($sp) %
+0000066f : 8faf0008;  % 2299: 	lw $t7,8($sp) %
+00000670 : c7a0000c;  % 2300: 	lwc1 $f0,12($sp) %
+00000671 : c7af0010;  % 2301: 	lwc1 $f15,16($sp) %
+00000672 : 23bd0014;  % 2302: 	addi $sp, $sp, 20 %
+00000673 : 03e00008;  % 2303: 	jr $ra %
+00000674 : 23bdfff8;  % 2309: loadbytet0: addi $sp, $sp, -8 %
+00000675 : afab0000;  % 2310: sw $11, 0($sp) %
+00000676 : afac0004;  % 2311: sw $12, 4($sp) %
+00000677 : 240b0004;  % 2314: li $11, 4 %
+00000678 : 032b001a;  % 2315: div $t9, $11 %
+00000679 : 00005810;  % 2316: mfhi $11 %
+0000067a : 032b4022;  % 2317: sub $t0, $t9, $11 #este endereco em a0 agora esta alinhado %
+0000067b : 8d080000;  % 2318: lw $t0, 0($t0) %
+0000067c : 240c0000;  % 2319: li $12, 0 %
+0000067d : 118b000f;  % 2320: beq $12, $11, lb3  %
+0000067e : 240c0001;  % 2321: li $12, 1 %
+0000067f : 118b000a;  % 2322: beq $12, $11, lb2  %
+00000680 : 240c0002;  % 2323: li $12, 2 %
+00000681 : 118b0005;  % 2324: beq $12, $11, lb1 %
+00000682 : 240c0003;  % 2325: li $12, 3 %
+00000683 : 118b0000;  % 2326: beq $12, $11, lb0 %
+00000684 : 00084602;  % 2329: lb0:	srl $t0, $t0, 24 %
+00000685 : 310800ff;  % 2330: 	andi $t0, 0xFF %
+00000686 : 0800068f;  % 2331: 	j endlb %
+00000687 : 00084402;  % 2332: lb1:	srl $t0, $t0, 16 %
+00000688 : 310800ff;  % 2333: 	andi $t0, 0xFF %
+00000689 : 0800068f;  % 2334: 	j endlb %
+0000068a : 00084202;  % 2335: lb2:	srl $t0, $t0, 8 %
+0000068b : 310800ff;  % 2336: 	andi $t0, 0xFF %
+0000068c : 0800068f;  % 2337: 	j endlb %
+0000068d : 310800ff;  % 2338: lb3:	andi $t0, 0xFF %
+0000068e : 0800068f;  % 2339: 	j endlb %
+0000068f : 8fab0000;  % 2340: endlb:	lw $11, 0($sp) %
+00000690 : 8fac0004;  % 2341: lw $12, 4($sp) %
+00000691 : 23bd0008;  % 2342: addi $sp, $sp, 8 %
+00000692 : 03e00008;  % 2343: jr $ra %
+
+END;

@@ -609,8 +609,11 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLE
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id auto_signaltap_0
 set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
 set_global_assignment -name SMART_RECOMPILE ON
-set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
+set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS OFF
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=1" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to iKEY[3] -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to iKEY[0] -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=2" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to OCLK200 -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "CPU:CPU0|Datapath_MULTI:Processor|Control_MULTI:CrlMULTI|pr_state.BEQ" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "CPU:CPU0|Datapath_MULTI:Processor|Control_MULTI:CrlMULTI|pr_state.BNE" -section_id auto_signaltap_0
@@ -891,62 +894,14 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=275" -s
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=22" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=256" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=11431" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=34608" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=256" -section_id auto_signaltap_0
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name INCREMENTAL_VECTOR_INPUT_SOURCE "C:/Users/lamar/Dropbox/kiko/Disciplinas/UnB/OAC/2016-1/MIPS-PUM-v4.1/Core/Testes/TopDE2.vwf"
-set_global_assignment -name ENABLE_DRC_SETTINGS ON
-set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE SPEED
-set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
-set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_RETIMING ON
-set_global_assignment -name ROUTER_TIMING_OPTIMIZATION_LEVEL MAXIMUM
-set_global_assignment -name AUTO_PACKED_REGISTERS_STRATIXII NORMAL
-set_global_assignment -name ADV_NETLIST_OPT_SYNTH_WYSIWYG_REMAP ON
-set_global_assignment -name MUX_RESTRUCTURE OFF
-set_global_assignment -name STATE_MACHINE_PROCESSING "ONE-HOT"
-set_global_assignment -name OPTIMIZE_HOLD_TIMING "ALL PATHS"
-set_global_assignment -name FITTER_EFFORT "AUTO FIT"
-set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to OwPC[0] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to OwPC[10] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to OwPC[11] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[3] -to OwPC[12] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[4] -to OwPC[13] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[5] -to OwPC[14] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[6] -to OwPC[15] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[7] -to OwPC[16] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[8] -to OwPC[17] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[9] -to OwPC[18] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[10] -to OwPC[19] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[11] -to OwPC[1] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[12] -to OwPC[20] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[13] -to OwPC[21] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[14] -to OwPC[22] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[15] -to OwPC[23] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[16] -to OwPC[24] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[17] -to OwPC[25] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[18] -to OwPC[26] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[19] -to OwPC[27] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[20] -to OwPC[28] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[21] -to OwPC[29] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[22] -to OwPC[2] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[23] -to OwPC[30] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[24] -to OwPC[31] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[25] -to OwPC[3] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[26] -to OwPC[4] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[27] -to OwPC[5] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[28] -to OwPC[6] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[29] -to OwPC[7] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[30] -to OwPC[8] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[31] -to OwPC[9] -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[32] -to iKEY[3] -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[33] -to iKEY[0] -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=34" -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=42000" -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=60552" -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=sld_reserved_TopDE_auto_signaltap_0_1_1c2e," -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=sld_reserved_TopDE_FastCompilation_auto_signaltap_0_1_4bd8," -section_id auto_signaltap_0
 set_global_assignment -name VERILOG_FILE TopDE.v
 set_global_assignment -name VERILOG_FILE Parametros.v
 set_global_assignment -name VERILOG_FILE CPU/CPU.v
@@ -1055,15 +1010,14 @@ set_global_assignment -name VERILOG_FILE LCD/LCDStateMachine.v
 set_global_assignment -name VERILOG_FILE LCD/LCDController.v
 set_global_assignment -name VERILOG_FILE Display7/Display7_Interface.v
 set_global_assignment -name VERILOG_FILE Display7/decoder7.v
+set_global_assignment -name VHDL_FILE CartaoSD/clock_divider.vhd
 set_global_assignment -name VHDL_FILE CartaoSD/sd_controller.vhd
 set_global_assignment -name VERILOG_FILE CartaoSD/spi_interface.v
-set_global_assignment -name VHDL_FILE CartaoSD/clock_divider.vhd
 set_global_assignment -name VERILOG_FILE AudioCODEC/AudioCODEC_Interface.v
 set_global_assignment -name VERILOG_FILE AudioCODEC/I2C_Controller.v
 set_global_assignment -name VERILOG_FILE AudioCODEC/I2C_AV_Config.v
 set_global_assignment -name VERILOG_FILE AudioCODEC/audio_converter.v
 set_global_assignment -name VERILOG_FILE AudioCODEC/audio_clock.v
-set_global_assignment -name VERILOG_FILE AudioCODEC/AudioVideo_PLL.v
 set_global_assignment -name VECTOR_WAVEFORM_FILE Testes/TopDE.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Testes/CPU.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Testes/CLOCK.vwf
@@ -1075,5 +1029,5 @@ set_global_assignment -name VECTOR_WAVEFORM_FILE Testes/TopDE2.vwf
 set_global_assignment -name SIGNALTAP_FILE Testes/stp1.stp
 set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_global_assignment -name CDF_FILE output_files/Chain2.cdf
+set_global_assignment -name SLD_FILE "C:/Users/Arthur/Documents/GitHub/LabsOAC/Processors/MIPS-PUM-v4.2/Core/Testes/stp1_auto_stripped.stp"
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
-set_global_assignment -name SLD_FILE "C:/Users/Arthur/Documents/GitHub/LabsOAC/Processors/MIPS-PUM-v4.3/Core/Testes/stp1_auto_stripped.stp"
