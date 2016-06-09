@@ -84,7 +84,7 @@ signal store_data       : std_logic_vector(7 downto 0) := x"AA";
 COMPONENT CLK_Divider PORT (
                             CLKin, Reset   : IN  STD_LOGIC;
                             State          : IN  STD_LOGIC_VECTOR;
-                            CLKout          : OUT STD_LOGIC
+                            CLKout         : OUT STD_LOGIC
 ); END COMPONENT;
 
 begin
@@ -182,13 +182,13 @@ begin
                         return_state    <= READ_BLOCK_WAIT;
                         state           <= SEND_CMD;
 
-                    when READ_BLOCK_WAIT =>
+                    when READ_BLOCK_WAIT =>                             -- DEBUG: Recebe o Start Block e prepara para ler os dados
                         status          <= x"80";                       -- DEBUG
                         if (sclk_sig = '1' and miso = '0') then
                             byte_counter    := 1;                       -- DEBUG: O valor está correto?     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                             bit_counter     := 7;
                             return_state    <= READ_BLOCK_DATA;
-                            state           <= RECEIVE_BYTE;
+                            state           <= RECEIVE_BYTE;            -- DEBUG: O próximo estado receberá o byte de dado.
                         end if;
                         sclk_sig        <= not sclk_sig;
 
@@ -205,9 +205,9 @@ begin
                             state           <= RECEIVE_BYTE;
                         end if;
 
-                    when READ_BLOCK_CRC =>
+                    when READ_BLOCK_CRC =>                              -- DEBUG: Prepara a recepção do segundo byte do CRC16
                         status          <= x"A0";                       -- DEBUG
-                        bit_counter     := 7;                           -- DEBUG: A resposta tem um CRC16. O primeiro byte é lido como dado ou o segundo é ignorado?
+                        bit_counter     := 7;
                         return_state    <= IDLE;
                         state           <= RECEIVE_BYTE;
 
