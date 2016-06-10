@@ -1,7 +1,7 @@
 ##
 # Test Rountine for MIPS 3.3 PUM
 # Laboratorio 4
-# /Version      0.243 - Error Routine Updated
+# /Version      0.244 - Branch removed
 # /Authors      Rafael
 ##
 
@@ -134,37 +134,7 @@ test.beq:
 test.bne:
     addi    $t0,$0,1
     addi    $t1,$0,2
-    bne     $t0,$t1,test.bgez
-    jal     error
-
-test.bgez:
-    addi    $t0,$0,1
-    bgez    $t0,test.bgezal
-    jal     error
-
-test.bgezal:
-    addi    $t0,$0,1
-    bgezal  $t0,test.bgtz
-    jal     error
-
-test.bgtz:
-    addi    $t0,$0,1
-    bgtz    $t0,test.blez
-    jal     error
-
-test.blez:
-    addi    $t0,$0,-1
-    blez    $t0,test.bltz
-    jal     error
-
-test.bltz:
-    addi    $t0,$0,-1
-    bltz    $t0,test.bltzal
-    jal     error
-
-test.bltzal:
-    addi    $t0,$0,-1
-    bltzal  $t0,test.alu
+    bne     $t0,$t1,test.alu
     jal     error
 
 ##
