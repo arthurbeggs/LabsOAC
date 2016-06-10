@@ -1,6 +1,6 @@
-<session jtag_chain="Disabled" jtag_device="" sof_file="../output_files/TopDE.sof">
+<session jtag_chain="USB-Blaster [USB-0]" jtag_device="@1: EP2C70 (0x020B60DD)" sof_file="../output_files/TopDE.sof">
   <display_tree gui_logging_enabled="1">
-    <display_branch instance="auto_signaltap_0" signal_set="signal_set: 2016/06/09 20:06:57  #0" trigger="trigger: 2016/06/09 20:06:57  #1"/>
+    <display_branch instance="auto_signaltap_0" log="log: 2016/06/10 14:09:37  #7" signal_set="signal_set: 2016/06/10 13:56:49  #0" trigger="trigger: 2016/06/10 13:56:49  #1"/>
   </display_tree>
   <instance entity_name="sld_signaltap" is_auto_node="yes" is_expanded="true" name="auto_signaltap_0" source_file="sld_signaltap.vhd">
     <node_ip_info instance_id="0" mfg_id="110" node_id="0" version="6"/>
@@ -1491,14 +1491,17 @@
         <trigger_in_editor/>
         <trigger_out_editor/>
       </presentation>
-      <trigger CRC="87302CA7" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2016/05/21 21:53:34  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="256" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="true" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_type="circular">
+      <trigger CRC="87302CA7" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2016/05/21 21:53:34  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="256" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="false" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_type="circular">
         <power_up_trigger position="pre" storage_qualifier_disabled="no"/>
         <events use_custom_flow_control="no">
-          <level editor="basic_or" enabled="yes" name="condition1" type="advanced"><power_up enabled="yes">
+          <level editor="basic_or" enabled="yes" name="condition1" type="advanced">
+            <power_up enabled="yes">
               <power_up_expression><![CDATA[(mbpm('X',{'iKEY[0]'}) && variable(1)) || (mbpm('X',{'iKEY[3]'}) && variable(1))]]>
               </power_up_expression>
-            </power_up><expression><![CDATA[(mbpm('R',{'iKEY[0]'}) && variable(1)) || (mbpm('R',{'iKEY[3]'}) && variable(1))]]>
-            </expression><op_node>
+            </power_up>
+            <expression><![CDATA[(mbpm('R',{'iKEY[0]'}) && variable(1)) || (mbpm('R',{'iKEY[3]'}) && variable(1))]]>
+            </expression>
+            <op_node>
               <op_node expanded="1" left="603" top="265" type="Advanced Trigger Level Result">
                 <op_node expanded="1" left="473" name="logical_0" top="225" type="Logical Operator">
                   <op_node left="343" name="ODWriteEnable" top="210" type="Node"/>
@@ -1566,24 +1569,32 @@
         </storage_qualifier_events>
       </trigger>
     </signal_set>
-    <signal_set is_expanded="true" name="signal_set: 2016/06/09 20:06:57  #0">
-      <clock name="OCLK200" polarity="posedge" tap_mode="classic"/>
+    <signal_set is_expanded="true" name="signal_set: 2016/06/10 13:56:49  #0">
+      <clock name="OCLK100" polarity="posedge" tap_mode="classic"/>
       <config ram_type="M4K" reserved_data_nodes="0" reserved_storage_qualifier_nodes="0" reserved_trigger_nodes="0" sample_depth="256" trigger_in_enable="no" trigger_out_enable="no"/>
       <top_entity/>
       <signal_vec>
         <trigger_input_vec>
+          <wire name="SD_CMD" tap_mode="classic"/>
+          <wire name="SD_DAT" tap_mode="classic"/>
+          <wire name="SD_DAT3" tap_mode="classic"/>
+          <wire name="oSD_CLK" tap_mode="classic"/>
+          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast" tap_mode="probeonly"/>
           <wire name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout" tap_mode="probeonly"/>
-          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]" tap_mode="probeonly"/>
+          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow" tap_mode="probeonly"/>
           <wire name="SPI_Interface:SDCARD|sd_controller:sd1|cs" tap_mode="probeonly"/>
-          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]" tap_mode="probeonly"/>
           <wire name="SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig" tap_mode="probeonly"/>
         </trigger_input_vec>
         <data_input_vec>
+          <wire name="SD_CMD" tap_mode="classic"/>
+          <wire name="SD_DAT" tap_mode="classic"/>
+          <wire name="SD_DAT3" tap_mode="classic"/>
           <wire name="iCLK_50" tap_mode="classic"/>
+          <wire name="oSD_CLK" tap_mode="classic"/>
+          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast" tap_mode="probeonly"/>
           <wire name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout" tap_mode="probeonly"/>
-          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]" tap_mode="probeonly"/>
+          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow" tap_mode="probeonly"/>
           <wire name="SPI_Interface:SDCARD|sd_controller:sd1|cs" tap_mode="probeonly"/>
-          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]" tap_mode="probeonly"/>
           <wire name="SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig" tap_mode="probeonly"/>
         </data_input_vec>
         <storage_qualifier_input_vec>
@@ -1869,22 +1880,26 @@
           <wire name="OwPC[7]" tap_mode="classic"/>
           <wire name="OwPC[8]" tap_mode="classic"/>
           <wire name="OwPC[9]" tap_mode="classic"/>
+          <wire name="SD_CMD" tap_mode="classic"/>
+          <wire name="SD_DAT" tap_mode="classic"/>
+          <wire name="SD_DAT3" tap_mode="classic"/>
           <wire name="iCLK_50" tap_mode="classic"/>
           <wire name="iKEY[3]" tap_mode="classic"/>
+          <wire name="oSD_CLK" tap_mode="classic"/>
+          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast" tap_mode="probeonly"/>
           <wire name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout" tap_mode="probeonly"/>
-          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]" tap_mode="probeonly"/>
+          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow" tap_mode="probeonly"/>
           <wire name="SPI_Interface:SDCARD|sd_controller:sd1|cs" tap_mode="probeonly"/>
-          <wire name="SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]" tap_mode="probeonly"/>
           <wire name="SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig" tap_mode="probeonly"/>
           <wire name="iKEY[0]" tap_mode="probeonly"/>
         </storage_qualifier_input_vec>
       </signal_vec>
       <presentation>
         <unified_setup_data_view>
-          <node is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="iKEY[0]" pwr_level-0="dont_care" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="289" tap_mode="probeonly" trigger_index="1" type="input pin"/>
-          <node is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="iKEY[3]" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="283" tap_mode="classic" trigger_index="0" type="input pin"/>
+          <node is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="iKEY[0]" pwr_level-0="dont_care" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="293" tap_mode="probeonly" trigger_index="1" type="input pin"/>
+          <node is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="iKEY[3]" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="286" tap_mode="classic" trigger_index="0" type="input pin"/>
           <node data_index="43" is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="OCLK" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="43" tap_mode="classic" trigger_index="0" type="output pin"/>
-          <node data_index="0" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="iCLK_50" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="282" tap_mode="classic" type="input pin"/>
+          <node data_index="3" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="iCLK_50" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="285" tap_mode="classic" type="input pin"/>
           <node name="OwPC" order="msb_to_lsb" state="collapse" type="output pin">
             <node data_index="266" is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="OwPC[31]" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="274" tap_mode="classic" type="output pin"/>
             <node data_index="265" is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="OwPC[30]" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="273" tap_mode="classic" type="output pin"/>
@@ -2186,30 +2201,42 @@
             <node data_index="41" is_data_input="false" is_node_valid="false" is_storage_input="true" is_trigger_input="false" name="CPU:CPU0|Datapath_MULTI:Processor|Control_MULTI:CrlMULTI|pr_state.TIME" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="41" tap_mode="classic" trigger_index="41" type="state machine"/>
             <node data_index="42" is_data_input="false" is_node_valid="false" is_storage_input="true" is_trigger_input="false" name="CPU:CPU0|Datapath_MULTI:Processor|Control_MULTI:CrlMULTI|pr_state.TIME2" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="42" tap_mode="classic" trigger_index="42" type="state machine"/>
           </node>
-          <node name="SPI" order="lsb_to_msb" state="expand" type="register">
-            <node data_index="3" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|cs" storage_index="286" tap_mode="probeonly" trigger_index="2" type="register"/>
-            <node data_index="5" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig" storage_index="288" tap_mode="probeonly" trigger_index="4" type="register"/>
-            <node data_index="1" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout" storage_index="284" tap_mode="probeonly" trigger_index="0" type="register"/>
-            <node data_index="2" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]" storage_index="285" tap_mode="probeonly" trigger_index="1" type="register"/>
-            <node data_index="4" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]" storage_index="287" tap_mode="probeonly" trigger_index="3" type="register"/>
+          <node name="SPI_Interface_Pins" order="lsb_to_msb" state="expand" type="register">
+            <node data_index="9" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig" storage_index="292" tap_mode="probeonly" trigger_index="8" type="register"/>
+            <node data_index="6" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout" storage_index="289" tap_mode="probeonly" trigger_index="5" type="register"/>
+            <node data_index="5" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast" storage_index="288" tap_mode="probeonly" trigger_index="4" type="register"/>
+            <node data_index="7" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow" storage_index="290" tap_mode="probeonly" trigger_index="6" type="register"/>
+            <node data_index="8" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|cs" storage_index="291" tap_mode="probeonly" trigger_index="7" type="register"/>
+          </node>
+          <node name="SD_Pins" order="lsb_to_msb" state="expand" type="bidir pin">
+            <node data_index="1" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SD_DAT" storage_index="283" tap_mode="classic" trigger_index="1" type="bidir pin"/>
+            <node data_index="0" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SD_CMD" storage_index="282" tap_mode="classic" trigger_index="0" type="bidir pin"/>
+            <node data_index="2" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SD_DAT3" storage_index="284" tap_mode="classic" trigger_index="2" type="bidir pin"/>
+            <node data_index="4" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="oSD_CLK" storage_index="287" tap_mode="classic" trigger_index="3" type="output pin"/>
           </node>
         </unified_setup_data_view>
         <data_view>
-          <net data_index="0" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="iCLK_50" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="282" tap_mode="classic" type="input pin"/>
+          <net data_index="3" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="iCLK_50" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="285" tap_mode="classic" type="input pin"/>
           <bus data_index="145" is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="ODWriteEnable" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="145" tap_mode="classic" trigger_index="32" type="output pin"/>
-          <bus name="SPI" order="lsb_to_msb" state="expand" type="register">
-            <net data_index="3" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|cs" storage_index="286" tap_mode="probeonly" trigger_index="2" type="register"/>
-            <net data_index="5" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig" storage_index="288" tap_mode="probeonly" trigger_index="4" type="register"/>
-            <net data_index="1" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout" storage_index="284" tap_mode="probeonly" trigger_index="0" type="register"/>
-            <net data_index="2" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]" storage_index="285" tap_mode="probeonly" trigger_index="1" type="register"/>
-            <net data_index="4" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]" storage_index="287" tap_mode="probeonly" trigger_index="3" type="register"/>
+          <bus name="SPI_Interface_Pins" order="lsb_to_msb" state="expand" type="register">
+            <net data_index="9" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig" storage_index="292" tap_mode="probeonly" trigger_index="8" type="register"/>
+            <net data_index="6" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout" storage_index="289" tap_mode="probeonly" trigger_index="5" type="register"/>
+            <net data_index="5" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast" storage_index="288" tap_mode="probeonly" trigger_index="4" type="register"/>
+            <net data_index="7" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow" storage_index="290" tap_mode="probeonly" trigger_index="6" type="register"/>
+            <net data_index="8" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|cs" storage_index="291" tap_mode="probeonly" trigger_index="7" type="register"/>
+          </bus>
+          <bus name="SD_Pins" order="lsb_to_msb" state="expand" type="bidir pin">
+            <net data_index="1" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SD_DAT" storage_index="283" tap_mode="classic" trigger_index="1" type="bidir pin"/>
+            <net data_index="0" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SD_CMD" storage_index="282" tap_mode="classic" trigger_index="0" type="bidir pin"/>
+            <net data_index="2" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SD_DAT3" storage_index="284" tap_mode="classic" trigger_index="2" type="bidir pin"/>
+            <net data_index="4" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="oSD_CLK" storage_index="287" tap_mode="classic" trigger_index="3" type="output pin"/>
           </bus>
         </data_view>
         <setup_view>
-          <net is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="iKEY[0]" pwr_level-0="dont_care" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="289" tap_mode="probeonly" trigger_index="1" type="input pin"/>
-          <net is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="iKEY[3]" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="283" tap_mode="classic" trigger_index="0" type="input pin"/>
+          <net is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="iKEY[0]" pwr_level-0="dont_care" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="293" tap_mode="probeonly" trigger_index="1" type="input pin"/>
+          <net is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="iKEY[3]" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="286" tap_mode="classic" trigger_index="0" type="input pin"/>
           <net data_index="43" is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" level-0="rising edge" name="OCLK" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="43" tap_mode="classic" trigger_index="0" type="output pin"/>
-          <net data_index="0" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="iCLK_50" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="282" tap_mode="classic" type="input pin"/>
+          <net data_index="3" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="iCLK_50" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="285" tap_mode="classic" type="input pin"/>
           <bus name="OwPC" order="msb_to_lsb" state="collapse" type="output pin">
             <net data_index="266" is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="OwPC[31]" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="274" tap_mode="classic" type="output pin"/>
             <net data_index="265" is_data_input="false" is_node_valid="true" is_storage_input="true" is_trigger_input="false" name="OwPC[30]" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="273" tap_mode="classic" type="output pin"/>
@@ -2511,28 +2538,31 @@
             <net data_index="41" is_data_input="false" is_node_valid="false" is_storage_input="true" is_trigger_input="false" name="CPU:CPU0|Datapath_MULTI:Processor|Control_MULTI:CrlMULTI|pr_state.TIME" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="41" tap_mode="classic" trigger_index="41" type="state machine"/>
             <net data_index="42" is_data_input="false" is_node_valid="false" is_storage_input="true" is_trigger_input="false" name="CPU:CPU0|Datapath_MULTI:Processor|Control_MULTI:CrlMULTI|pr_state.TIME2" pwr_storage-0="dont_care" pwr_storage-1="dont_care" pwr_storage-2="dont_care" storage-0="dont_care" storage-1="dont_care" storage-2="dont_care" storage_index="42" tap_mode="classic" trigger_index="42" type="state machine"/>
           </bus>
-          <bus name="SPI" order="lsb_to_msb" state="expand" type="register">
-            <net data_index="3" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|cs" storage_index="286" tap_mode="probeonly" trigger_index="2" type="register"/>
-            <net data_index="5" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig" storage_index="288" tap_mode="probeonly" trigger_index="4" type="register"/>
-            <net data_index="1" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout" storage_index="284" tap_mode="probeonly" trigger_index="0" type="register"/>
-            <net data_index="2" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]" storage_index="285" tap_mode="probeonly" trigger_index="1" type="register"/>
-            <net data_index="4" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]" storage_index="287" tap_mode="probeonly" trigger_index="3" type="register"/>
+          <bus name="SPI_Interface_Pins" order="lsb_to_msb" state="expand" type="register">
+            <net data_index="9" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig" storage_index="292" tap_mode="probeonly" trigger_index="8" type="register"/>
+            <net data_index="6" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout" storage_index="289" tap_mode="probeonly" trigger_index="5" type="register"/>
+            <net data_index="5" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast" storage_index="288" tap_mode="probeonly" trigger_index="4" type="register"/>
+            <net data_index="7" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow" storage_index="290" tap_mode="probeonly" trigger_index="6" type="register"/>
+            <net data_index="8" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SPI_Interface:SDCARD|sd_controller:sd1|cs" storage_index="291" tap_mode="probeonly" trigger_index="7" type="register"/>
+          </bus>
+          <bus name="SD_Pins" order="lsb_to_msb" state="expand" type="bidir pin">
+            <net data_index="1" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SD_DAT" storage_index="283" tap_mode="classic" trigger_index="1" type="bidir pin"/>
+            <net data_index="0" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SD_CMD" storage_index="282" tap_mode="classic" trigger_index="0" type="bidir pin"/>
+            <net data_index="2" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="SD_DAT3" storage_index="284" tap_mode="classic" trigger_index="2" type="bidir pin"/>
+            <net data_index="4" is_data_input="true" is_node_valid="true" is_storage_input="true" is_trigger_input="true" name="oSD_CLK" storage_index="287" tap_mode="classic" trigger_index="3" type="output pin"/>
           </bus>
         </setup_view>
         <trigger_in_editor/>
         <trigger_out_editor/>
       </presentation>
-      <trigger CRC="2B02026" attribute_mem_mode="false" gap_record="true" is_expanded="true" name="trigger: 2016/06/09 20:06:57  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="256" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="true" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_type="circular">
+      <trigger CRC="25F85A8" attribute_mem_mode="false" gap_record="true" is_expanded="true" name="trigger: 2016/06/10 13:56:49  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="256" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="false" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_type="circular">
         <power_up_trigger position="pre" storage_qualifier_disabled="no"/>
         <events use_custom_flow_control="no">
-          <level editor="basic_or" enabled="yes" name="condition1" type="advanced">
-            <power_up enabled="yes">
-              <power_up_expression><![CDATA[(('SPI':({'SPI_Interface:SDCARD|sd_controller:sd1|cs','SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig','SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout','SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]','SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]'}) == variable(b00000)) && variable(0)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|cs'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]'}) && variable(1))]]>
+          <level editor="basic_or" enabled="yes" name="condition1" type="advanced"><power_up enabled="yes">
+              <power_up_expression><![CDATA[(('SD_Pins':({'SD_DAT','SD_CMD','SD_DAT3','oSD_CLK'}) == variable(b0000)) && variable(0)) || (mbpm('X',{'SD_DAT'}) && variable(1)) || (mbpm('X',{'SD_CMD'}) && variable(1)) || (mbpm('X',{'SD_DAT3'}) && variable(1)) || (mbpm('X',{'oSD_CLK'}) && variable(1)) || (('SPI_Interface_Pins':({'SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig','SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout','SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast','SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow','SPI_Interface:SDCARD|sd_controller:sd1|cs'}) == variable(b00000)) && variable(0)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|cs'}) && variable(1))]]>
               </power_up_expression>
-            </power_up>
-            <expression><![CDATA[(('SPI':({'SPI_Interface:SDCARD|sd_controller:sd1|cs','SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig','SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout','SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]','SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]'}) == variable(b00000)) && variable(0)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|cs'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|cmd_out[55]'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|recv_data[0]'}) && variable(1))]]>
-            </expression>
-            <op_node>
+            </power_up><expression><![CDATA[(('SD_Pins':({'SD_DAT','SD_CMD','SD_DAT3','oSD_CLK'}) == variable(b0000)) && variable(0)) || (mbpm('X',{'SD_DAT'}) && variable(1)) || (mbpm('X',{'SD_CMD'}) && variable(1)) || (mbpm('X',{'SD_DAT3'}) && variable(1)) || (mbpm('X',{'oSD_CLK'}) && variable(1)) || (('SPI_Interface_Pins':({'SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig','SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout','SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast','SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow','SPI_Interface:SDCARD|sd_controller:sd1|cs'}) == variable(b00000)) && variable(0)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|sclk_sig'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKout'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKfast'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|CLK_Divider:U1|CLKslow'}) && variable(1)) || (mbpm('X',{'SPI_Interface:SDCARD|sd_controller:sd1|cs'}) && variable(1))]]>
+            </expression><op_node>
               <op_node expanded="1" left="603" top="265" type="Advanced Trigger Level Result">
                 <op_node expanded="1" left="473" name="logical_0" top="225" type="Logical Operator">
                   <op_node left="343" name="ODWriteEnable" top="210" type="Node"/>
@@ -2579,8 +2609,8 @@
           </level>
         </events>
         <storage_qualifier_events>
-          <transitional>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111110
-            <pwr_up_transitional>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111110</pwr_up_transitional>
+          <transitional>000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111001111110
+            <pwr_up_transitional>000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111001111110</pwr_up_transitional>
           </transitional>
           <storage_qualifier_level type="basic">
             <power_up>
@@ -2601,19 +2631,26 @@
       </trigger>
     </signal_set>
     <position_info>
-      <single attribute="active tab" value="1"/>
+      <single attribute="active tab" value="0"/>
       <single attribute="data hierarchy CPU:CPU0" value="3"/>
       <single attribute="data hierarchy Control_MULTI:CrlMULTI" value="3"/>
       <single attribute="data hierarchy Datapath_MULTI:Processor" value="3"/>
       <single attribute="data hierarchy TopDE" value="3"/>
-      <single attribute="data horizontal scroll position" value="18"/>
+      <single attribute="data horizontal scroll position" value="15"/>
       <single attribute="data vertical scroll position" value="0"/>
+      <single attribute="setup hierarchy CLK_Divider:U1" value="3"/>
+      <single attribute="setup hierarchy CPU:CPU0" value="2"/>
+      <single attribute="setup hierarchy Control_MULTI:CrlMULTI" value="2"/>
+      <single attribute="setup hierarchy Datapath_MULTI:Processor" value="2"/>
+      <single attribute="setup hierarchy SPI_Interface:SDCARD" value="3"/>
+      <single attribute="setup hierarchy TopDE-FastCompilation" value="3"/>
+      <single attribute="setup hierarchy sd_controller:sd1" value="3"/>
       <single attribute="setup horizontal scroll position" value="0"/>
-      <single attribute="setup vertical scroll position" value="0"/>
+      <single attribute="setup vertical scroll position" value="2"/>
       <single attribute="zoom level denominator" value="1"/>
-      <single attribute="zoom level numerator" value="4"/>
+      <single attribute="zoom level numerator" value="16"/>
       <single attribute="zoom offset denominator" value="1"/>
-      <single attribute="zoom offset numerator" value="32640"/>
+      <single attribute="zoom offset numerator" value="8160"/>
     </position_info>
   </instance>
   <mnemonics>
@@ -2673,7 +2710,7 @@
     <single attribute="hierarchy widget visible" value="1"/>
     <single attribute="instance widget visible" value="1"/>
     <single attribute="jtag widget visible" value="1"/>
-    <multi attribute="column width" size="23" value="34,34,392,74,68,70,88,88,98,98,88,88,110,101,101,101,101,101,101,101,101,107,78"/>
+    <multi attribute="column width" size="23" value="34,34,362,74,68,70,88,88,98,98,88,88,110,101,101,101,101,101,101,101,101,107,78"/>
     <multi attribute="frame size" size="2" value="1366,919"/>
     <multi attribute="jtag widget size" size="2" value="378,120"/>
   </global_info>
