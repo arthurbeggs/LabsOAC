@@ -1,7 +1,7 @@
 ##
 # Test Rountine for MIPS 3.3 PUM
 # Laboratorio 4
-# /Version      0.2 beta
+# /Version      0.243 - Error Routine Updated
 # /Authors      Rafael
 ##
 
@@ -348,3 +348,6 @@ end.main:
 error:
     addi    $v0,$ra,-8
     lw      $v1,0($v0)
+
+end.error:
+    j       end.error
