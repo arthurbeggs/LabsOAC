@@ -79,7 +79,7 @@ signal data_sig         : std_logic_vector(7 downto 0) := x"00";
 
 signal clk              : std_logic := '0';
 signal status           : std_logic_vector(7 downto 0);
-signal store_data       : std_logic_vector(7 downto 0) := x"AA";
+-- signal store_data       : std_logic_vector(7 downto 0) := x"AA";
 
 COMPONENT CLK_Divider PORT (
                             CLKin, Reset   : IN  STD_LOGIC;
@@ -102,7 +102,7 @@ begin
         data_mode <= dm_in;
 
         if rising_edge(clk) then
-            if (reset='1') then
+            if (reset = '1') then
                 state       <= RST;
                 sclk_sig    <= '0';
             else
@@ -226,12 +226,12 @@ begin
                         if (sclk_sig = '1') then
                             if (miso = '0') then
                                 recv_data       <= (others => '0');
+                                state           <= RECEIVE_BYTE;
                                 if (response_mode='0') then
                                     bit_counter     := 3;           -- already read bits 7..4
                                 else
                                     bit_counter     := 6;           -- already read bit 7
                                 end if;
-                                state           <= RECEIVE_BYTE;
                             end if;
                         end if;
                         sclk_sig        <= not sclk_sig;
@@ -241,10 +241,10 @@ begin
                             recv_data       <= recv_data(6 downto 0) & miso;
                             if (bit_counter = 0) then
                                 state           <= return_state;
-                                if (byte_counter = 1) then              -- DEBUG: Data Package      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-                                    store_data       <= recv_data(6 downto 0) & miso;
-                                    -- dout            <= recv_data(6 downto 0) & miso;
-                                end if;
+                                -- if (byte_counter = 1) then              -- DEBUG: Data Package      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                    -- store_data       <= recv_data(6 downto 0) & miso;
+                                    dout            <= recv_data(6 downto 0) & miso;
+                                -- end if;
                             else
                                 bit_counter     := bit_counter - 1;
                             end if;
@@ -322,7 +322,7 @@ begin
     end process;
 
 idleSD  <= status;
-dout    <= store_data;
+-- dout    <= store_data;
 sclk    <= sclk_sig;
 mosi    <= cmd_out(55) when cmd_mode='1' else data_sig(7);
 

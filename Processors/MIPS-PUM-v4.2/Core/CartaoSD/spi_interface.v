@@ -27,7 +27,7 @@ sd_controller sd1(
     .wr(0),
     .dm_in(1),                  // data mode, 0 = write continuously, 1 = write single block
     .reset(Reset),
-    .din(8'b0),
+    .din(8'b1),
     .dout(SDData),
     .address(SDAddress),
     .iCLK(iCLK_50),
