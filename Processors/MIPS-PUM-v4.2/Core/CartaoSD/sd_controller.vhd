@@ -97,7 +97,7 @@ begin
 
     process(clk, reset, dm_in)
         variable byte_counter   : integer range 0 to 1;                 -- CHANGED: WRITE_DATA_SIZE     DEBUG:(1 start byte + 1 data byte + 2 'FF' end bytes)
-        variable bit_counter    : integer range 0 to 160;
+        variable bit_counter    : integer range 0 to 255;
     begin
         data_mode <= dm_in;
 
@@ -115,7 +115,7 @@ begin
                         byte_counter    := 0;
                         cmd_mode        <= '1';                 -- 0=data, 1=command
                         response_mode   <= '1';                 -- 0=data, 1=command
-                        bit_counter     := 160;
+                        bit_counter     := 255;
                         cs              <= '1';
                         state           <= INIT;
 

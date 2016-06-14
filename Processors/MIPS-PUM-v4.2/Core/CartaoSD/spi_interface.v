@@ -24,8 +24,8 @@ sd_controller sd1(
     .sclk(SD_CLK),
 
     .rd(SDReadEnable),
-    .wr(0),
-    .dm_in(1),                  // data mode, 0 = write continuously, 1 = write single block
+    .wr(1'b0),
+    .dm_in(1'b1),               // data mode, 0 = write continuously, 1 = write single block
     .reset(Reset),
     .din(8'b1),
     .dout(SDData),
