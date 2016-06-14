@@ -117,6 +117,7 @@ begin
                         response_mode   <= '1';                 -- 0=data, 1=command
                         bit_counter     := 255;
                         cs              <= '1';
+                        return_state    <= INIT;
                         state           <= INIT;
 
                     when INIT =>                                -- CS=1, send 80 clocks, CS=0

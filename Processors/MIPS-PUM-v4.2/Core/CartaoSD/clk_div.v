@@ -27,7 +27,7 @@ begin
     if (COUNTERslow == 6'b111111)        //NOTE: 781KHz /2
         begin
             CLKslow     <= ~CLKslow;
-            COUNTERslow <= 6'b0;
+            COUNTERslow <= 6'b000000;
         end
     else    COUNTERslow <= COUNTERslow + 1'b1;
 
