@@ -12,10 +12,12 @@
 .eqv   SCREEN_DIM_Y               256
 .eqv   MEM_SCREEN                 0x01000000
 
+# Color Codes
 .eqv   COLOR_WHITE                0xFFFFFFFF
 .eqv   COLOR_BLACK                0x00000000
 .eqv   COLOR_BLUE                 0x00000FFF
 
+# Syscall Codes
 .eqv   SYSCALL_PRINT_INT          101  # 1
 .eqv   SYSCALL_PRINT_FLOAT        102  # 2
 .eqv   SYSCALL_PRINT_STR          104  # 4
@@ -32,6 +34,23 @@
 .eqv   SYSCALL_GETPLOT            46
 .eqv   SYSCALL_CLEAN_SCREEN       48
 .eqv   SYSCALL_READ_SD            49
+.eqv   SYSCALL_MIDI_PLAYER        33
+
+# MIDI Instruments Code
+.eqv   MIDI_TUBA                  59
+.eqv   MIDI_PIANO                 33
+.eqv   MIDI_DRUM                  113
+
+.eqv   MIDI_VOLUME                128
+
+#MIDI Notes Code
+.eqv   _DO                        72
+.eqv   _RE                        62
+.eqv   _MI                        64
+.eqv   _FA                        65
+.eqv   _SOL                       67
+.eqv   _LA                        68
+.eqv   _SI                        71
 
 ###############################################################################
 # Macro Segment - Often repeted Routines
@@ -56,9 +75,18 @@
 .end_macro
 
 .macro clean_screen %color
-#    addi   $a0,$0,%color
-#    addi   $v0,$0,SYSCALL_CLEAN_SCREEN
-#    syscall
+    addi   $a0,$0,%color
+    addi   $v0,$0,SYSCALL_CLEAN_SCREEN
+    syscall
+.end_macro
+
+.macro play_MIDI %pitch,%duration,%instrument
+    addi   $a0,$0,%pitch
+    addi   $a1,$0,%duration
+    addi   $a2,$0,%instrument
+    addi   $a3,$0,MIDI_VOLUME
+    addi   $v0,$0,SYSCALL_MIDI_PLAYER
+    syscall
 .end_macro
 
 ###############################################################################
@@ -79,26 +107,23 @@ MSG0:     .asciiz           "_You just typed:"
 # Main Routine
 ##
 main:
-
 ##
 # Test Jump
 ##
 test.jump:
     jal    test.jump.ping
 test.jump.pong:
+    play_MIDI 69,500,MIDI_TUBA
     j      test.memoryacess
 test.jump.ping:
     jr     $ra
     jal    error              # If Everything is OK, this line will not execute
-
-test.syscall.cleanscreen:
-    clean_screen COLOR_BLACK
-
+    
 ##
 # Test Memory Access using Stack
 ##
 test.memoryacess:
-    addi   $s0,$0,COLOR_BLUE
+    addi   $s0,$0,MIDI_TUBA
     addi   $sp,$sp,-16     # 4 positions in the memory
 
     sb     $s0,12($sp)      # Store
@@ -113,10 +138,14 @@ test.memoryacess:
     # bne     $t0,$t1,error    # check values
 
     sw     $s0,0($sp)      # Store
-    lw     $a0,0($sp)      # Load Color
+    lw     $a2,0($sp)      # Load Instrument
     bne    $s0,$t0,error    # check values
-    # addi   $v0,$0,SYSCALL_CLEAN_SCREEN
-    # syscall
+
+    addi   $a0,$0,_SI
+    addi   $a1,$0,500
+    addi   $a3,$0,MIDI_VOLUME
+    addi   $v0,$0,SYSCALL_MIDI_PLAYER
+    syscall
 
     addi   $sp,$sp,16     # Empty Stack
 
@@ -137,11 +166,41 @@ test.bne:
     bne     $t0,$t1,test.alu
     jal     error
 
+test.bgez:
+    addi    $t0,$0,1
+    bgez    $t0,test.bgezal
+    jal     error
+
+test.bgezal:
+    addi    $t0,$0,1
+    bgezal  $t0,test.bgtz
+    jal     error
+
+test.bgtz:
+    addi    $t0,$0,1
+    bgtz    $t0,test.blez
+    jal     error
+
+test.blez:
+    addi    $t0,$0,-1
+    blez    $t0,test.bltz
+    jal     error
+
+test.bltz:
+    addi    $t0,$0,-1
+    bltz    $t0,test.bltzal
+    jal     error
+
+test.bltzal:
+    addi    $t0,$0,-1
+    bltzal  $t0,test.alu
+    jal     error
+
 ##
 # Test ALU
 ##
 test.alu:
-    clean_screen COLOR_WHITE
+    play_MIDI  _LA,500,MIDI_TUBA
     
     addi    $t0,$0,5        # Addi - Positive Value
     addi    $t1,$0,-2       # Addi - Negative Value
@@ -214,29 +273,27 @@ test.alu.mul:
     beq     $s7,$a0,error
 
     srl     $s7,$t5,3
-    addi    $a0,$0,7        # Expected Value
+    addi    $a0,$0,7         # Expected Value
     beq     $s7,$a0,error
 
     sra     $s7,$t5,2
 
     slt     $s7,$t2,$t3
     sltu    $s7,$t2,$t3
+    
+    play_MIDI  _DO,500,MIDI_TUBA
 
 ##
 # Test ALU - FP
 ##
-    jal     test.syscall.exit
 
 ##
 # Test Syscall
 # - Test Output Devices
 ##
 test.syscall:
-syscall.printstr:
-    addi    $v0,$0,4
-    la      $a0,MSG1
-    syscall
-    jr  $ra
+test.syscall.printstr:
+    printstr MSG1
 
 test.syscall.randomint:
     addi    $v0,$0,41
@@ -320,4 +377,5 @@ error:
     lw      $v1,0($v0)
 
 end.error:
+    play_MIDI   69,500,MIDI_DRUM
     j       end.error
