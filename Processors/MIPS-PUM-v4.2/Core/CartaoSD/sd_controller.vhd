@@ -29,7 +29,7 @@ port (
     dout    : out   std_logic_vector(7 downto 0);
     address : in    std_logic_vector(31 downto 0);  -- Endereço do byte a ser lido
     iCLK    : in    std_logic;                      -- twice the SPI clk
-    idleSD  : out   std_logic_vector(7 downto 0)    -- Indica se o controlador está pronto para realizar uma nova leitura. idleSD ? BUSY : IDLE
+    idleSD  : out   std_logic_vector(3 downto 0)    -- Indica se o controlador está pronto para realizar uma nova leitura. idleSD ? BUSY : IDLE
 );
 
 end sd_controller;
@@ -45,13 +45,16 @@ type states is (
     POLL_CMD,
 
     IDLE,                       -- wait for read or write pulse
+
     READ_BLOCK,
     READ_BLOCK_WAIT,
     READ_BLOCK_DATA,
     READ_BLOCK_CRC,
+
     SEND_CMD,
     RECEIVE_BYTE_WAIT,
     RECEIVE_BYTE,
+
     WRITE_BLOCK_CMD,
     WRITE_BLOCK_INIT,           -- initialise write command
     WRITE_BLOCK_DATA,           -- loop through all data bytes
@@ -99,13 +102,14 @@ begin
         data_mode <= dm_in;
 
         if rising_edge(clk) then
-            if (reset='1') then
+            if (reset = '1') then
                 state       <= RST;
                 sclk_sig    <= '0';
             else
                 case state is
 
                     when RST =>
+                        status          <= x"1";                        -- DEBUG: Teste para saber se o cartão inicializou corretamente
                         sclk_sig        <= '0';
                         cmd_out         <= (others => '1');
                         byte_counter    := 0;
@@ -185,7 +189,7 @@ begin
                             byte_counter    := 1;                       -- DEBUG: O valor está correto?     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                             bit_counter     := 7;
                             return_state    <= READ_BLOCK_DATA;
-                            state           <= RECEIVE_BYTE;
+                            state           <= RECEIVE_BYTE;            -- DEBUG: O próximo estado receberá o byte de dado.
                         end if;
                         sclk_sig        <= not sclk_sig;
 
@@ -208,7 +212,7 @@ begin
                         return_state    <= IDLE;
                         state           <= RECEIVE_BYTE;
 
-                    when SEND_CMD =>
+                    when SEND_CMD =>                                    -- DEBUG: OK
                         if (sclk_sig = '1') then
                             if (bit_counter = 0) then
                                 state           <= RECEIVE_BYTE_WAIT;
@@ -223,12 +227,12 @@ begin
                         if (sclk_sig = '1') then
                             if (miso = '0') then
                                 recv_data       <= (others => '0');
+                                state           <= RECEIVE_BYTE;
                                 if (response_mode='0') then
                                     bit_counter     := 3;           -- already read bits 7..4       -- DEBUG: Isso come bits, não?
                                 else                                    -- DEBUG: Para os comandos utilizados, sempre cairá aqui.
                                     bit_counter     := 6;           -- already read bit 7
                                 end if;
-                                state           <= RECEIVE_BYTE;
                             end if;
                         end if;
                         sclk_sig        <= not sclk_sig;
@@ -312,14 +316,15 @@ begin
                         end if;
                         sclk_sig        <= not sclk_sig;
 
-                    when others => state <= IDLE;
+                    when others => state <= RST;                        -- CHANGED: Mudado de IDLE para RST
                 end case;
             end if;
         end if;
     end process;
 
-dout  <= store_data;
-sclk  <= sclk_sig;
-mosi  <= cmd_out(55) when cmd_mode='1' else data_sig(7);
+idleSD  <= status;
+-- dout    <= store_data;
+sclk    <= sclk_sig;
+mosi    <= cmd_out(55) when cmd_mode='1' else data_sig(7);
 
 end rtl;
