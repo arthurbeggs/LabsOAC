@@ -6,7 +6,7 @@
 -- Tested on Xilinx Spartan 3 hardware, using Transcend and SanDisk Ultra II cards
 -- Read states are derived from the Apple II emulator by Stephen Edwards
 
--- Edited by Arthur Matos to read a single byte from a SD card in May 2016.
+-- Edited by Arthur Matos to read a single byte from a SDSC card in May 2016.
 -- Now it does NOT work with SDHC & SDXC cards that must read a full 512 bytes sector.
 -- Write operations were corrupted with the changes made.
 
@@ -43,7 +43,6 @@ type states is (
     ACMD41,
     CMD16,                      -- SET_BLOCKLEN
     POLL_CMD,
-    POLL_CMD16,
 
     IDLE,                       -- wait for read or write pulse
 
@@ -113,7 +112,6 @@ begin
                         status          <= x"1";                        -- DEBUG: Teste para saber se o cartão inicializou corretamente
                         sclk_sig        <= '0';
                         cmd_out         <= (others => '1');
-                        -- address         <= x"00000000";
                         byte_counter    := 0;
                         cmd_mode        <= '1';                 -- 0=data, 1=command
                         response_mode   <= '1';                 -- 0=data, 1=command
@@ -165,28 +163,17 @@ begin
                         status          <= x"7";                        -- DEBUG
                         cmd_out         <= x"FF50000000012B";           -- DEBUG: (1 start byte + 1 data byte + 2 'FF' end bytes ?)
                         bit_counter     := 55;
-                        return_state    <= POLL_CMD16;
+                        return_state    <= IDLE;
                         state           <= SEND_CMD;
-
-                    when POLL_CMD16 =>                          -- DEBUG: Testa se o comando SET_BLOCKLEN = 1
-                        if (recv_data(0) = '1' or recv_data(2) = '1' or recv_data(5) = '1' or recv_data(6) = '1') then
-                            state       <= CMD55;
-                            idleSD      <= x"AA";
-                        else
-                            state       <= IDLE;
-                        end if;
 
                     when IDLE =>
                         status          <= x"0";                        -- IDLE
                         if      (rd = '1' and wr = '0') then
                             state       <= READ_BLOCK;
-                            idleSD      <= x"01";               -- BUSY
                         elsif   (wr = '1' and rd = '0') then
                             state       <= WRITE_BLOCK_CMD;
-                            idleSD      <= x"01";               -- BUSY
                         else
                             state       <= IDLE;
-                            idleSD      <= x"00";               -- IDLE
                         end if;
 
                     when READ_BLOCK =>
@@ -223,7 +210,6 @@ begin
                         status          <= x"B";                        -- DEBUG
                         bit_counter     := 7;
                         return_state    <= IDLE;
-                        -- address         <= std_logic_vector(unsigned(address) + x"200");
                         state           <= RECEIVE_BYTE;
 
                     when SEND_CMD =>                                    -- DEBUG: OK
@@ -279,7 +265,7 @@ begin
 
                     when WRITE_BLOCK_INIT =>
                         cmd_mode        <= '0';
-                        byte_counter    := 0;                                       -- CHANGED: WRITE_DATA_SIZE
+                        byte_counter    := 0;                           -- CHANGED: WRITE_DATA_SIZE
                         state           <= WRITE_BLOCK_DATA;
 
                     when WRITE_BLOCK_DATA =>
@@ -289,12 +275,12 @@ begin
                             response_mode   <= '0';
                         else
                             if ((byte_counter = 2) or (byte_counter = 1)) then
-                                data_sig        <= x"FF"; -- two CRC bytes
+                                data_sig        <= x"FF";       -- two CRC bytes
                             elsif byte_counter = WRITE_DATA_SIZE then
                                 if (data_mode='0') then
-                                    data_sig        <= x"FC"; -- start byte, multiple blocks
+                                    data_sig        <= x"FC";   -- start byte, multiple blocks
                                 else
-                                    data_sig        <= x"FE"; -- start byte, single block
+                                    data_sig        <= x"FE";   -- start byte, single block
                                 end if;
                             else
                                 -- just a counter, get real data here

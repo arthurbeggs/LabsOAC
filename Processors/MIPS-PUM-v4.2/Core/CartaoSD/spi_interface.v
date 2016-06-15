@@ -30,8 +30,7 @@ sd_controller sd1(
     .din(8'hFF),
     .dout(SDData),
     .address(SDAddress),
-    .iCLK(iCLK),
-    // .iCLK(iCLK_50),
+    .iCLK(iCLK_50),
     .idleSD(SDCtrl)
 );
 
@@ -65,7 +64,7 @@ begin
         if (wAddress == SD_INTERFACE_DATA   ||  wAddress == SD_INTERFACE_CTRL)
             wReadData       = {16'b0, SDData, 4'b0, SDCtrl};
         else
-            wReadData   = 32'bz;
+            wReadData       = 32'hzzzzzzzz;
     end
     else    wReadData       = 32'hzzzzzzzz;
 end
