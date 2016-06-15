@@ -2515,24 +2515,18 @@ sdRead:
     la      $s2, 0xFFFF0254                 # SD_INTERFACE_CTRL Address
     la      $s3, 0xFFFF0255                 # SD_INTERFACE_DATA Address
     li      $t1, 1                          # Comparador de bytes a serem lidos
-# sdBusy:                                                                      #REVIEW: Mudanças não compiladas
-    lbu     $s1, 0($s2)                     # $s1 = SDCtrl                     #NOTE: Com o código comentado, serve somente para verificar o SDCtrl
-#     bne     $s1, $zero, sdBusy              # $s1 ? BUSY : IDLE
-    nop
-    nop
-    nop
+sdBusy:
+    lbu     $s1, 0($s2)                     # $s1 = SDCtrl
+    bne     $s1, $zero, sdBusy              # $s1 ? BUSY : IDLE
 sdLoop:
     slt     $t2, $a2, $t1                   # ($a2 < 1) ? 1 : 0
     bne     $t2, $zero, sdFim               # Se a qtd de bytes a serem lidos < 1, finaliza a leitura
 
 sdReadRoutine:
     sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0
-# sdWait:                                                                      #REVIEW: Mudanças não compiladas.
-    lbu     $s1, 0($s2)                     # $s1 = SDCtrl                     #NOTE: Com o código comentado, serve somente para verificar o SDCtrl
-#     bne     $s1, $zero, sdWait              # $s1 ? BUSY : IDLE
-    nop                                                                        #NOTE: 3 nop é overkill demais!
-    nop
-    nop
+sdWait:
+    lbu     $s1, 0($s2)                     # $s1 = SDCtrl
+    bne     $s1, $zero, sdWait              # $s1 ? BUSY : IDLE
 sdDataReady:
     lbu     $t0, 0($s3)                     # $t0 recebe byte lido do cartão SD
     sb      $t0, 0($a1)                     # Byte lido é salvo no endereço desejado
