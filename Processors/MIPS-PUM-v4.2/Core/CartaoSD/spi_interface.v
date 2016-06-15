@@ -23,11 +23,12 @@ sd_controller sd1(
     .miso(SD_MISO),
     .sclk(SD_CLK),
 
-    .rd(SDReadEnable),
-    .wr(1'b0),
-    .dm_in(1'b1),               // data mode, 0 = write continuously, 1 = write single block
+    .rd(1),
+    // .rd(SDReadEnable),
+    .wr(0),
+    .dm_in(1),                  // data mode, 0 = write continuously, 1 = write single block
     .reset(Reset),
-    .din(8'hFF),
+    .din(8'b0),
     .dout(SDData),
     .address(SDAddress),
     .iCLK(iCLK),
@@ -37,37 +38,38 @@ sd_controller sd1(
 
 
 reg  [31:0] SDAddress;
-wire [7:0]  SDData;
-wire [3:0]  SDCtrl;     // [SDCtrl ? BUSY : IDLE]
-reg         SDReadEnable;
+wire [7:1]  SDData, SDCtrl;     // [SDCtrl ? BUSY : IDLE]
+wire        SDReadEnable;
 
 always @ (posedge iCLK)
-begin
     if (wWriteEnable)
     begin
         if (wAddress == SD_INTERFACE_ADDR)
-            SDAddress       <= wWriteData;
+        begin
+            SDAddress      <= wWriteData;
+            if (SDCtrl == 8'b0)
+                SDReadEnable    <= 1'b1;
+            else
+                SDReadEnable    <= 1'b0;
+        end
+        else    SDReadEnable    <= 1'b0;
     end
-end
-
-always @ (posedge iCLK)
-begin
-    if (SDCtrl == 4'h8 || SDCtrl == 4'h9 || SDCtrl == 4'hA || SDCtrl == 4'hB)
-        SDReadEnable    = 1'b0;
-    else if (wAddress == SD_INTERFACE_ADDR && SDCtrl == 4'h0)
-        SDReadEnable    = 1'b1;
-end
 
 always @ (*)
-begin
     if (wReadEnable)
     begin
         if (wAddress == SD_INTERFACE_DATA   ||  wAddress == SD_INTERFACE_CTRL)
-            wReadData       = {16'b0, SDData, 4'b0, SDCtrl};
+            wReadData   = {8'b0, 8'h42, SDData, SDCtrl};
         else
             wReadData   = 32'bz;
     end
-    else    wReadData       = 32'hzzzzzzzz;
-end
+    else    wReadData   = 32'bz;
+
+
+
+//TODO: Criar divisor de clock para que a frequência seja correta para cada etapa [init: 400 KHz] [pos-init: 25 MHz]    REVIEW: Implementado, mas não testado nem integrado
+
+//FIXME: Consertar ativação do SDReadEnable.
+
 
 endmodule

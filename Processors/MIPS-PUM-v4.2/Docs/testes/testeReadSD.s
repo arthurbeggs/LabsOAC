@@ -23,7 +23,8 @@
 #                                                                               #
 #################################################################################
 
-.eqv SD_DATA_ADDR 0x00000000
+# .eqv SD_DATA_ADDR 0x00056E00
+.eqv SD_DATA_ADDR 0x0006EE36            # NOTE: Verificar se o offset está correto!
 .eqv VGA_INI_ADDR 0xFF000000
 .eqv VGA_END_ADDR 0XFF012C00            # NOTE: 0xFF011BFF?
 .eqv VGA_QTD_BYTE 76800                 # VGA Bytes
