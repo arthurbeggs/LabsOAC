@@ -27,7 +27,7 @@ sd_controller sd1(
     .wr(1'b0),
     .dm_in(1'b1),               // data mode, 0 = write continuously, 1 = write single block
     .reset(Reset),
-    .din(8'b1),
+    .din(8'hFF),
     .dout(SDData),
     .address(SDAddress),
     .iCLK(iCLK_50),
@@ -36,7 +36,8 @@ sd_controller sd1(
 
 
 reg  [31:0] SDAddress;
-wire [7:0]  SDData, SDCtrl;     // [SDCtrl ? BUSY : IDLE]
+wire [7:0]  SDData;
+wire [3:0]  SDCtrl;     // [SDCtrl ? BUSY : IDLE]
 reg         SDReadEnable;
 
 always @ (posedge iCLK)
@@ -50,9 +51,9 @@ end
 
 always @ (posedge iCLK)
 begin
-    if (SDData == 8'h80 || SDData == 8'h90 || SDData == 8'hA0)
+    if (SDCtrl == 4'h8 || SDCtrl == 4'h9 || SDCtrl == 4'hA || SDCtrl == 4'hB)
         SDReadEnable    = 1'b0;
-    else if (wAddress == SD_INTERFACE_ADDR && SDData == 8'h00)
+    else if (wAddress == SD_INTERFACE_ADDR && SDCtrl == 4'h0)
         SDReadEnable    = 1'b1;
 end
 
@@ -61,7 +62,7 @@ begin
     if (wReadEnable)
     begin
         if (wAddress == SD_INTERFACE_DATA   ||  wAddress == SD_INTERFACE_CTRL)
-            wReadData       = {16'b0, SDData, SDCtrl};
+            wReadData       = {16'b0, SDData, 4'b0, SDCtrl};
         else
             wReadData       = 32'hzzzzzzzz;
     end
