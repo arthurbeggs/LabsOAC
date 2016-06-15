@@ -584,11 +584,11 @@ RS232_Interface SERIAL0 (
 
 
 /* *************************** SD Card Interface **************************** */
-SPI_Interface SDCARD (                                  // NOTE: Nada foi testado ainda.
+SPI_Interface SDCARD (
     .iCLK(CLK), .iCLK_50(iCLK_50_4), .Reset(Reset),
     .SD_CLK(oSD_CLK),                   // SPI SCK
-    .SD_MOSI(SD_DAT),                   // SPI MOSI
-    .SD_MISO(SD_CMD),                   // SPI MISO
+    .SD_MOSI(SD_CMD),                   // SPI MOSI
+    .SD_MISO(SD_DAT),                   // SPI MISO
     .SD_CS(SD_DAT3),                    // SPI CS
     // Barramento de dados
     .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
