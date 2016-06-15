@@ -448,6 +448,7 @@ ALU ALU0 (
 ALUControl ALUcont0 (
 	.iFunct(wFunct),
 	.iOpcode(wOpcode),
+	.iRt(wRT),		//1/2016
 	.iALUOp(ALUOp),
 	.oControlSignal(wALUControlSignal)
 	);

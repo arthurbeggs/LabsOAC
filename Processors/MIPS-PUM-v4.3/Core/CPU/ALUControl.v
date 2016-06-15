@@ -101,12 +101,17 @@ begin
                     oControlSignal  = OPXOR;
                 OPCLUI:
                     oControlSignal  = OPLUI;
-                OPCJAL:                                     //2016/1
+                OPCJAL:	   						    //2016/1
                     oControlSignal  = OPAND;
-                OPCBLEZ,                                    //2016/1
+                OPCBLEZ,                         //2016/1
                 OPCBGTZ:
-                    oControlSignal  = OPSGT;
-                OPCBGE_LTZ:
+                    case (iRt)
+								RTBRDEF:			//Garante que $rt seja zero/instruções válidas
+									  oControlSignal  = OPSGT;
+								default:			//instr. inválida
+									  oControlSignal  = 5'b00000;
+						  endcase
+				    OPCBGE_LTZ:                      //2016/1
                 begin
                     case (iRt)
                         RTBGEZ,

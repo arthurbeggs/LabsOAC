@@ -28,7 +28,7 @@ parameter
     OPDIVU      = 5'b10100,             //20
     OPMTHI      = 5'b10101,             //21        2015/1
     OPMTLO      = 5'b10110,             //22        2015/1
-    OPSGT       = 5'b10111,             //23		2016/1
+    OPSGT       = 5'b10111,             //23			 2016/1
 
 /* Operacoes da ULA FP */
     OPADDS      = 4'b0001,
@@ -124,6 +124,7 @@ parameter
     RTBGEZAL    = 5'b10001,
     RTBLTZ      = 5'b00000,
     RTBLTZAL    = 5'b10000,
+	 RTZERO		 = 5'B00000,
 
 /* Campo FMT */
     FMTS        = 5'h10,
