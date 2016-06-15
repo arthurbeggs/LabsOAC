@@ -1,7 +1,7 @@
 ##
 # Test Rountine for MIPS 3.3 PUM
 # Laboratorio 4
-# /Version      0.244 - Branch removed
+# /Version      0.250 - Playing MIDI sound after each test
 # /Authors      Rafael
 ##
 
@@ -253,25 +253,49 @@ test.alu.xor:
 test.alu.nor:
     nor     $s7,$t0,$t1     # Nor
     # Expected Value = 0
-    beq     $s7,$0,test.alu.mul 
+    beq     $s7,$0,test.alu.mul
     jal     error
 
 test.alu.mul:
-    multu   $s6,$t0         # 
-    mult    $s5,$t1         # 
-    
-    div     $s7,$t3,$t1     # 
-    divu    $s7,$t0,$t2     # 
+    addi    $a0,$0,3
+    addi    $a1,$0,2
+    mul     $s7,$a0,$a1
+    addi    $t0,$0,6
+    beq     $s7,$t0,test.alu.mth
+    jal     error
 
-    mflo    $s0             # 
-    mflo    $s1             # 
+test.alu.mth:
+    addi    $a0,$0,3
+    mthi    $a0
+    mfhi    $a1
+    beq     $a0,$a1,test.alu.mtl
+    jal     error
 
-    addiu   $t5, $0, 2
+test.alu.mtl:
+    addi    $a0,$0,3
+    mtlo    $a0
+    mflo    $a1
+    beq     $a0,$a1,test.alu.div
+    jal     error
 
-    sll     $s7,$t5,5
+test.alu.div:
+    addi    $a0,$0,3
+    addi    $a1,$0,2
+    div     $a0,$a1 
+    mfhi    $t0
+    mflo    $t1
+    beq     $t0,$t1,test.alu.sll
+    jal     error
+
+test.alu.sll:
+    addi    $t5,$0,2
+    sll     $s7,$t5,4
     addi    $a0,$0,32        # Expected Value
-    beq     $s7,$a0,error
+    beq     $s7,$a0,test.alu.srl
+    jal     error
 
+test.alu.srl:
+    addi    $t5,$0,11
     srl     $s7,$t5,3
     addi    $a0,$0,7         # Expected Value
     beq     $s7,$a0,error
@@ -292,71 +316,44 @@ test.alu.mul:
 # - Test Output Devices
 ##
 test.syscall:
+test.syscall.printchr:
+    addi     $a0,$0,32      # Get Char Value
+    addi    $v0,$0,SYSCALL_PRINT_CHAR
+    syscall                 # Print Char
+
 test.syscall.printstr:
     printstr MSG1
 
 test.syscall.randomint:
-    addi    $v0,$0,41
+    addi    $v0,$0,SYSCALL_RAND
     syscall
     add     $t0,$0,$a0
 
-test.syscall.readint:
-    addi    $v0,$0,5
-    syscall                 # Read Int Input
-    add    $t0,$0,$v0
-
 test.syscall.printint:
-    addi    $v0,$0,4
-    la      $a0,MSG0
-    syscall
-
     add     $a0,$0,$t0
-    addi    $v0,$0,1
+    addi    $v0,$0,SYSCALL_PRINT_INT
     syscall                 # Print Int Value
 
-test.syscall.readfloat:
-    addi    $v0,$0,4
-    la      $a0,MSG2
-    syscall
-
-    addi    $v0,$0,6
-    syscall
-    addi    $v0,$0,6
+    addi    $a0,$0,42
+    addi    $v0,$0,SYSCALL_PRINT_INT
+    syscall                 # Print Int Value
 
 test.syscall.printfloat:
-    addi    $v0,$0,4
-    la      $a0,MSG0
-    syscall
-
     mov.s   $f12,$f0
-    addi    $v0,$0,2
+    addi    $v0,$0,SYSCALL_PRINT_FLOAT
     syscall
-
-test.syscall.readchar:
-    addi    $v0,$0,4
-    la      $a0,MSG3
-    syscall
-
-    addi    $t0,$0,12       # Read Char Input
-    syscall
-
-test.syscall.printchr:
-    addi    $v0,$0,4
-    la      $a0,MSG0
-    syscall
-
-    add     $a0,$0,$t0      # Get Char Value
-    addi    $v0,$0,11
-    syscall                 # Print Char
 
 test.syscall.sleep:
-    addi    $v0,$0,32
     addi    $a0,$0,10
+    addi    $v0,$0,SYSCALL_SLEEP
     syscall
 
 test.syscall.time:
-    addi    $v0,$0,30
+    addi    $v0,$0,SYSCALL_TIME
     syscall
+
+    addi    $v0,$0,SYSCALL_PRINT_INT
+    syscall                 # Print Int Value
 
 ##
 # Test Syscall - Finish Program
@@ -377,5 +374,5 @@ error:
     lw      $v1,0($v0)
 
 end.error:
-    play_MIDI   69,500,MIDI_DRUM
+     # play_MIDI   69,500,MIDI_DRUM
     j       end.error
