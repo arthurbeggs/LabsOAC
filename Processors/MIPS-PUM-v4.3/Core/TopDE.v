@@ -2,8 +2,8 @@
 /* * Escolha o tipo de processador a ser implementado * */
 
 // `define UNICICLO
-`define MULTICICLO
-// `define PIPELINE
+// `define MULTICICLO
+ `define PIPELINE
 
 
 /*   ******************  Historico ***********************

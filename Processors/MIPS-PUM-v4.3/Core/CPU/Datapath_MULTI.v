@@ -381,7 +381,7 @@ Control_MULTI CrlMULTI (
 	.oLoadCase(wLoadCase),
 	.oWriteCase(wWriteCase),
 	
-	//adicionado em 1/2016
+	//adicionado em 1/2016 para implementação dos branchs
 	.iRt (wRT)
 );
 
@@ -476,7 +476,7 @@ always @(*)
 		3'd2: wALUMuxB <= wImmediate;
 		3'd3: wALUMuxB <= wLabelAddress;
 		3'd4: wALUMuxB <= wuImmediate;
-		3'd5: wALUMuxB <= 32'd0;					//adicionado em 1/2016.
+		3'd5: wALUMuxB <= 32'd0;					//adicionado em 1/2016 para calculo dos branchs
 		default: wALUMuxB <= 32'd0;
 	endcase
 	

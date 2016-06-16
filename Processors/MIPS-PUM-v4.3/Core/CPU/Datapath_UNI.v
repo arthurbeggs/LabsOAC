@@ -349,7 +349,7 @@ always @(*)
         2'b00:      wOrigALU = wRead2;
         2'b01:      wOrigALU = wExtImm;
         2'b10:      wOrigALU = wExtZeroImm;
-        2'b11:      wOrigALU = 5'b00000;                // 1/2016
+        2'b11:      wOrigALU = 5'b00000;     //adicionado em 1/2016 para implementação dos branchs
     endcase
 
 
