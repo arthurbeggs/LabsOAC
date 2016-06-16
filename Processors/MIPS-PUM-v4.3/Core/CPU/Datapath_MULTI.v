@@ -408,13 +408,13 @@ Registers RegsMULTI (
 always @(*)
 	case (Store)
 		3'd0: wWriteRegister <= wRtorRd;  //Normal mode
-		3'd1: wWriteRegister <= 5'd31;    //$RA  Jal
+		3'd1: wWriteRegister <= wALUZero ? 5'd31: 5'd0;     //  $ra ou $zero    1/2016
 		3'd2: wWriteRegister <= 5'd04;    //$a0 Store timer LO
 		3'd3: wWriteRegister <= 5'd05;    //$a0 Store timer HI
 		3'd4: wWriteRegister <= 5'd04;    //$a0 Store Random
 		3'd5: wWriteRegister <= wRT;      //mfc1
 		3'd6: wWriteRegister <= wRT;      //mfc0 - feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
-		3'd7: wWriteRegister <= 5'd00;    //Empty slot
+		3'd7: wWriteRegister <= ~wALUZero ? 5'd31: 5'd0;     //  $ra ou $zero    1/2016
 	endcase
 		
 
@@ -429,7 +429,8 @@ always @(*)
 		3'd4: wRegWriteData <= RandInt;		//Store Random
 		3'd5: wRegWriteData <= FP_A;		//mfc1
 		3'd6: wRegWriteData <= COP0_A;		//mfc0 - feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
-		3'd7: wRegWriteData <= 32'd0;    //Empty slot
+		3'd7: wRegWriteData <= PC;     //1/2016
+		
 	endcase
 	
 

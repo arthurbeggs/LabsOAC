@@ -511,7 +511,7 @@ begin
 		JAL:
 		begin
 			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst			
-			word	<= 40'b0000000000000000000110000000010000000010;
+			word	<= 40'b0000000000000000000110000000010111010010;
 			nx_state	<= FETCH;
 		end
 		
@@ -525,7 +525,7 @@ begin
 		
 		BGEZAL:
 		begin
-			word	<= 40'b0000000000000000000000100000001111010100;
+			word	<= 40'b0000000000000000000100100000001111010110;
 			nx_state	<= FETCH;
 		end
 		
@@ -537,7 +537,7 @@ begin
 		
 		BLTZAL:
 		begin
-			word	<= 40'b0000000000000000000001000000001111010100;
+			word	<= 40'b0000000000000000011101000000001111010110;
 			nx_state	<= FETCH;
 		end
 		
