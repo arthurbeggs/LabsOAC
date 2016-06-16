@@ -282,4 +282,10 @@ parameter
     STATE_LH        = 6'd51,
     STATE_LHU       = 6'd52,
     STATE_SB        = 6'd53,
-    STATE_SH        = 6'd54;
+    STATE_SH        = 6'd54,
+	 
+	 //Adicionados em 1/2016
+	 BGEZ				  	= 6'd55,
+	 BGEZAL				= 6'd56,
+	 BLTZ				  	= 6'd57,
+	 BLTZAL				= 6'd58;

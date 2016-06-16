@@ -379,7 +379,10 @@ Control_MULTI CrlMULTI (
 	
 	//adicionado em 1/2014
 	.oLoadCase(wLoadCase),
-	.oWriteCase(wWriteCase)
+	.oWriteCase(wWriteCase),
+	
+	//adicionado em 1/2016
+	.iRt (wRT)
 );
 
 /* Register bank module */
@@ -449,7 +452,10 @@ ALUControl ALUcont0 (
 	.iFunct(wFunct),
 	.iOpcode(wOpcode),
 	.iALUOp(ALUOp),
-	.oControlSignal(wALUControlSignal)
+	.oControlSignal(wALUControlSignal),
+	
+	//adicionado em 1/2016
+	.iRt (wRT)
 	);
 
 
@@ -471,6 +477,7 @@ always @(*)
 		3'd2: wALUMuxB <= wImmediate;
 		3'd3: wALUMuxB <= wLabelAddress;
 		3'd4: wALUMuxB <= wuImmediate;
+		3'd5: wALUMuxB <= 32'd0;					//adicionado em 1/2016.
 		default: wALUMuxB <= 32'd0;
 	endcase
 	

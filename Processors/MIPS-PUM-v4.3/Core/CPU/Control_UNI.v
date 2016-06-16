@@ -5,8 +5,8 @@
 
  module Control_UNI(
     input  wire        iCLK, iBranchC1,
-    input  wire [5:0]  iOp, iFunct, iRt,            // 1/2016. Adicionado iRt.
-    input  wire [4:0]  iFmt,
+    input  wire [5:0]  iOp, iFunct,
+    input  wire [4:0]  iFmt, iRt,            // 1/2016. Adicionado iRt.
     output wire        oEscreveReg, oLeMem, oEscreveMem, oEscreveRegFPU, oFPFlagWrite,
     output wire [1:0]  oRegDst, oOpALU, oOrigALU, oDataRegFPU, oRegDstFPU, oFPUparaMem,
     output wire [2:0]  oOrigPC, oMemparaReg,
