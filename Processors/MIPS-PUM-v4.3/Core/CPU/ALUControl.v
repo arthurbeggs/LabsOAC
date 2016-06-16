@@ -106,7 +106,7 @@ begin
                 OPCBLEZ,                         //2016/1
                 OPCBGTZ:
                     case (iRt)
-								RTBRDEF:			//Garante que $rt seja zero/instruções válidas
+								RTZERO:			//Garante que $rt seja zero/instruções válidas
 									  oControlSignal  = OPSGT;
 								default:			//instr. inválida
 									  oControlSignal  = 5'b00000;

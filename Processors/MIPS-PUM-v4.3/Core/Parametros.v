@@ -124,7 +124,7 @@ parameter
     RTBGEZAL    = 5'b10001,
     RTBLTZ      = 5'b00000,
     RTBLTZAL    = 5'b10000,
-	 RTZERO		 = 5'B00000,
+	 RTZERO		 = 5'B00000, 
 
 /* Campo FMT */
     FMTS        = 5'h10,
@@ -289,4 +289,6 @@ parameter
 	 BGEZ				  	= 6'd55,
 	 BGEZAL				= 6'd56,
 	 BLTZ				  	= 6'd57,
-	 BLTZAL				= 6'd58;
+	 BLTZAL				= 6'd58,
+	 BGTZ					= 6'd59,
+	 BLEZ					= 6'd60;

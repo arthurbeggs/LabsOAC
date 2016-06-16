@@ -173,14 +173,12 @@ begin
 				OPCJAL:
 					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : JAL;
 					
-<<<<<<< HEAD
-				//operações implementadas em 1/2016
-				OPBGTZ:
+
+				//operações implementadas em 1/2016 - bgtz, blez, bgez, bgezal, bgltz, bltzal.
+				OPCBGTZ:
 					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BGTZ;
-				OPBLEZ:
+				OPCBLEZ:
 					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BLEZ;
-=======
-				// 1/2016, Adicionando bgez, bgezal, bgltz, bltzal
 				OPCBGE_LTZ:
 					case (iRt)
 						RTBGEZ:
@@ -191,7 +189,7 @@ begin
 							nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BLTZ;
 						RTBLTZAL:
 							nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BLTZAL;
->>>>>>> refs/remotes/origin/takashi
+					endcase
 				
 					//operaçoes adicionadas em 1/2014
 					OPCLB,
@@ -544,30 +542,25 @@ begin
 			nx_state	<= FETCH;
 		end
 		
-<<<<<<< HEAD
-		
-		BGTZ:
-		begin
-			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst
-			word	<= 40'b000000000000000000000 0 1 00000 001 11 000 01 0 0;
-			nx_state	<= FETCH;
-		end
-		BLEZ:
-		begin
-			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst
-			word	<= 40'b0000000000000000000001000000001110000100;
-			nx_state	<= FETCH;
-		end
-		
-=======
 		BLTZAL:
 		begin
 			word	<= 40'b0000000000000000011101000000001111010110;
 			nx_state	<= FETCH;
 		end
->>>>>>> refs/remotes/origin/takashi
 		
-		
+		BGTZ: //1/2016
+		begin
+			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst
+			word	<= 40'b0000000000000000000000100000001111010100;
+			nx_state	<= FETCH;
+		end
+		BLEZ://1/2016
+		begin
+			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst
+			word	<= 40'b0000000000000000000001000000001111010100;
+			nx_state	<= FETCH;
+		end
+
 		JR:
 		begin
 			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst			
