@@ -481,7 +481,7 @@ always @(*)
 always @(*)
 	case (PCSource)
 		3'd0: wPCMux <= wALUResult;		//For PC <= PC + 4
-		3'd1: wPCMux <= ALUOut;			//For BEQ, BNE, BC1T and BC1F
+		3'd1: wPCMux <= ALUOut;			//For BEQ, BNE, BGEZ, BGEZAL, BLTZ, BLTZAL, BLEZ, BGTZ, BC1T and BC1F
 		3'd2: wPCMux <= wJumpAddress;	//For Jump and Jal
 		3'd3: wPCMux <= A;				//For Jr
 		3'd4: wPCMux <= BEGINNING_KTEXT;	//For syscall
