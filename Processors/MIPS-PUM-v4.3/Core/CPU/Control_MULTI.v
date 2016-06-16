@@ -11,13 +11,16 @@ module Control_MULTI (
 	oCOP0Eret, oCOP0ExcOccurred, oCOP0BranchDelay, oCOP0ExcCode, oCOP0Interrupted,
 	
 	//adicionado no 1/2014
-	oLoadCase, oWriteCase
+	oLoadCase, oWriteCase,
+	
+	//adicionado no 1/2016
+	iRt
 );
 
 /* I/O type definition */
 input wire iCLK, iRST, iSleepDone;
 input wire [5:0] iOp, iFunct, iV0;
-input wire [4:0] iFmt;
+input wire [4:0] iFmt, iRt;		// 1/2016. Adicionado iRt.
 input wire iFt;
 output wire oIRWrite, oMemtoReg, oMemWrite, oMemRead, oIorD, oPCWrite, oPCWriteBEQ, oPCWriteBNE,
 oRegWrite, oRegDst, oSleepWrite, oFPPCWriteBc1t, oFPPCWriteBc1f, oFPRegWrite, oFPFlagWrite, oFPU2Mem;
@@ -42,6 +45,7 @@ reg [5:0] pr_state, nx_state;
 //Adicionado em 1/2014
 output wire [2:0] oLoadCase;
 output wire [1:0] oWriteCase;
+
 
 assign	oWriteCase = word[39:38];		//  1/2014
 assign	oLoadCase = word[37:35];		//  1/2014
@@ -169,11 +173,25 @@ begin
 				OPCJAL:
 					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : JAL;
 					
+<<<<<<< HEAD
 				//operações implementadas em 1/2016
 				OPBGTZ:
 					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BGTZ;
 				OPBLEZ:
 					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BLEZ;
+=======
+				// 1/2016, Adicionando bgez, bgezal, bgltz, bltzal
+				OPCBGE_LTZ:
+					case (iRt)
+						RTBGEZ:
+							nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BGEZ;
+						RTBGEZAL:
+							nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BGEZAL;
+						RTBLTZ:
+							nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BLTZ;
+						RTBLTZAL:
+							nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BLTZAL;
+>>>>>>> refs/remotes/origin/takashi
 				
 					//operaçoes adicionadas em 1/2014
 					OPCLB,
@@ -502,10 +520,31 @@ begin
 		JAL:
 		begin
 			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst			
-			word	<= 40'b0000000000000000000110000000010000000010;
+			word	<= 40'b0000000000000000000110000000010111010010;
 			nx_state	<= FETCH;
 		end
 		
+		
+		//adicionado em 1/2016, bgez, bgezal, bltz, bltzal.
+		BGEZ:
+		begin
+			word	<= 40'b0000000000000000000000100000001111010100;
+			nx_state	<= FETCH;
+		end
+		
+		BGEZAL:
+		begin
+			word	<= 40'b0000000000000000000100100000001111010110;
+			nx_state	<= FETCH;
+		end
+		
+		BLTZ:
+		begin
+			word	<= 40'b0000000000000000000001000000001111010100;
+			nx_state	<= FETCH;
+		end
+		
+<<<<<<< HEAD
 		
 		BGTZ:
 		begin
@@ -520,6 +559,13 @@ begin
 			nx_state	<= FETCH;
 		end
 		
+=======
+		BLTZAL:
+		begin
+			word	<= 40'b0000000000000000011101000000001111010110;
+			nx_state	<= FETCH;
+		end
+>>>>>>> refs/remotes/origin/takashi
 		
 		
 		JR:
