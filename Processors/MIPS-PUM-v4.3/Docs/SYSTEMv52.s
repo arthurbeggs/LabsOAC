@@ -2534,7 +2534,7 @@ sdRead:
     la      $s3, 0xFFFF0255                 # SD_INTERFACE_DATA Address
     li      $t1, 1                          # Comparador de bytes a serem lidos
 sdBusy:
-    lbu     $s1, 0($s2)                     # $s1 = SDCtrll
+    lbu     $s1, 0($s2)                     # $s1 = SDCtrl
     bne     $s1, $zero, sdBusy              # $s1 ? BUSY : IDLE
 sdLoop:
     slt     $t2, $a2, $t1                   # ($a2 < 1) ? 1 : 0
