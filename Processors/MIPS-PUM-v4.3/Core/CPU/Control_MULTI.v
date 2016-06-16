@@ -141,6 +141,7 @@ begin
 			case (iOp)
 				OPCRFMT:
 					if (iFunct == FUNJR)
+					
 						nx_state	<= wCOP0PendingInterrupt ? COP0EXC : JR;
 					else if(iFunct == FUNSLL || iFunct == FUNSRL || iFunct == FUNSRA)
 							nx_state	<= SHIFT;
@@ -167,6 +168,12 @@ begin
 					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BNE;
 				OPCJAL:
 					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : JAL;
+					
+				//operações implementadas em 1/2016
+				OPBGTZ:
+					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BGTZ;
+				OPBLEZ:
+					nx_state	<= wCOP0PendingInterrupt ? COP0EXC : BLEZ;
 				
 					//operaçoes adicionadas em 1/2014
 					OPCLB,
@@ -498,6 +505,23 @@ begin
 			word	<= 40'b0000000000000000000110000000010000000010;
 			nx_state	<= FETCH;
 		end
+		
+		
+		BGTZ:
+		begin
+			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst
+			word	<= 40'b000000000000000000000 0 1 00000 001 11 000 01 0 0;
+			nx_state	<= FETCH;
+		end
+		BLEZ:
+		begin
+			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst
+			word	<= 40'b0000000000000000000001000000001110000100;
+			nx_state	<= FETCH;
+		end
+		
+		
+		
 		JR:
 		begin
 			//FPRegDst[2], FPDataReg[2], FPRegWrite, FPPCWriteBc1t, FPPCWriteBc1f, FPFlagWrite, FPU2Mem, ClearJAction, JReset, SleepWrite, Store[3], PCWrite, PCWriteBNE, PCWriteBEQ, IorD, MemRead, MemWrite, IRWrite, MemtoReg, PCSource[3], ALUop[2], ALUSrcB[3], ALUSrcA[2], RegWrite, RegDst			
