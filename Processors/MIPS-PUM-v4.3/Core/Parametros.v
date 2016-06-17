@@ -28,7 +28,7 @@ parameter
     OPDIVU      = 5'b10100,             //20
     OPMTHI      = 5'b10101,             //21        2015/1
     OPMTLO      = 5'b10110,             //22        2015/1
-    OPSGT       = 5'b10111,             //23		2016/1
+    OPSGT       = 5'b10111,             //23			 2016/1
 
 /* Operacoes da ULA FP */
     OPADDS      = 4'b0001,
@@ -124,6 +124,7 @@ parameter
     RTBGEZAL    = 5'b10001,
     RTBLTZ      = 5'b00000,
     RTBLTZAL    = 5'b10000,
+	 RTZERO		 = 5'B00000, 
 
 /* Campo FMT */
     FMTS        = 5'h10,
@@ -282,4 +283,12 @@ parameter
     STATE_LH        = 6'd51,
     STATE_LHU       = 6'd52,
     STATE_SB        = 6'd53,
-    STATE_SH        = 6'd54;
+    STATE_SH        = 6'd54,
+	 
+	 //Adicionados em 1/2016
+	 BGEZ				  	= 6'd55,
+	 BGEZAL				= 6'd56,
+	 BLTZ				  	= 6'd57,
+	 BLTZAL				= 6'd58,
+	 BGTZ					= 6'd59,
+	 BLEZ					= 6'd60;
