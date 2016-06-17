@@ -1,7 +1,7 @@
 ##
 # Test Rountine for MIPS 3.3 PUM
 # Laboratorio 4
-# /Version      0.3 - Printing on screen
+# /Version      0.250 - Playing MIDI sound after each test
 # /Authors      Rafael
 ##
 
