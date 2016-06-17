@@ -2,7 +2,7 @@
  * Caminho de Dados do Processador Multiciclo
  *
  */
- 
+
 module Datapath_MULTI (
 // Inputs e clocks
 input wire iCLK, iCLK50, iRST,
@@ -29,7 +29,7 @@ output wire [3:0] DwByteEnable,
 
 // feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 //output oCOP0Interrupted,
-//output [4:0] oCOP0ExcCode,				
+//output [4:0] oCOP0ExcCode,
 //output wire oCOP0InterruptEnable,
 input [7:0] iPendingInterrupt
 );
@@ -58,23 +58,23 @@ assign wLigaULA_PASSADA = ULA_PASSADA;
  */
 reg [31:0] A, B, MDR, IR, PC, ALUOut, RegTimerHI, RegTimerLO ;
 wire [31:0] RandInt;
-reg [63:0] StartTime;  
+reg [63:0] StartTime;
 
 /*
  * Local FPU registers
  */
- 
+
 reg [31:0] FP_A, FP_B, FPALUOut;
- 
+
 // feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 /*
  * Local COP0 registers
  */
- 
+
 reg [31:0] COP0_A, PC_original;
 reg ALUoverflow, FPALUoverflow, FPALUunderflow, FPALUnan;
 
-/* 
+/*
  * Local wires
  *
  * Wires are named after the named signals as defined by the COD.
@@ -175,7 +175,7 @@ assign wRandInt[29] = wTimerOut[3];
 assign wRandInt[30] = wTimerOut[0];
 assign wRandInt[31] = wTimerOut[2];
 
-assign RandInt = wRandInt ^ PC;				
+assign RandInt = wRandInt ^ PC;
 
 /* Floating Point wires assignments*/
 assign wFs = IR[15:11];
@@ -229,7 +229,7 @@ begin
 	FP_A <= 32'b0;
 	FP_B <= 32'b0;
 	FPALUOut <= 32'b0;
-	
+
 	// feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 	COP0_A <= 32'b0;
 	PC_original <= BEGINNING_TEXT;
@@ -257,7 +257,7 @@ begin
 		FP_A <= 32'b0;
 		FP_B <= 32'b0;
 		FPALUOut <= 32'b0;
-		
+
 		// feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 		COP0_A <= 32'b0;
 		PC_original <= iInitialPC;
@@ -269,25 +269,25 @@ begin
 	else
 	begin
 		/* Unconditional */
-		
+
 		ALUOut	<= wALUResult;
 		A	<= wReadData1;
 		B	<= wReadData2;
 		MDR	<= wMemReadData;
-		
+
 		FPALUOut <= wFPALUResult;
 		FP_A <= wFPReadData1;
 		FP_B <= wFPReadData2;
-		
+
 		// feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 		COP0_A <= wCOP0ReadData;
 		ALUoverflow <= wALUOverflow;
 		FPALUoverflow <= wFPOverflow;
 		FPALUunderflow <= wFPUnderflow;
 		FPALUnan <= wFPNan;
-		
+
 		/* Conditional */
-		
+
 		if (PCWrite || (PCWriteBEQ && wALUZero) || (PCWriteBNE && ~wALUZero) || (FPPCWriteBc1t && wSelectedFlagValue) || (FPPCWriteBc1f && ~wSelectedFlagValue))
 		begin
 			PC	<= wPCMux;
@@ -295,12 +295,12 @@ begin
 			if (PCOriginalWrite)
 				PC_original <= wPCMux;
 		end
-		
+
 		if (IRWrite)
 		begin
 			IR	<= wMemReadData;
 		end
-		
+
 		if (Store == 3'd2)
 			RegTimerLO <= wTimerOutLO;
 		if (Store == 3'd3)
@@ -311,15 +311,15 @@ begin
 			StartTime[31:0]  <= wTimerOutLO;
 			StartTime[63:32] <= wTimerOutHI;
 		end
-		
+
 		//2014, detecta que e um load ou write que nao precisa do resultado passado da ula passada
 		if(wLoadCase==0)
 			ULA_PASSADA <= wMemAddress[1:0];
-		
+
 	end
 end
 
-//Aqui eu vou guardar o finzinho 
+//Aqui eu vou guardar o finzinho
 
 
 /*
@@ -360,7 +360,7 @@ Control_MULTI CrlMULTI (
 	.oFPRegWrite(FPRegWrite),
 	.oFPFlagWrite(FPFlagWrite),
 	.oFPU2Mem(FPU2Mem),
-	
+
 	// feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 	.iCOP0ALUoverflow(ALUoverflow),
 	.iCOP0FPALUoverflow(FPALUoverflow),
@@ -376,11 +376,11 @@ Control_MULTI CrlMULTI (
 	.oCOP0BranchDelay(COP0BranchDelay),
 	.oCOP0ExcCode(COP0ExcCode),
 	.oCOP0Interrupted(COP0Interrupted),
-	
+
 	//adicionado em 1/2014
 	.oLoadCase(wLoadCase),
 	.oWriteCase(wWriteCase),
-	
+
 	//adicionado em 1/2016 para implementação dos branchs
 	.iRt (wRT)
 );
@@ -403,8 +403,8 @@ Registers RegsMULTI (
 	.iVGASelect(wVGASelect),
 	.oVGARead(wVGARead)
 	);
-	
-// Mux WriteReg	
+
+// Mux WriteReg
 always @(*)
 	case (Store)
 		3'd0: wWriteRegister <= wRtorRd;  //Normal mode
@@ -416,7 +416,7 @@ always @(*)
 		3'd6: wWriteRegister <= wRT;      //mfc0 - feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 		3'd7: wWriteRegister <= ~wALUZero ? 5'd31: 5'd0;     //  $ra ou $zero    1/2016
 	endcase
-		
+
 
 
 // Mux WriteData
@@ -430,9 +430,9 @@ always @(*)
 		3'd5: wRegWriteData <= FP_A;		//mfc1
 		3'd6: wRegWriteData <= COP0_A;		//mfc0 - feito no semestre 2013/1 para implementar a deteccao de excecoes (COP0)
 		3'd7: wRegWriteData <= PC;     //1/2016
-		
+
 	endcase
-	
+
 
 
 /* Arithmetic Logic Unit module */
@@ -454,7 +454,7 @@ ALUControl ALUcont0 (
 	.iOpcode(wOpcode),
 	.iRt (wRT),		//1/2016
 	.iALUOp(ALUOp),
-	.oControlSignal(wALUControlSignal),
+	.oControlSignal(wALUControlSignal)
 	);
 
 
@@ -479,7 +479,7 @@ always @(*)
 		3'd5: wALUMuxB <= 32'd0;					//adicionado em 1/2016 para calculo dos branchs
 		default: wALUMuxB <= 32'd0;
 	endcase
-	
+
 
 
 // Mux OrigPC
@@ -495,7 +495,7 @@ always @(*)
 	endcase
 
 
-	
+
 /*MemStore MemStore0 (
 	.iAlignment(wMemAddress[1:0]),
 	.iWriteTypeF(STORE_TYPE_DUMMY),
@@ -515,8 +515,8 @@ always @(*)
 	.oByteEnable(wByteEnabler),
 	.oException()
 );
-	
-	
+
+
 /*MemStore MemStore0 (
 	.iAlignment(wMemAddress[1:0]),
 	.iWriteTypeF(wWriteCase),
@@ -557,7 +557,7 @@ Memory MemRAM (
 	//Adicionado em 1/2014
 	.SRAM_DQ(SRAM_DQ), 				// SRAM Data Bus 32 Bits
 	.oSRAM_A(oSRAM_A), 				// SRAM Address bus 21 Bits
-	.oSRAM_ADSC_N(oSRAM_ADSC_N), 	// SRAM Controller Address Status 
+	.oSRAM_ADSC_N(oSRAM_ADSC_N), 	// SRAM Controller Address Status
 	.oSRAM_ADSP_N(oSRAM_ADSP_N),	// SRAM Processor Address Status
 	.oSRAM_ADV_N(oSRAM_ADV_N),		// SRAM Burst Address Advance
 	.oSRAM_BE_N(oSRAM_BE_N),		// SRAM Byte Write Enable
@@ -567,7 +567,7 @@ Memory MemRAM (
 	.oSRAM_CLK(oSRAM_CLK),			// SRAM Clock
 	.oSRAM_GW_N(oSRAM_GW_N),		// SRAM Global Write Enable
 	.oSRAM_OE_N(oSRAM_OE_N),		// SRAM Output Enable
-	.oSRAM_WE_N(oSRAM_WE_N)			// SRAM Write Enable	
+	.oSRAM_WE_N(oSRAM_WE_N)			// SRAM Write Enable
 	);*/
 
 /*LoadTreatment LoadTreatmentUnit (
@@ -577,7 +577,7 @@ Memory MemRAM (
 	.oData(wTreatedToRegister)
 );*/
 
-/*	
+/*
 MemLoad MemLoad0 (
 	.iAlignment(wLigaULA_PASSADA),
 	.iLoadTypeF(wLoadCase),
@@ -689,17 +689,17 @@ Timer Time0 (
 COP0RegistersMULTI cop0reg (
 	.iCLK(iCLK),
 	.iCLR(iRST),
-	
+
 	// register file interface
 	.iReadRegister(wRD),
 	.iWriteRegister(wRD),
 	.iWriteData(wCOP0DataReg),
 	.iRegWrite(COP0RegWrite),
 	.oReadData(wCOP0ReadData),
-	
+
 	// eret interface
 	.iEret(COP0Eret),
-	
+
 	// COP0 interface
 	.iExcOccurred(COP0ExcOccurred),
 	.iBranchDelay(COP0BranchDelay),

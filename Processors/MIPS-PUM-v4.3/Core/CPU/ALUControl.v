@@ -21,7 +21,7 @@ input wire [5:0] iFunct, iOpcode, iRt;   // 1/2016. Adicionado iRt.
 input wire [1:0] iALUOp;
 output reg [4:0] oControlSignal;
 
-always @(iFunct, iOpcode, iALUOp)
+always @(iFunct, iOpcode, iALUOp, iRt)
 begin
     case (iALUOp)
         2'b00:
@@ -101,17 +101,17 @@ begin
                     oControlSignal  = OPXOR;
                 OPCLUI:
                     oControlSignal  = OPLUI;
-                OPCJAL:	   						    //2016/1
+                OPCJAL:                                 //2016/1
                     oControlSignal  = OPAND;
-                OPCBLEZ,                         //2016/1
+                OPCBLEZ,                                //2016/1
                 OPCBGTZ:
                     case (iRt)
-								RTZERO:			//Garante que $rt seja zero/instruções válidas
-									  oControlSignal  = OPSGT;
-								default:			//instr. inválida
-									  oControlSignal  = 5'b00000;
-						  endcase
-				    OPCBGE_LTZ:                      //2016/1
+                        RTZERO:                         //Garante que $rt seja zero/instruções válidas
+                            oControlSignal  = OPSGT;
+                        default:                        //instr. inválida
+                            oControlSignal  = 5'b00000;
+                    endcase
+                OPCBGE_LTZ:                         //2016/1
                 begin
                     case (iRt)
                         RTBGEZ,

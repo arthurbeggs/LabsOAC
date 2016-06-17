@@ -5,7 +5,7 @@
 
 module Datapath_UNI (
     // Inputs e clocks
-    input  wire           iCLK, iCLK50, iRST,
+    input  wire        iCLK, iCLK50, iRST,
     input  wire [31:0] iInitialPC,
 
     // Para monitoramento
@@ -219,7 +219,7 @@ FlagBank FlagBankModule(
 ALUControl ALUControlunit (
     .iFunct(wFunct),
     .iOpcode(wOpcode),
-    .iRt(waddrRt),          // 1/2016, Implementar intruções bgez, bgezal, bgltz, bltzal.
+    .iRt(wAddrRt),          // 1/2016, Implementar intruções bgez, bgezal, bgltz, bltzal.
     .iALUOp(wCALUOp),
     .oControlSignal(wALUControl)
 );
