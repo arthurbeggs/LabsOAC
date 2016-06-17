@@ -1,7 +1,7 @@
 ##
 # Test Rountine for MIPS 3.3 PUM
 # Laboratorio 4
-# /Version      0.250 - Playing MIDI sound after each test
+# /Version      0.3 - Printing on screen
 # /Authors      Rafael
 ##
 
@@ -73,7 +73,7 @@
      addi    $a3,$0,COLOR_PEN
     addi    $v0,$0,SYSCALL_PRINT_CHAR
     syscall                 # Print Char
-.end_macro 
+.end_macro
 
 .macro printinti %num, %posx,%posy
      addi    $a0,$0,%num
@@ -122,7 +122,7 @@ MSG0:     .asciiz           "_You just typed:"
 main:
    #jal     clearscreen
 ###############################################################################
-    
+
 ##
 # Test Jump
 ##
@@ -232,7 +232,7 @@ end.test.branch:
 ##
 test.alu:
     printchar 65,10,80
-    
+
     addi    $t0,$0,5        # Addi - Positive Value
     addi    $t1,$0,-2       # Addi - Negative Value
 
@@ -323,7 +323,7 @@ test.alu.mtl:
 test.alu.div:
     addi    $a0,$0,3
     addi    $a1,$0,2
-    div     $a0,$a1 
+    div     $a0,$a1
     mfhi    $s0
     mflo    $s1
     printint $s0,80,90
@@ -383,9 +383,9 @@ test.syscall.printfloat:
 test.syscall.time:
     addi    $v0,$0,SYSCALL_TIME
     syscall
-    
+
     printint $a0,240,220
-    
+
 test.syscall.printchr:
     printchar 32,310,220
 
@@ -431,4 +431,3 @@ error:
 end.error:
      # play_MIDI   69,500,MIDI_DRUM
     j       end.error
-
