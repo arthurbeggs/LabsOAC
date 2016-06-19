@@ -38,12 +38,11 @@ architecture rtl of sd_controller is
 type states is (
     RST,
     INIT,
-    CMD0,                       -- Put the SD card in the IDLE state.
+    CMD0,
     CMD55,
     ACMD41,
     CMD16,                      -- SET_BLOCKLEN
-    CHECK_CMD0_RESPONSE,
-    CHECK_ACMD41_RESPONSE,
+    POLL_CMD,
 
     IDLE,                       -- wait for read or write pulse
 
@@ -82,7 +81,6 @@ signal clk              : std_logic := '0';
 signal status           : std_logic_vector(3 downto 0);
 -- signal store_data       : std_logic_vector(7 downto 0) := x"AA";
 
-
 COMPONENT CLK_Divider PORT (
                             CLKin, Reset   : IN  STD_LOGIC;
                             State          : IN  STD_LOGIC_VECTOR;
@@ -100,8 +98,7 @@ begin
     process(clk, reset, dm_in)
         variable byte_counter   : integer range 0 to 1;                 -- CHANGED: WRITE_DATA_SIZE     DEBUG:(1 start byte + 1 data byte + 2 'FF' end bytes)
         variable bit_counter    : integer range 0 to 255;
-    variable needGetCmdResponse : boolean;
-	 begin
+    begin
         data_mode <= dm_in;
 
         if rising_edge(clk) then
@@ -137,108 +134,59 @@ begin
                         status          <= x"3";                        -- DEBUG
                         cmd_out         <= x"FF400000000095";
                         bit_counter     := 55;
-                        return_state    <= CHECK_CMD0_RESPONSE;
+                        return_state    <= CMD55;
                         state           <= SEND_CMD;
-                        needGetCmdResponse := true;
-
-                    when CHECK_CMD0_RESPONSE => -- Checa resposta R1 para CMD0
-                        status          <= x"5";
-                        if recv_data = x"01" then -- "00000001" resposta normal R1
-                          state <= CMD55;  -- Continua se não houve nenhum erro
-                        else
-                          state <= CMD0;     -- Caso contrario, tenta enviar CMD0 novamente
-                        end if;
 
                     when CMD55 =>
-                        status          <= x"6";                        -- DEBUG
-                        cmd_out         <= x"FF7700000000FF";    -- 55d OR 40h = 77h        DEBUG: LSByte = x"65"?
+                        status          <= x"4";                        -- DEBUG
+                        cmd_out         <= x"FF770000000001";    -- 55d OR 40h = 77h        DEBUG: LSByte = x"65"?
                         bit_counter     := 55;
                         return_state    <= ACMD41;
                         state           <= SEND_CMD;
-                        needGetCmdResponse := true;
 
                     when ACMD41 =>
-                        status          <= x"7";                        -- DEBUG
-                        cmd_out         <= x"FF6900000000FF";    -- 41d OR 40h = 69h
+                        status          <= x"5";                        -- DEBUG
+                        cmd_out         <= x"FF690000000001";    -- 41d OR 40h = 69h
                         bit_counter     := 55;
-                        return_state    <= CHECK_ACMD41_RESPONSE;
+                        return_state    <= POLL_CMD;
                         state           <= SEND_CMD;
-                        needGetCmdResponse := true;
 
-                    when CHECK_ACMD41_RESPONSE => -- Checa resposta R1 para ACMD41
-                        status          <= x"8";                        -- DEBUG
-                        if (recv_data = x"00") then -- "00000001" resposta normal R1 após inicialização
+                    when POLL_CMD =>
+                        status          <= x"6";                        -- DEBUG
+                        if (recv_data = x"00") then
                             state       <= CMD16;                       -- CHANGED: IDLE
                         else
                             state       <= CMD55;
                         end if;
 
-                    when CMD16 =>                                       -- Set quantidade de bytes a serem lidos
-                        status          <= x"9";                        -- DEBUG
+                    when CMD16 =>                                       -- SET_BLOCKLEN to 1 byte
+                        status          <= x"7";                        -- DEBUG
                         cmd_out         <= x"FF50000000012B";           -- DEBUG: (1 start byte + 1 data byte + 2 'FF' end bytes ?)
                         bit_counter     := 55;
                         return_state    <= IDLE;
                         state           <= SEND_CMD;
 
-                    when SEND_CMD =>                                    -- DEBUG: OK
-                            if (sclk_sig = '1') then
-                                    if bit_counter >= 0 then
-                                      mosi            <= cmd_out(55);
-                                      cmd_out         <= cmd_out(54 downto 0) & '1';
-    										              bit_counter     := bit_counter - 1;
-                                    else
-                                        if needGetCmdResponse then --Comando enviado terá resposta?
-                                          state <= RECEIVE_BYTE_WAIT;
-                                        else
-                                          state <= return_state;
-                                        end if;
-                                    end if;
-                            end if;
-                            sclk_sig        <= not sclk_sig;
-
-                    when RECEIVE_BYTE_WAIT =>                           -- DEBUG: O estado está mudando sem que MISO == '0'
-                            if (sclk_sig = '1') and (miso = '0') then
-                                recv_data       <= (others => '0');
-                                state           <= RECEIVE_BYTE;
-                                bit_counter     := 6;           -- already read bit 7
-                            end if;
-                            sclk_sig        <= not sclk_sig;
-
-                    when RECEIVE_BYTE =>
-                            if (sclk_sig = '1') then
-                                recv_data   <= recv_data(6 downto 0) & miso;
-                                if (bit_counter >= 0) then -- Termina leitura de bit_counter(inicial) bits
-                                    state  <= return_state;
-                                    if (byte_counter = 1) then  -- Envia o byte lido para dout
-                                        dout  <= recv_data(6 downto 0) & miso;
-                                    end if;
-                                else
-                                    bit_counter  := bit_counter - 1;
-                                end if;
-                            end if;
-                            sclk_sig        <= not sclk_sig;
-
                     when IDLE =>
-                            status          <= x"0";                        -- IDLE
-                            if      (rd = '1' and wr = '0') then --Read Data and not Write data
-                                state       <= READ_BLOCK;
-                            elsif   (wr = '1' and rd = '0') then --Write Data and not Read data
-                                state       <= WRITE_BLOCK_CMD;
-                            else
-                                state       <= IDLE;             -- Loop
-                            end if;
+                        status          <= x"0";                        -- IDLE
+                        if      (rd = '1' and wr = '0') then
+                            state       <= READ_BLOCK;
+                        elsif   (wr = '1' and rd = '0') then
+                            state       <= WRITE_BLOCK_CMD;
+                        else
+                            state       <= IDLE;
+                        end if;
 
-                    when READ_BLOCK =>                                  --CMD17
-                        status          <= x"A";                        -- DEBUG
+                    when READ_BLOCK =>
+                        status          <= x"8";                        -- DEBUG
                         cmd_out         <= x"FF" & x"51" & address & x"FF";
                         bit_counter     := 55;
                         return_state    <= READ_BLOCK_WAIT;
                         state           <= SEND_CMD;
 
                     when READ_BLOCK_WAIT =>                             -- DEBUG: Recebe o Start Block e prepara para ler os dados
-                        status          <= x"B";                        -- DEBUG
+                        status          <= x"9";                        -- DEBUG
                         if (sclk_sig = '1' and miso = '0') then
-                            byte_counter    := 1;                       -- DEBUG: O valor está correto? Nem precisava ser 1, pode-se mudar no bit_counter
+                            byte_counter    := 1;                       -- DEBUG: O valor está correto?     <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                             bit_counter     := 7;
                             return_state    <= READ_BLOCK_DATA;
                             state           <= RECEIVE_BYTE;            -- DEBUG: O próximo estado receberá o byte de dado.
@@ -246,11 +194,11 @@ begin
                         sclk_sig        <= not sclk_sig;
 
                     when READ_BLOCK_DATA =>
-                        status          <= x"C";                        -- DEBUG
+                        status          <= x"A";                        -- DEBUG
                         if (byte_counter = 0) then
                             bit_counter     := 7;
                             return_state    <= READ_BLOCK_CRC;
-                            state           <= RECEIVE_BYTE;            -- Lê primeiro byte do CRC
+                            state           <= RECEIVE_BYTE;
                         else
                             byte_counter    := byte_counter - 1;
                             return_state    <= READ_BLOCK_DATA;
@@ -259,10 +207,50 @@ begin
                         end if;
 
                     when READ_BLOCK_CRC =>                              -- DEBUG: Prepara a recepção do segundo byte do CRC16
-                        status          <= x"D";                        -- DEBUG
+                        status          <= x"B";                        -- DEBUG
                         bit_counter     := 7;
                         return_state    <= IDLE;
                         state           <= RECEIVE_BYTE;
+
+                    when SEND_CMD =>                                    -- DEBUG: OK
+                        if (sclk_sig = '1') then
+                            if (bit_counter = 0) then
+                                state           <= RECEIVE_BYTE_WAIT;
+                            else
+                                bit_counter     := bit_counter - 1;
+                                cmd_out         <= cmd_out(54 downto 0) & '1';
+                            end if;
+                        end if;
+                        sclk_sig        <= not sclk_sig;
+
+                    when RECEIVE_BYTE_WAIT =>                           -- DEBUG: O estado está mudando sem que MISO == '0'
+                        if (sclk_sig = '1') then
+                            if (miso = '0') then
+                                recv_data       <= (others => '0');
+                                state           <= RECEIVE_BYTE;
+                                if (response_mode='0') then
+                                    bit_counter     := 3;           -- already read bits 7..4       -- DEBUG: Isso come bits, não?
+                                else                                    -- DEBUG: Para os comandos utilizados, sempre cairá aqui.
+                                    bit_counter     := 6;           -- already read bit 7
+                                end if;
+                            end if;
+                        end if;
+                        sclk_sig        <= not sclk_sig;
+
+                    when RECEIVE_BYTE =>
+                        if (sclk_sig = '1') then
+                            recv_data       <= recv_data(6 downto 0) & miso;
+                            if (bit_counter = 0) then
+                                state           <= return_state;
+                                if (byte_counter = 1) then              -- DEBUG: Data Package      <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                                    -- store_data       <= recv_data(6 downto 0) & miso;
+                                    dout            <= recv_data(6 downto 0) & miso;
+                                end if;
+                            else
+                                bit_counter     := bit_counter - 1;
+                            end if;
+                        end if;
+                        sclk_sig        <= not sclk_sig;
 
                     when WRITE_BLOCK_CMD =>
                         cmd_mode        <= '1';
@@ -337,6 +325,6 @@ begin
 idleSD  <= status;
 -- dout    <= store_data;
 sclk    <= sclk_sig;
--- mosi    <= cmd_out(55) when cmd_mode='1' else data_sig(7);
+mosi    <= cmd_out(55) when cmd_mode='1' else data_sig(7);
 
 end rtl;
