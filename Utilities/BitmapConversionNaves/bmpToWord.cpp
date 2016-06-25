@@ -1,3 +1,4 @@
+#include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
@@ -15,7 +16,7 @@ using namespace std;
 std::string int_to_hex( int i )
 {
     std::stringstream stream;
-    stream << std::setfill ('0') << std::setw(sizeof(uchar)*2) 
+    stream << std::setfill ('0') << std::setw(sizeof(uchar)*2)
            << std::hex << i;
     return stream.str();
 }
@@ -23,7 +24,7 @@ std::string int_to_hex( int i )
 std::string int_to_hex_width_height( int i )
 {
     std::stringstream stream;
-    stream << std::setfill ('0') << std::setw(sizeof(int)*2) 
+    stream << std::setfill ('0') << std::setw(sizeof(int)*2)
            << std::hex << i;
     return stream.str();
 }
@@ -57,6 +58,7 @@ int main()
     {
         fileOut << ".word 0x";
         int counter = 0;
+        string wordBigEndian = "";
         for (int j = 0; j < image.cols; ++j)
         {
             int b, g, r;
@@ -74,26 +76,26 @@ int main()
             resultado = int_to_hex(r);
 
             ++counter;
+            
+            wordBigEndian = resultado + wordBigEndian;
 
             if (j == image.cols-1)
             {
-                fileOut << resultado;
                 while (counter != 4)
                 {
-                    fileOut << "00";
+                    wordBigEndian = "00" + wordBigEndian;
                     ++counter;
                 }
+                fileOut << wordBigEndian;
                 fileOut << "\n";
             }
 
             else if (counter == 4)
             {
-                fileOut << resultado << "\n.word 0x";
+                fileOut << wordBigEndian << "\n.word 0x";
                 counter = 0;
+                wordBigEndian = "";
             }
-
-            else
-                fileOut << resultado;
         }
     }
     return 0;
