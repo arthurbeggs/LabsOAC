@@ -6,12 +6,13 @@
 	oRegDst: registrador de destino
 		00 - rt
 		01 - rd
-		10 - $ra
+		10 - ALU_zero? $ra ou $zero    1/2016
+		11 - ~ALU_zero? $ra ou $zero    1/2016
 	oOrigALU:
-		00 - 
-		01 - 
-		10 - 
-		11 - 
+		00 - ForwardB
+		01 - ExtSigImm
+		10 - ExtZeroImm
+		11 - ConcatZeroImm
 	oMemparaReg
 	oEscreveReg
 	oLeMem: indica leitura da memoria (lw)
@@ -30,6 +31,7 @@
 module Control_PIPEM (
 	iOp, //OK
 	iFunct, //OK
+	iRt, //1/2016
 	oRegDst, //OK
 	oOrigALU, //OK
 	oSavePC, //OK
@@ -46,7 +48,7 @@ module Control_PIPEM (
 	oWriteType
 );
 
-input wire [5:0] iOp, iFunct;
+input wire [5:0] iOp, iFunct, iRt;//1/2016 (iRt)
 output reg oEscreveReg, oLeMem, oEscreveMem, oJump, oBranch, onBranch, oJr, oSavePC;
 output reg [1:0] oOpALU, oOrigALU, oRegDst;
 output reg [2:0] oOrigPC;
@@ -200,7 +202,7 @@ always @(iOp, iFunct) begin
 				oLeMem      = 1'b0;   // desativa LeMem
 				oEscreveMem = 1'b0;   // desativa EscreveMem
 				oOrigPC     = 3'b001; // seleciona o endereco do branch
-				oOpALU      = 2'b01;  // seleciona subtracao (pra nada)
+				oOpALU      = 2'b01;  // seleciona subtracao (pra nada) //(1/2016) - duvida: não é isso que define se dá branch?
 				oJump       = 1'b0;   // desativa jump
 				oBranch     = 1'b1;   // ativa branch
 				onBranch    = 1'b0;   // desativa BNE
@@ -217,7 +219,7 @@ always @(iOp, iFunct) begin
 				oLeMem      = 1'b0;   // desativa LeMem
 				oEscreveMem = 1'b0;   // desativa EscreveMem
 				oOrigPC     = 3'b101; // seleciona o endereco do branch
-				oOpALU      = 2'b01;  // seleciona subtracao (pra nada)
+				oOpALU      = 2'b01;  // seleciona subtracao (pra nada) //(1/2016) - duvida: aqui de novo, é o que define o resultado do branch
 				oJump       = 1'b0;   // desativa jump
 				oBranch     = 1'b0;   // desativa branch
 				onBranch    = 1'b1;   // ativa BNE
@@ -368,10 +370,10 @@ always @(iOp, iFunct) begin
 				oLoadType   = 3'b000; // load word/ignore
 				oWriteType  = 2'b00;  // write word/ignore
 			end
-		OPCJAL://OK
+		OPCJAL://alterada em 1/2016 para implementação dos branchs
 			begin
-				oRegDst     = 2'b10;  // Seleciona 31 (ra)
-				oOrigALU    = 2'b00;  // seleciona o resultado do fowardB (pra nada)
+				oRegDst     = 2'b10;  // Seleciona 31 ($ra)
+				oOrigALU    = 2'b11;  // 1/2016 - garante resultado zero na ULA para que regdst seja de fato $ra
 				oSavePC     = 1'b1;   // Escreve PC + 4
 				oEscreveReg = 1'b1;   // ativa EscreveReg
 				oLeMem      = 1'b0;   // desativa LeMem

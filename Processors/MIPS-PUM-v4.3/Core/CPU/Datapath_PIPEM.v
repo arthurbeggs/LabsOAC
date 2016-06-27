@@ -374,7 +374,8 @@ always @(*) begin
 	case(wEX_RegDst)
 		2'b00:   wEX_RegDestino = wEX_NumRt;
 		2'b01:   wEX_RegDestino = wEX_NumRd;
-		2'b10:   wEX_RegDestino = 5'd31;
+      2'b10:   wEX_RegDestino = wZero  ? 5'd31: 5'd0;     //  $ra ou $zero    1/2016
+      2'b11:   wEX_RegDestino = ~wZero ? 5'd31: 5'd0;     //  $ra ou $zero    1/2016
 		default: wEX_RegDestino = 5'd0;
 	endcase
 end
