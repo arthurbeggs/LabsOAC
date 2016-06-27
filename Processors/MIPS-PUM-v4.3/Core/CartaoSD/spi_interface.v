@@ -2,9 +2,6 @@ module SPI_Interface(
     input         iCLK,
     input         iCLK_50,
     input         Reset,
-    // input  [7:0]  readData,
-    // output [7:0]  writeData,
-    // input         write,
     output        SD_CLK,
     output        SD_MOSI,
     input         SD_MISO,
@@ -37,7 +34,7 @@ sd_controller sd1(
 
 reg  [31:0] SDAddress;
 wire [7:0]  SDData;
-wire [3:0]  SDCtrl;     // [SDCtrl ? BUSY : IDLE]
+wire [3:0]  SDCtrl;             // [SDCtrl ? BUSY : READY]
 reg         SDReadEnable;
 
 always @ (posedge iCLK)

@@ -6,15 +6,13 @@ module CLK_Divider(
 );
 
 reg         CLKfast, CLKslow;
-reg         COUNTERfast;
-reg  [5:0]  COUNTERslow;
+reg  [4:0]  COUNTERslow;
 
 initial
 begin
     CLKfast     <= 1'b0;
     CLKslow     <= 1'b0;
-    COUNTERfast <= 1'b0;
-    COUNTERslow <= 6'b0;
+    COUNTERslow <= 5'b0;
 end
 
 always @(posedge CLKin)
@@ -24,19 +22,14 @@ end
 
 always @(posedge CLKin)
 begin
-    if (COUNTERslow == 6'b111111)        //NOTE: 781KHz /2
+    if (COUNTERslow == 5'b11111)        //NOTE: 781KHz
         begin
             CLKslow     <= ~CLKslow;
-            COUNTERslow <= 6'b000000;
+            COUNTERslow <= 5'b00000;
         end
     else    COUNTERslow <= COUNTERslow + 1'b1;
 
-    if (COUNTERfast == 1'b1)            //NOTE: 25MHz
-        begin
-            CLKfast     <= ~CLKfast;
-            COUNTERfast <= 1'b0;
-        end
-    else    COUNTERfast <= COUNTERfast + 1'b1;
+    CLKfast     <= ~CLKfast;            //NOTE: 50MHz
 end
 
 endmodule

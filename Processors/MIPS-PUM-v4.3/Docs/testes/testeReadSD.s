@@ -13,19 +13,25 @@
 #     partir do endereço "SD_DATA_ADDR" e grava os bytes lidos sequencialmente  #
 #     a partir do endereço de destino "VGA_INI_ADDR", exibindo na tela a imagem #
 #     salva no cartão SD.                                                       #
+#                                                                               #
 #  - O endereço de início dos dados desejados deve ser obtido para cada cartão  #
 #     SD usado com o uso de um Hex Editor. Para o Windows, recomendo o programa #
 #     WinHex [ver. de avaliação ou Melhores Lojas]. Lembrar de desconsiderar    #
 #     os bytes de cabeçalho do arquivo a ser lido.                              #
+#                                                                               #
+#  - Há um offset de setores entre o endereço lógico (mostrado pelo Hex Editor) #
+#     e o endereço físico da memória do cartão SD. O offset deve ser adicionado #
+#     ao endereço do dado que se deseja obter.                                  #
+#                                                                               #
 #  - O hardware e o software de leitura de dados de cartões SD não funciona para#
 #     cartões SDHC e SDXC, sendo limitado a cartões SD de no máximo 2 Gb.       #
+#                                                                               #
 #  - O programa deve funcionar independente da formatação do cartão.            #
 #                                                                               #
 #################################################################################
 
-.eqv SD_DATA_ADDR 0x00000000
+.eqv SD_DATA_ADDR 0x003D0001            # GBA_24b_bit.txt com header. Addr = Offset + (137 * 512) = Offset + 0x00011200 (defasagem de setores lógicos/físicos * tamanho do setor)
 .eqv VGA_INI_ADDR 0xFF000000
-.eqv VGA_END_ADDR 0XFF012C00            # NOTE: 0xFF011BFF?
 .eqv VGA_QTD_BYTE 76800                 # VGA Bytes
 
     .data
