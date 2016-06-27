@@ -2521,7 +2521,7 @@ endlb:
 
 
 ############################################
-#  SD Card Read                            #                                    //TODO: Colocar nop's para garantir o funcionamento com o pipeline.
+#  SD Card Read                            #                                    //TODO: Colocar nop's para garantir o funcionamento com o pipeline. DONE
 #  $a0    =    Origem Addr                 #                                    //TODO: Implementar identificação de falha na leitura do cartão.
 #  $a1    =    Destino Addr                #
 #  $a2    =    Quantidade de Bytes         #
@@ -2535,16 +2535,24 @@ sdRead:
     li      $t1, 1                          # Comparador de bytes a serem lidos
 sdBusy:
     lbu     $s1, 0($s2)                     # $s1 = SDCtrl
+    nop
     bne     $s1, $zero, sdBusy              # $s1 ? BUSY : IDLE
+    nop
 sdLoop:
     slt     $t2, $a2, $t1                   # ($a2 < 1) ? 1 : 0
+    nop
+    nop
     bne     $t2, $zero, sdFim               # Se a qtd de bytes a serem lidos < 1, finaliza a leitura
+    nop
 
 sdReadRoutine:
     sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0
 sdWait:
     lbu     $s1, 0($s2)                     # $s1 = SDCtrl
+    nop
+    nop
     bne     $s1, $zero, sdWait              # $s1 ? BUSY : IDLE
+    nop
 sdDataReady:
     lbu     $t0, 0($s3)                     # $t0 recebe byte lido do cartão SD
     sb      $t0, 0($a1)                     # Byte lido é salvo no endereço desejado
@@ -2554,6 +2562,7 @@ sdNextAddr:
     addi    $a0, $a0, 1                     # Próximo endereço de origem
     addi    $a1, $a1, 1                     # Próximo endereço de destino
     j       sdLoop                          # Realiza próxima leitura
+    nop
 
 sdFim:
     li      $v0, 0                          # Sucesso na transferência.         NOTE: Hardcoded. Um teste de falha deve ser implementado.
