@@ -26,7 +26,8 @@
 #  - O hardware e o software de leitura de dados de cartões SD não funciona para#
 #     cartões SDHC e SDXC, sendo limitado a cartões SD de no máximo 2 Gb.       #
 #                                                                               #
-#  - O programa deve funcionar independente da formatação do cartão.            #
+#  - O programa deve funcionar independente da formatação do cartão desde que   #
+#     os dados sejam escritos na memória do cartão de maneira sequencial.       #
 #                                                                               #
 #################################################################################
 
