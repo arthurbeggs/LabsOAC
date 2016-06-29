@@ -98,10 +98,12 @@ assign wIF_PC4 = PC + 32'h4; /* Calculo PC+4 */
 always @(*) begin
 	case(wID_COrigPC)
 		3'b000:  wIF_iPC = wIF_PC4; // PC + 4
-		/* */ 3'b001:  wIF_iPC = wID_Equal ? wID_BranchPC : wIF_PC4; //wID_PC4 + 32'h4; // beq address
+		3'b001:  wIF_iPC = wID_Equal ? wID_BranchPC : wIF_PC4; //wID_PC4 + 32'h4; // beq address
 		3'b010:  wIF_iPC = (wHU_ForwardJr) ? wEX_ResultALU : wID_ResultForwardJr; // Mux jr
 		3'b100:  wIF_iPC = BEGINNING_KTEXT; // .ktext
-		/* */ 3'b101:  wIF_iPC = ~wID_Equal ? wID_BranchPC : wIF_PC4; //wID_PC4 + 32'h4; // bne address
+		3'b101:  wIF_iPC = ~wID_Equal ? wID_BranchPC : wIF_PC4; //wID_PC4 + 32'h4; // bne address
+		/*3'b110: //slot vago  */
+		/*3'b111: //slot vago  */
 		default: wIF_iPC = wIF_PC4;
 	endcase
 end
@@ -198,6 +200,8 @@ wire [31:0] wID_JrAddr   = wID_Read1;
 assign wHU_Branch = wID_CBranch | wID_CnBranch;
 
 wire wID_Equal = (wID_ResultRead1 == wID_ResultRead2) ? 1'b1 : 1'b0;
+wire wID_Greater = (wID_ResultRead1 > wID_ResultRead2) ? 1'b1 : 1'b0; //1/2016
+wire wID_Less = (wID_ResultRead1 < wID_ResultRead2) ? 1'b1 : 1'b0; //1/2016
 
 wire [31:0] wID_ResultJr = (wID_CJr) ? wID_JrAddr : wID_JumpAddr;
 wire [31:0] wID_ResultForwardJr = (wHU_ForwardJr) ? wEX_ResultALU : wID_ResultJr;
@@ -501,7 +505,7 @@ MemLoad MemLoad0 (
 //================ Estruturas do Estagio WB - BEGIN ===================//
 
 // MEM/WB register wires
-wire [31:0] wWB_WriteData  = RegMEMWB[31: 0]; // DataFromMem + ResultALU
+wire [31:0] wWB_WriteData  = RegMEMWB[31: 0]; // DataFromMem + ResultALU || PC+8 (branch delay)
 wire [ 4:0] wWB_RegDestino = RegMEMWB[36:32]; // numero do registrador de destino 
 wire        wWB_RegWrite   = RegMEMWB[   37];
 

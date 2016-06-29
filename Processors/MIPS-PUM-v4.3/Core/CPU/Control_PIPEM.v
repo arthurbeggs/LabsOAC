@@ -197,12 +197,12 @@ always @(iOp, iFunct) begin
 			begin
 				oRegDst     = 2'b00;  // seleciona o Rt (pra nada)
 				oOrigALU    = 2'b00;  // seleciona o resultado do fowardB (pra nada)
-				oSavePC     = 1'b0;   // seleciona o resultado da MD (pra nada)
+				oSavePC     = 1'b0;   // seleciona o resultado da MD (pra nada) //1/2016 note: antes ficava em 1 para calcular o branch delay (pc+8)
 				oEscreveReg = 1'b0;   // desativa EscreveReg
 				oLeMem      = 1'b0;   // desativa LeMem
 				oEscreveMem = 1'b0;   // desativa EscreveMem
 				oOrigPC     = 3'b001; // seleciona o endereco do branch
-				oOpALU      = 2'b01;  // seleciona subtracao (pra nada) //(1/2016) - duvida: não é isso que define se dá branch?
+				oOpALU      = 2'b01;  // seleciona subtracao (pra nada)
 				oJump       = 1'b0;   // desativa jump
 				oBranch     = 1'b1;   // ativa branch
 				onBranch    = 1'b0;   // desativa BNE
@@ -214,12 +214,12 @@ always @(iOp, iFunct) begin
 			begin
 				oRegDst     = 2'b00;  // seleciona o Rt (pra nada)
 				oOrigALU    = 2'b00;  // seleciona o resultado do fowardB (pra nada)
-				oSavePC     = 1'b0;   // seleciona o resultado da MD (pra nada)
+				oSavePC     = 1'b0;   // seleciona o resultado da MD (pra nada) //1/2016 note: antes ficava em 1 para calcular o branch delay (pc+8)
 				oEscreveReg = 1'b0;   // desativa EscreveReg
 				oLeMem      = 1'b0;   // desativa LeMem
 				oEscreveMem = 1'b0;   // desativa EscreveMem
 				oOrigPC     = 3'b101; // seleciona o endereco do branch
-				oOpALU      = 2'b01;  // seleciona subtracao (pra nada) //(1/2016) - duvida: aqui de novo, é o que define o resultado do branch
+				oOpALU      = 2'b01;  // seleciona subtracao (pra nada)
 				oJump       = 1'b0;   // desativa jump
 				oBranch     = 1'b0;   // desativa branch
 				onBranch    = 1'b1;   // ativa BNE
