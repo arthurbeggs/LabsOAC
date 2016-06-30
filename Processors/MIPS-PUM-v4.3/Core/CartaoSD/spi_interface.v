@@ -28,14 +28,27 @@ sd_controller sd1(
     .dout(SDData),
     .address(SDAddress),
     .iCLK(iCLK_50),
+    .oSDMemClk(wSDMemClk),
+    .wordReady(wSDMemEnable),
     .idleSD(SDCtrl)
+);
+
+sd_buffer SDMemBuffer(
+    .data(SDData),
+	.rdaddress(),
+	.rdclock(iCLK),
+	.wraddress(),
+	.wrclock(wSDMemClk),
+	.wren(wSDMemEnable),
+	.q()
 );
 
 
 reg  [31:0] SDAddress;
-wire [7:0]  SDData;
+wire [31:0] SDData;
 wire [3:0]  SDCtrl;             // [SDCtrl ? BUSY : READY]
 reg         SDReadEnable;
+wire        wSDMemClk, wSDMemEnable;
 
 always @ (posedge iCLK)
 begin
