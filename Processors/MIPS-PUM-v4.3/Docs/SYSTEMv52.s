@@ -15,6 +15,9 @@
 .eqv AudioOUTR          0xFFFF000c
 .eqv AudioCTRL1         0xFFFF0010
 .eqv AudioCTRL2         0xFFFF0014
+.eqv SD_INTERFACE_ADDR  0xFFFF0250
+.eqv SD_INTERFACE_CTRL  0xFFFF0254
+.eqv SD_INTERFACE_DATA  0xFFFF0255
 
 # Sintetizador - 2015/1
 
@@ -122,14 +125,14 @@ interruptException:
     andi    $k1, $k0, 0x0004
     bne     $k1, $zero, mouseInterrupt
 
-    andi    $k1, $k0, 0x0008            #verificar se nao  seria 0x0008
+    andi    $k1, $k0, 0x0008            #verificar se nao  seria 0x0008     NOTE: Mas está 0x0008!
     bne     $k1, $zero, counterInterrupt
 
     j       endException
 
 counterInterrupt:   j endException      # nenhum tratamento para a interrupcao de contagem eh necessario ate agora
 
-audioInterrupt:     j endException      # TODO
+audioInterrupt:     j endException      # TODO: Implementar interrupção de áudio.
 
 ###########  Interrupcao do Mouse ################
 mouseInterrupt:
@@ -176,7 +179,7 @@ MOUSEPULADIR:
     nop
     nop
 MOUSEPULAMEIO:
-    sw      $t1, DATA_CLICKS($zero)     ########### ENDERECO ERRADO!!!!!!!
+    sw      $t1, DATA_CLICKS($zero)     # FIXME: ENDERECO ERRADO!!!!!!!
 
     ###atualiza o x
     andi    $t0, $k1, 0x10
@@ -195,7 +198,7 @@ MOUSEPULAMEIO:
     or      $t1, $t1, $t0
 
 pulasinalmousex:
-    lw      $t0, DATA_X($zero)          ################ ENDERECO ERRADO
+    lw      $t0, DATA_X($zero)          # FIXME: ENDERECO ERRADO
     nop
     nop
     add     $t0, $t0, $t1
@@ -213,7 +216,7 @@ mouseliberax320:
     li      $t0, 0
 
 mouseliberax0:
-    sw      $t0, DATA_X($zero)          ############END ERRADO
+    sw      $t0, DATA_X($zero)          # FIXME: ENDEREÇO ERRADO
 
     ###atualiza o Y
     andi    $t0, $k1, 0x20
@@ -232,7 +235,7 @@ mouseliberax0:
 pulasinalmousey:
     nor     $t1, $t1, $t1
     addi    $t1, $t1, 1                 #t1=delta y
-    lw      $t0, DATA_Y($zero)          ############# ENDERECO ERRADO
+    lw      $t0, DATA_Y($zero)          # FIXME: ENDERECO ERRADO
     add     $t0, $t0, $t1
     li      $t1, 240
     nop
@@ -250,7 +253,7 @@ mouseliberay240:
     li      $t0, 0
 
 mouseliberay0:
-    sw      $t0, DATA_Y($zero)          ####################END ERRADO
+    sw      $t0, DATA_Y($zero)          # FIXME: END ERRADO
     nop
     nop
     lw      $t0, 0($sp)
@@ -280,7 +283,7 @@ keyboardInterrupt:
     nop
     beq     $k0, $v0, keyboardInterruptEnd
 
-    # //FIXME: preparar o evento de teclado no registrador $k0
+    # FIXME: preparar o evento de teclado no registrador $k0
     la      $k0, Buffer0Teclado
     nop
     nop
@@ -520,10 +523,10 @@ syscallException:
 
 endSyscall:                             # recupera todos os registradores na pilha
     lw      $1,     0($sp)
-    # lw      $2,     4($sp)       $v0 retorno de valor do syscall
+    # lw      $2,     4($sp)      # $v0 retorno de valor do syscall
     lw      $3,     8($sp)
-    # lw      $4,    12($sp)      $a0  as vezes usado como retorno
-    # lw      $5,    16($sp)      $a1
+    # lw      $4,    12($sp)      # $a0  as vezes usado como retorno
+    # lw      $5,    16($sp)      # $a1
     lw      $6,    20($sp)
     lw      $7,    24($sp)
     lw      $8,    28($sp)
@@ -550,7 +553,7 @@ endSyscall:                             # recupera todos os registradores na pil
     lw      $29,  112($sp)
     lw      $30,  116($sp)
     lw      $31,  120($sp)
-    # lwc1    $0,   124($sp)  $f0 retorno de valor de syscall
+    # lwc1    $0,   124($sp)      # $f0 retorno de valor de syscall
     lwc1    $f1,  128($sp)
     lwc1    $f2,  132($sp)
     lwc1    $f3,  136($sp)
@@ -594,7 +597,7 @@ endSyscall:                             # recupera todos os registradores na pil
 
 
 goToExit1:
-    la      $t9, LINHA1                 # escreve FIM no LCD  <= RETIREI mudar o goToExit1
+    la      $t9, LINHA1                 # escreve FIM no LCD  <= RETIREI mudar o goToExit1  NOTE: não entendir
     nop
     nop
     sb      $zero, 0x20($t9)            # limpa
@@ -681,12 +684,12 @@ goToPopEvent:
 
 
 
-############################################
-#  PrintInt                   #
-#  $a0    =    valor inteiro             #
-#  $a1    =    x               #
-#  $a2    =    y               #
-############################################
+#############################################
+#  PrintInt                                 #
+#  $a0    =    valor inteiro                #
+#  $a1    =    x                            #
+#  $a2    =    y                            #
+#############################################
 
 printInt:
     addi    $sp, $sp, -4                # salva $ra
@@ -773,12 +776,12 @@ PrintIntPop:
 
 
 
-#################################
-#  PrintSring                   #
-#  $a0    =  endereco da string   #
-#  $a1    =  x                    #
-#  $a2    =  y                    #
-#################################
+#####################################
+#  PrintSring                       #
+#  $a0    =  endereco da string     #
+#  $a1    =  x                      #
+#  $a2    =  y                      #
+#####################################
 
 printString:
     addi    $sp, $sp, -4                # salva $ra
@@ -836,21 +839,21 @@ EndForPrintString:
     jr      $ra                         # fim printString
 
 
-#######################################################
-#  PrintChar                                          #
-#  $a0 = char(ASCII)                                  #
-#  $a1 = x                                            #
-#  $a2 = y                                            #
-#######################################################
-#$t0 = i
-#$t1 = j
-#$t2 = endereco do char na memoria
-#$t3 = metade do char (2a e depois 1a)
-#$t4 = endereco para impressao
-#$t5 = background color
-#$t6 = foreground color
-#$t7 = 2
-#######################################################
+#########################################################
+#  PrintChar                                            #
+#  $a0 = char(ASCII)                                    #
+#  $a1 = x                                              #
+#  $a2 = y                                              #
+#########################################################
+#   $t0 = i                                             #
+#   $t1 = j                                             #
+#   $t2 = endereco do char na memoria                   #
+#   $t3 = metade do char (2a e depois 1a)               #
+#   $t4 = endereco para impressao                       #
+#   $t5 = background color                              #
+#   $t6 = foreground color                              #
+#   $t7 = 2                                             #
+#########################################################
 
 #printChar:    andi $t5,$a3,0xFF00                # cor fundo
 #        andi $t6,$a3,0x00FF                # cor frente
@@ -1023,9 +1026,9 @@ GetPlot:
 
 
 #########################
-#    ReadChar    #
-# $v0 = valor do char    #
-#            #
+#    ReadChar           #
+# $v0 = valor do char   #
+#                       #
 #########################
 
 
@@ -1153,9 +1156,9 @@ ReadCharEnd:
     jr      $ra
 
 #########################
-#    ReadInt        #
+#    ReadInt            #
 # $v0 = valor do inteiro#
-#            #
+#                       #
 #########################
 
 #iniciando variaveis
@@ -1278,10 +1281,10 @@ fimReadInt2:
     jr      $ra                         # fim readInt
 
 #########################
-#    ReadString    #
-# $a0 = end Inicio    #
-# $a1 = tam Max String    #
-#            #
+#    ReadString         #
+# $a0 = end Inicio      #
+# $a1 = tam Max String  #
+#                       #
 #########################
 
 readString:
@@ -1567,10 +1570,10 @@ Melody:
     nop
 
 #################################
-#    InKey            #
-# $v0 = primeira tecla         #
-# $v1 = ultima tecla         #
-#                #
+#    InKey                      #
+# $v0 = primeira tecla          #
+# $v1 = ultima tecla            #
+#                               #
 #################################
 
 #iniciando variaveis
@@ -1590,7 +1593,7 @@ inKey:
 
 #leitura inical do buffer
     lw      $t8, 0($t0)                 # buffer inicial
-    lw      $t9, 0 ($t1)                # buffer inicial
+    lw      $t9, 0($t1)                 # buffer inicial
 
 loopInKey:
     lw      $t2, 0($t0)
@@ -1677,9 +1680,9 @@ Endt3:
 
 
 #################################
-#    Pop event        #
-#  $v0 = sucesso ? 1 : 0    #
-#  $v1 = evento            #
+#    Pop event                  #
+#  $v0 = sucesso ? 1 : 0        #
+#  $v1 = evento                 #
 #################################
 
 popEvent:
@@ -1718,11 +1721,11 @@ popEventEnd:
 
 
 
-#########################
-# printFloat            #
-# coloca bo FloatBuffer
-# a string do float em $f12 #
-#########################
+#################################
+# printFloat                    #
+# coloca bo FloatBuffer         #
+# a string do float em $f12     #
+#################################
 #Primeira etapa: obter mantissa em base 10 e expoente
 printFloat:
     li      $t0, 0x7F800000
@@ -2529,9 +2532,9 @@ endlb:
 ############################################
 
 sdRead:
-    la      $s0, 0xFFFF0250                 # SD_INTERFACE_ADDR Address
-    la      $s2, 0xFFFF0254                 # SD_INTERFACE_CTRL Address
-    la      $s3, 0xFFFF0255                 # SD_INTERFACE_DATA Address
+    la      $s0, SD_INTERFACE_ADDR          # SD_INTERFACE_ADDR Address
+    la      $s2, SD_INTERFACE_CTRL          # SD_INTERFACE_CTRL Address
+    la      $s3, SD_INTERFACE_DATA          # SD_INTERFACE_DATA Address
     li      $t1, 1                          # Comparador de bytes a serem lidos
 sdBusy:
     lbu     $s1, 0($s2)                     # $s1 = SDCtrl
