@@ -49,29 +49,35 @@ if (iBControlSignal == 1)
 					oLink = 1'b0;
 				end
 			OPCBGTZ:
-				case (RTZERO)
-					begin
-						oBranch = iA > ZERO;
-						oLink = 1'b0;
-					end
-				default: 
-					begin
-						oBranch = 1'b0;
-						oLink = 1'b0;
-					end
-				endcase
+				begin
+					case (iRt)
+						RTZERO:
+							begin
+								oBranch = iA > ZERO;
+								oLink = 1'b0;
+							end
+						default: 
+							begin
+								oBranch = 1'b0;
+								oLink = 1'b0;
+							end
+						endcase
+				end
 			OPCBLEZ:
-				case (RTZERO)
-					begin
-						oBranch = iA <= ZERO;
-						oLink = 1'b0;
-					end
-				default: 
-					begin
-						oBranch = 1'b0;
-						oLink = 1'b0;
-					end
-				endcase
+				begin
+					case (iRt)
+						RTZERO:
+							begin
+								oBranch = iA <= ZERO;
+								oLink = 1'b0;
+							end
+						default: 
+							begin
+								oBranch = 1'b0;
+								oLink = 1'b0;
+							end
+					endcase
+				end
 			OPCBGE_LTZ:
 				begin
 					case (iRt)
@@ -120,3 +126,4 @@ else
 		endcase
 	end
 end
+endmodule
