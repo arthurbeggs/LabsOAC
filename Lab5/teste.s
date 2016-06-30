@@ -1,7 +1,7 @@
 ##
 # Test Rountine for MIPS 3.3 PUM
-# Laboratorio 4
-# /Version      0.3 - Printing on screen
+# Laboratorio 5
+# /Version      0.31 - Nop added to Prevent Branch Hazzards
 # /Authors      Rafael
 ##
 
@@ -180,6 +180,8 @@ test.beq:
     addi    $t0,$0,1
     addi    $t1,$0,1
     beq     $t0,$t1,test.bne
+    nop
+    nop
     jal     error
 
 test.bne:
@@ -187,42 +189,56 @@ test.bne:
     addi    $t0,$0,1
     addi    $t1,$0,2
     bne     $t0,$t1,end.test.branch    # Jump to the end of the test
+    nop
+    nop
     jal     error
 
 test.bgez:
     printinti 3,40,30
     addi    $t0,$0,1
     bgez    $t0,test.bgezal
+    nop
+    nop
     jal     error
 
 test.bgezal:
     printinti 4,50,30
     addi    $t0,$0,1
     bgezal  $t0,test.bgtz
+    nop
+    nop
     jal     error
 
 test.bgtz:
     printinti 5,60,30
     addi    $t0,$0,1
     bgtz    $t0,test.blez
+    nop
+    nop
     jal     error
 
 test.blez:
     printinti 6,70,30
     addi    $t0,$0,-1
     blez    $t0,test.bltz
+    nop
+    nop
     jal     error
 
 test.bltz:
     printinti 7,80,30
     addi    $t0,$0,-1
     bltz    $t0,test.bltzal
+    nop
+    nop
     jal     error
 
 test.bltzal:
     printinti 8,90,30
     addi    $t0,$0,-1
     bltzal  $t0,end.test.branch
+    nop
+    nop
     jal     error
 
 end.test.branch:
@@ -241,6 +257,8 @@ test.alu.add:
     printint $s7,20,80
     addi    $a0,$0,3        # Expected Value
     beq     $s7,$a0,test.alu.sub
+    nop
+    nop
     jal     error
 
 test.alu.sub:
@@ -248,6 +266,8 @@ test.alu.sub:
     printint $s7,30,80
     addi    $a0,$0,7        # Expected Value
     beq     $s7,$a0,test.alu.addiu
+    nop
+    nop
     jal     error
 
 test.alu.addiu:
@@ -258,6 +278,8 @@ test.alu.addiu:
     printint $s7,40,80
     addi    $a0,$0,8        # Expected Value
     beq     $s7,$a0,test.alu.subu
+    nop
+    nop
     jal     error
 
 test.alu.subu:
@@ -265,6 +287,8 @@ test.alu.subu:
     printint $s7,50,80
     addi    $a0,$0,2        # Expect7ed Value
     beq     $s7,$a0,test.alu.and
+    nop
+    nop
     jal     error
 
 test.alu.and:
@@ -272,6 +296,8 @@ test.alu.and:
     printint $s7,60,80
     addi    $a0,$0,1        # Expected Value
     beq     $s7,$a0,test.alu.or
+    nop
+    nop
     jal     error
 
 test.alu.or:
@@ -279,6 +305,8 @@ test.alu.or:
     printint $s7,70,80
     addi    $a0,$0,7        # Expected Value
     beq     $s7,$a0,test.alu.xor
+    nop
+    nop
     jal     error
 
 test.alu.xor:
@@ -286,22 +314,28 @@ test.alu.xor:
     printint $s7,80,80
     addi    $a0,$0,6        # Expected Value
     beq     $s7,$a0,test.alu.nor
+    nop
+    nop
     jal     error
 
 test.alu.nor:
     nor     $s7,$t0,$t1     # Nor
     printint $s7,90,80
     # Expected Value = 0
-    beq     $s7,$0,test.alu.mul
+    beq     $s7,$0,test.alu.mtl
+    nop
+    nop
     jal     error
 
-test.alu.mul:
+test.alu.mult:
     addi    $a0,$0,5
     addi    $a1,$0,2
-    mul     $s7,$a0,$a1
+    mult    $a0,$a1
     printint $s7,20,90
     addi    $t0,$0,10
     beq     $s7,$t0,test.alu.mth
+    nop
+    nop
     jal     error
 
 test.alu.mth:
@@ -310,6 +344,8 @@ test.alu.mth:
     mfhi    $s1
     printint $s1,50,90
     beq     $s0,$s1,test.alu.mtl
+    nop
+    nop
     jal     error
 
 test.alu.mtl:
@@ -318,6 +354,8 @@ test.alu.mtl:
     mflo    $s1
     printint $s1,60,90
     beq     $s0,$s1,test.alu.div
+    nop
+    nop
     jal     error
 
 test.alu.div:
@@ -329,6 +367,8 @@ test.alu.div:
     printint $s0,80,90
     printint $s1,90,90
     beq     $s0,$s1,test.syscall
+    nop
+    nop
     jal     error
 
 test.alu.sll:
@@ -337,6 +377,8 @@ test.alu.sll:
     printint $s7,20,100
     addi    $a0,$0,31        # Expected Value
     beq     $s7,$a0,test.alu.srl
+    nop
+    nop
     jal     error
 
 test.alu.srl:
@@ -345,6 +387,8 @@ test.alu.srl:
     printint $s7,30,100
     addi    $a0,$0,7         # Expected Value
     beq     $s7,$a0,error
+    nop
+    nop
 
     sra     $s7,$t5,2
 
@@ -416,6 +460,8 @@ clearscreen.L1:
     addi   $t0,$t0,4         # Jump to next pixel
     slt    $t7,$t0,$t9
     beq    $t7,$0,clearscreen.L1
+    nop
+    nop
 end.clearscreen.L1:
     jr     $ra
 
