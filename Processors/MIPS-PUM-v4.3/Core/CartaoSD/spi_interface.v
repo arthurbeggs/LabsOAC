@@ -33,7 +33,7 @@ sd_controller sd1(
     .idleSD(SDCtrl)
 );
 
-sd_buffer SDMemBuffer(
+sd_buffer SDMemBuffer(          // TODO: Implementar controle de endereço de leitura, endereço de escrita e interfacear os dados lidos com o barramento
     .data(SDData),
 	.rdaddress(),
 	.rdclock(iCLK),

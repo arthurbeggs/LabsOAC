@@ -249,7 +249,7 @@ begin
                             if (bit_counter = 0) then
                                 state           <= return_state;
                                 if (byte_counter > 0) then              -- NOTE: Seleciona somente bytes de dado
-                                    dout            <= dout(23 downto 0) & recv_data(6 downto 0) & miso;
+                                    dout            <= recv_data(6 downto 0) & miso & dout(31 downto 8);
                                     if (full_word_counter = 3) then
                                         full_word_counter   := 0;
                                         word_received       <= '1';
