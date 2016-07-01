@@ -16,22 +16,22 @@ use ieee.numeric_std.all;
 
 entity sd_controller is
 port (
-    cs          : out   std_logic;
-    mosi        : out   std_logic;
-    miso        : in    std_logic;
-    sclk        : out   std_logic;
+    cs          : out       std_logic;
+    mosi        : out       std_logic;
+    miso        : in        std_logic;
+    sclk        : out       std_logic;
 
-    rd          : in    std_logic;
-    wr          : in    std_logic;
-    dm_in       : in    std_logic;                      -- data mode, 0 = write continuously, 1 = write single block
-    reset       : in    std_logic;
-    din         : in    std_logic_vector(7 downto 0);
-    dout        : out   std_logic_vector(31 downto 0);
-    address     : in    std_logic_vector(31 downto 0);  -- Endereço do byte a ser lido
-    iCLK        : in    std_logic;                      -- twice the SPI clk
-    oSDMemClk   : out   std_logic;
-    wordReady   : out   std_logic;
-    idleSD      : out   std_logic_vector(3 downto 0)    -- Indica se o controlador está pronto para realizar uma nova leitura. idleSD ? BUSY : READY
+    rd          : in        std_logic;
+    wr          : in        std_logic;
+    dm_in       : in        std_logic;                      -- data mode, 0 = write continuously, 1 = write single block
+    reset       : in        std_logic;
+    din         : in        std_logic_vector(7 downto 0);
+    dout        : buffer    std_logic_vector(31 downto 0);
+    address     : in        std_logic_vector(31 downto 0);  -- Endereço do byte a ser lido
+    iCLK        : in        std_logic;                      -- twice the SPI clk
+    oSDMemClk   : out       std_logic;
+    wordReady   : out       std_logic;
+    idleSD      : out       std_logic_vector(3 downto 0)    -- Indica se o controlador está pronto para realizar uma nova leitura. idleSD ? BUSY : READY
 );
 
 end sd_controller;

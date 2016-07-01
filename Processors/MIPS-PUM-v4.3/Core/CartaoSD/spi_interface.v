@@ -33,22 +33,24 @@ sd_controller sd1(
     .idleSD(SDCtrl)
 );
 
-sd_buffer SDMemBuffer(          // TODO: Implementar controle de endereço de leitura, endereço de escrita e interfacear os dados lidos com o barramento
+sd_buffer SDMemBuffer(
     .data(SDData),
-	.rdaddress(),
-	.rdclock(iCLK),
-	.wraddress(),
+	.rdaddress(rdSDMemAddr),
+	.rdclock(iCLK_50),
+	.wraddress(wrSDMemAddr),
 	.wrclock(wSDMemClk),
 	.wren(wSDMemEnable),
-	.q()
+	.q(oBufferData)
 );
 
 
 reg  [31:0] SDAddress;
-wire [31:0] SDData;
+wire [31:0] SDData, oBufferData;
+reg  [6:0]  rdSDMemAddr, wrSDMemAddr;
 wire [3:0]  SDCtrl;             // [SDCtrl ? BUSY : READY]
 reg         SDReadEnable;
 wire        wSDMemClk, wSDMemEnable;
+
 
 always @ (posedge iCLK)
 begin
@@ -59,24 +61,49 @@ begin
     end
 end
 
+
 always @ (posedge iCLK)
 begin
     if (SDCtrl == 4'h8 || SDCtrl == 4'h9 || SDCtrl == 4'hA || SDCtrl == 4'hB)
-        SDReadEnable    = 1'b0;
+        SDReadEnable    <= 1'b0;
     else if (wAddress == SD_INTERFACE_ADDR && SDCtrl == 4'h0)
-        SDReadEnable    = 1'b1;
+        SDReadEnable    <= 1'b1;
 end
+
 
 always @ (*)
 begin
     if (wReadEnable)
     begin
-        if (wAddress == SD_INTERFACE_DATA   ||  wAddress == SD_INTERFACE_CTRL)
-            wReadData       = {16'b0, SDData, 4'b0, SDCtrl};
+        if (wAddress == SD_INTERFACE_CTRL)
+            wReadData       = {24'b0, SDCtrl};
+
+        else if (wAddress >= BEGINNING_SD_BUFFER  && wAddress <= END_SD_BUFFER)
+            wReadData       = oBufferData;
+
         else
             wReadData       = 32'hzzzzzzzz;
     end
     else    wReadData       = 32'hzzzzzzzz;
+end
+
+// TODO: Calcular endereço de escrita no buffer
+always @(negedge wSDMemEnable)
+begin
+    wrSDMemAddr     <= wrSDMemAddr + 1'b1;
+    if (wrSDMemAddr == 7'b1111111 || SDReadEnable == 1'b1)
+        wrSDMemAddr     <= 7'b0000000;
+end
+
+
+// Calcula endereço de leitura do buffer
+always @(posedge iCLK_50)
+begin
+    if (wReadEnable)
+    begin
+        if (wAddress >= BEGINNING_SD_BUFFER  &&  wAddress <= END_SD_BUFFER)
+            rdSDMemAddr     <= wAddress[8:2] - 7'b0010100;          // Offset
+    end
 end
 
 endmodule

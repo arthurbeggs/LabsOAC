@@ -28,7 +28,7 @@ parameter
     OPDIVU      = 5'b10100,             //20
     OPMTHI      = 5'b10101,             //21        2015/1
     OPMTLO      = 5'b10110,             //22        2015/1
-    OPSGT       = 5'b10111,             //23			 2016/1
+    OPSGT       = 5'b10111,             //23        2016/1
 
 /* Operacoes da ULA FP */
     OPADDS      = 4'b0001,
@@ -124,7 +124,7 @@ parameter
     RTBGEZAL    = 5'b10001,
     RTBLTZ      = 5'b00000,
     RTBLTZAL    = 5'b10000,
-	 RTZERO		 = 5'B00000, 
+    RTZERO      = 5'B00000,
 
 /* Campo FMT */
     FMTS        = 5'h10,
@@ -226,9 +226,10 @@ parameter
     MUSIC_ADDRESS               = 32'hFFFF0210,         // Endereco para uso do Controlador do sintetizador
     PAUSE_ADDRESS               = 32'hFFFF0214,
 
-    SD_INTERFACE_ADDR           = 32'hFFFF0250,         // Endereço do cartão SD a ser lido [4 bytes]
+    BEGINNING_SD_BUFFER         = 32'hFFFF0250,         // Início do buffer de leitura do cartão SD [512 bytes]
+    END_SD_BUFFER               = 32'hFFFF044C,
+    SD_INTERFACE_ADDR           = 32'hFFFF0450,         // Endereço do cartão SD a ser lido [4 bytes]
     SD_INTERFACE_CTRL           = 32'hFFFF0254,         // Informações de controle da interface do cartão SD [1 byte]
-    SD_INTERFACE_DATA           = 32'hFFFF0255,         // Dados lidos do cartão SD [1 byte]
 
 /* STATES ************************************************************************************************************/
     FETCH           = 6'd0,
@@ -284,11 +285,11 @@ parameter
     STATE_LHU       = 6'd52,
     STATE_SB        = 6'd53,
     STATE_SH        = 6'd54,
-	 
-	 //Adicionados em 1/2016
-	 BGEZ				  	= 6'd55,
-	 BGEZAL				= 6'd56,
-	 BLTZ				  	= 6'd57,
-	 BLTZAL				= 6'd58,
-	 BGTZ					= 6'd59,
-	 BLEZ					= 6'd60;
+
+     //Adicionados em 1/2016
+     BGEZ                      = 6'd55,
+     BGEZAL                = 6'd56,
+     BLTZ                      = 6'd57,
+     BLTZAL                = 6'd58,
+     BGTZ                    = 6'd59,
+     BLEZ                    = 6'd60;
