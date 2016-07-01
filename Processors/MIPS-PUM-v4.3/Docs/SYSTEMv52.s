@@ -15,9 +15,10 @@
 .eqv AudioOUTR          0xFFFF000c
 .eqv AudioCTRL1         0xFFFF0010
 .eqv AudioCTRL2         0xFFFF0014
-.eqv SD_INTERFACE_ADDR  0xFFFF0250
+.eqv SD_BUFFER_INI      0xFFFF0250
+.eqv SD_BUFFER_END      0xFFFF044C
+.eqv SD_INTERFACE_ADDR  0xFFFF0450
 .eqv SD_INTERFACE_CTRL  0xFFFF0254
-.eqv SD_INTERFACE_DATA  0xFFFF0255
 
 # Sintetizador - 2015/1
 
@@ -2526,46 +2527,44 @@ endlb:
 ############################################
 #  SD Card Read                            #                                    //TODO: Colocar nop's para garantir o funcionamento com o pipeline. DONE
 #  $a0    =    Origem Addr                 #                                    //TODO: Implementar identificação de falha na leitura do cartão.
-#  $a1    =    Destino Addr                #
-#  $a2    =    Quantidade de Bytes         #
+#  $a1    =    Destino Addr                #                                    //TODO: Reescrever procedimento para funcionar com o buffer
+#  $a2    =    Quantidade de Bytes         #                                    //NOTE: $a2 deve ser uma quantidade de bytes alinhada em words
 #  $v0    =    Sucesso? 0 : 1              #
 ############################################
 
 sdRead:
-    la      $s0, SD_INTERFACE_ADDR          # SD_INTERFACE_ADDR Address
-    la      $s2, SD_INTERFACE_CTRL          # SD_INTERFACE_CTRL Address
-    la      $s3, SD_INTERFACE_DATA          # SD_INTERFACE_DATA Address
-    li      $t1, 1                          # Comparador de bytes a serem lidos
+    la      $s0, SD_INTERFACE_ADDR
+    la      $s1, SD_INTERFACE_CTRL
+    la      $s2, SD_BUFFER_INI
+    li      $t0, 512                        # Tamanho do buffer em bytes
+
 sdBusy:
-    lbu     $s1, 0($s2)                     # $s1 = SDCtrl
-    nop
-    bne     $s1, $zero, sdBusy              # $s1 ? BUSY : IDLE
-    nop
-sdLoop:
-    slt     $t2, $a2, $t1                   # ($a2 < 1) ? 1 : 0
-    nop
-    nop
-    bne     $t2, $zero, sdFim               # Se a qtd de bytes a serem lidos < 1, finaliza a leitura
-    nop
+    lbu     $t1, 0($s1)                     # $t1 = SDCtrl
+    bne     $t1, $zero, sdBusy              # $t1 ? BUSY : READY
 
-sdReadRoutine:
+sdReadSector:
     sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0
-sdWait:
-    lbu     $s1, 0($s2)                     # $s1 = SDCtrl
-    nop
-    nop
-    bne     $s1, $zero, sdWait              # $s1 ? BUSY : IDLE
-    nop
-sdDataReady:
-    lbu     $t0, 0($s3)                     # $t0 recebe byte lido do cartão SD
-    sb      $t0, 0($a1)                     # Byte lido é salvo no endereço desejado
 
-sdNextAddr:
-    addi    $a2, $a2, -1                    # Subtrai 1 dos bytes a serem lidos
-    addi    $a0, $a0, 1                     # Próximo endereço de origem
-    addi    $a1, $a1, 1                     # Próximo endereço de destino
-    j       sdLoop                          # Realiza próxima leitura
-    nop
+sdWaitRead:
+    lbu     $t1, 0($s1)                     # $t1 = SDCtrl
+    bne     $t1, $zero, sdWaitRead          # $t1 ? BUSY : READY
+
+    move    $t1, $zero                      # Contador de bytes lidos de um setor
+sdDataReady:
+    lw      $t2, 0($s2)                     # Lê word do buffer
+    sw      $t2, 0($a1)                     # Salva word no destino
+    addi    $s2, $s2, 4                     # Incrementa endereço do buffer
+    addi    $a1, $a1, 4                     # Incrementa endereço de destino
+    addi    $t1, $t1, 4                     # Incrementa contador de bytes lidos no setor
+    addi    $a2, $a2, -4                    # Subtrai em 4 a quantidade de bytes a serem lidos
+    bne     $t1, $t0, sdDataReady           # Se $t1 < 512 lê próxima word
+
+    slti    $t2, $a2, 1                     # Testa se já leu todos os bytes desejados
+    bne     $t2, $zero, sdFim               # Finaliza o syscall
+
+    addi    $a0, $a0, 512                   # Define endereço do próximo setor
+    la      $s2, SD_BUFFER_INI              # Coloca o endereçamento do buffer na posição inicial
+    j       sdReadSector
 
 sdFim:
     li      $v0, 0                          # Sucesso na transferência.         NOTE: Hardcoded. Um teste de falha deve ser implementado.

@@ -31,7 +31,7 @@
 #                                                                               #
 #################################################################################
 
-.eqv SD_DATA_ADDR 0x003D0001            # GBA_24b_bit.txt com header. Addr = Offset + (137 * 512) = Offset + 0x00011200 (defasagem de setores lógicos/físicos * tamanho do setor)
+.eqv SD_DATA_ADDR 0x00000000            # GBA_24b_bit.txt com header. Addr = Offset + (137 * 512) = Offset + 0x00011200 (defasagem de setores lógicos/físicos * tamanho do setor)
 .eqv VGA_INI_ADDR 0xFF000000
 .eqv VGA_QTD_BYTE 76800                 # VGA Bytes
 
