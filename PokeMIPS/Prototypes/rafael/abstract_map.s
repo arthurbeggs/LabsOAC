@@ -6,11 +6,9 @@
 ##
 
 ##
-# Constants - 
+# Constansts and Macros stored at utils
 ##
-.eqv  CURRENT_STATE $s0
-
-.include "utils.s"
+#.include "utils.s"
 
 ##
 # State Machine
