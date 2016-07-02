@@ -41,13 +41,15 @@
     .text
 main:
     la      $a0, SD_DATA_ADDR
-    # la      $a1, USER_DATA
+    # la      $a1, USER_DATA              # Usado para verificação dos dados lidos
     la      $a1, VGA_INI_ADDR
     la      $a2, VGA_QTD_BYTE
 
     li      $v0, 49                     # Syscall 49 - SD Card Read
     syscall
-#
+
+
+## Usado para verificar os dados lidos usando o In System Memory Content Editor
 #     la      $t0, VGA_INI_ADDR
 #     la      $t1, USER_DATA
 #     li      $t3, VGA_QTD_BYTE

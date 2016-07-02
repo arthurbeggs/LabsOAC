@@ -38,7 +38,7 @@ sd_buffer SDMemBuffer(
 	.rdaddress(rdSDMemAddr),
 	.rdclock(iCLK_50),
 	.wraddress(wrSDMemAddr),
-	.wrclock(wSDMemClk),
+	.wrclock(wSDMemClk),                       //NOTE: Tentar mudar pra iCLK_50 caso o CLKAutoFast continuar bugado
 	.wren(wSDMemEnable),
 	.q(oBufferData)
 );
@@ -46,12 +46,14 @@ sd_buffer SDMemBuffer(
 
 reg  [31:0] SDAddress;
 wire [31:0] SDData, oBufferData;
-reg  [6:0]  rdSDMemAddr, wrSDMemAddr;
+reg  [6:0]  wrSDMemAddr;
+wire [6:0]  rdSDMemAddr;
 wire [3:0]  SDCtrl;             // [SDCtrl ? BUSY : READY]
 reg         SDReadEnable;
 wire        wSDMemClk, wSDMemEnable;
 
 
+// Envia endereço do cartão a ser lido para o Controlador
 always @ (posedge iCLK)
 begin
     if (wWriteEnable)
@@ -62,6 +64,7 @@ begin
 end
 
 
+// Inicia a leitura do cartão
 always @ (posedge iCLK)
 begin
     if (SDCtrl == 4'h8 || SDCtrl == 4'h9 || SDCtrl == 4'hA || SDCtrl == 4'hB)
@@ -71,6 +74,7 @@ begin
 end
 
 
+// Define a saída do barramento
 always @ (*)
 begin
     if (wReadEnable)
@@ -87,8 +91,8 @@ begin
     else    wReadData       = 32'hzzzzzzzz;
 end
 
-// TODO: Calcular endereço de escrita no buffer
-always @(posedge wSDMemClk)
+// Calcula endereço de escrita no buffer
+always @(posedge wSDMemClk)                     // NOTE: 25 MHz; Tentar mudar pra iCLK_50 caso continue dando problema
 begin
     if (Reset == 1'b1)
         wrSDMemAddr     <= 7'b0000000;
@@ -103,13 +107,17 @@ end
 
 
 // Calcula endereço de leitura do buffer
-always @(posedge iCLK_50)
+always @(*)
 begin
     if (wReadEnable)
     begin
         if (wAddress >= BEGINNING_SD_BUFFER  &&  wAddress <= END_SD_BUFFER)
-            rdSDMemAddr     <= wAddress[8:2] - 7'b0010100;          // Offset
+            rdSDMemAddr      = wAddress[8:2] - 7'b0010100;          // Offset
+        else
+            rdSDMemAddr      = 7'b0000000;
     end
+    else
+        rdSDMemAddr      = 7'b0000000;
 end
 
 endmodule

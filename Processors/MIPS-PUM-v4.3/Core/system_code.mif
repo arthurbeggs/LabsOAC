@@ -1713,30 +1713,26 @@ BEGIN
 000006a9 : 34310454;  % 2537:  %
 000006aa : 3c01ffff;  % 2538:     la      $s2, 0xFFFF0250 %
 000006ab : 34320250;  % 2538:  %
-000006ac : 24080200;  % 2539:     li      $t0, 512                        # Tamanho do buffer em bytes %
-000006ad : 92290000;  % 2542:     lbu     $t1, 0($s1)                     # $t1 = SDCtrl %
-000006ae : 1520fffe;  % 2543:     bne     $t1, $zero, sdBusy              # $t1 ? BUSY : READY %
-000006af : ae040000;  % 2546:     sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0 %
-000006b0 : 00000000;  % 2547:     nop                                     # HACK: Talvez o problema seja aqui... %
-000006b1 : 00000000;  % 2548:     nop %
-000006b2 : 92290000;  % 2551:     lbu     $t1, 0($s1)                     # $t1 = SDCtrl %
-000006b3 : 1520fffe;  % 2552:     bne     $t1, $zero, sdWaitRead          # $t1 ? BUSY : READY %
-000006b4 : 00004821;  % 2554:     move    $t1, $zero                      # Contador de bytes lidos de um setor %
-000006b5 : 8e4a0000;  % 2556:     lw      $t2, 0($s2)                     # Lê word do buffer %
-000006b6 : acaa0000;  % 2557:     sw      $t2, 0($a1)                     # Salva word no destino %
-000006b7 : 22520004;  % 2558:     addi    $s2, $s2, 4                     # Incrementa endereço do buffer %
-000006b8 : 20a50004;  % 2559:     addi    $a1, $a1, 4                     # Incrementa endereço de destino %
-000006b9 : 21290004;  % 2560:     addi    $t1, $t1, 4                     # Incrementa contador de bytes lidos no setor %
-000006ba : 20c6fffc;  % 2561:     addi    $a2, $a2, -4                    # Subtrai em 4 a quantidade de bytes a serem lidos %
-000006bb : 1528fff9;  % 2562:     bne     $t1, $t0, sdDataReady           # Se $t1 < 512 lê próxima word %
-000006bc : 28ca0001;  % 2564:     slti    $t2, $a2, 1                     # Testa se já leu todos os bytes desejados %
-000006bd : 00000000;  % 2565:     nop %
-000006be : 15400004;  % 2566:     bne     $t2, $zero, sdFim               # Finaliza o syscall %
-000006bf : 20840200;  % 2568:     addi    $a0, $a0, 512                   # Define endereço do próximo setor %
-000006c0 : 3c01ffff;  % 2569:     la      $s2, 0xFFFF0250              # Coloca o endereçamento do buffer na posição inicial %
-000006c1 : 34320250;  % 2569:  %
-000006c2 : 080006af;  % 2570:     j       sdReadSector %
-000006c3 : 24020000;  % 2573:     li      $v0, 0                          # Sucesso na transferência.         NOTE: Hardcoded. Um teste de falha deve ser implementado. %
-000006c4 : 03e00008;  % 2574:     jr      $ra %
+000006ac : 92290000;  % 2541:     lbu     $t1, 0($s1)                     # $t1 = SDCtrl %
+000006ad : 1520fffe;  % 2542:     bne     $t1, $zero, sdBusy              # $t1 ? BUSY : READY %
+000006ae : ae040000;  % 2545:     sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0 %
+000006af : 00000000;  % 2546:     nop %
+000006b0 : 92290000;  % 2549:     lbu     $t1, 0($s1)                     # $t1 = SDCtrl %
+000006b1 : 1520fffe;  % 2550:     bne     $t1, $zero, sdWaitRead          # $t1 ? BUSY : READY %
+000006b2 : 24080200;  % 2552:     li      $t0, 512                        # Tamanho do buffer em bytes %
+000006b3 : 8e4a0000;  % 2555:     lw      $t2, 0($s2)                     # Lê word do buffer %
+000006b4 : acaa0000;  % 2556:     sw      $t2, 0($a1)                     # Salva word no destino %
+000006b5 : 22520004;  % 2557:     addi    $s2, $s2, 4                     # Incrementa endereço do buffer %
+000006b6 : 20a50004;  % 2558:     addi    $a1, $a1, 4                     # Incrementa endereço de destino %
+000006b7 : 20c6fffc;  % 2559:     addi    $a2, $a2, -4                    # Decrementa quantidade de bytes a serem lidos %
+000006b8 : 2108fffc;  % 2560:     addi    $t0, $t0, -4                    # Decrementa contador de bytes lidos no setor %
+000006b9 : 10c00005;  % 2561:     beq     $a2, $zero, sdFim               # Se leu todos os bytes desejados, finaliza %
+000006ba : 1500fff8;  % 2562:     bne     $t0, $zero, sdDataReady         # Lê próxima word %
+000006bb : 20840200;  % 2564:     addi    $a0, $a0, 512                   # Define endereço do próximo setor %
+000006bc : 3c01ffff;  % 2565:     la      $s2, 0xFFFF0250              # Coloca o endereçamento do buffer na posição inicial %
+000006bd : 34320250;  % 2565:  %
+000006be : 080006ae;  % 2566:     j       sdReadSector %
+000006bf : 24020000;  % 2569:     li      $v0, 0                          # Sucesso na transferência.         NOTE: Hardcoded. Um teste de falha deve ser implementado. %
+000006c0 : 03e00008;  % 2570:     jr      $ra %
 
 END;
