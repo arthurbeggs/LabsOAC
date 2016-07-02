@@ -78,7 +78,7 @@ begin
         if (wAddress == SD_INTERFACE_CTRL)
             wReadData       = {24'b0, SDCtrl};
 
-        else if (wAddress >= BEGINNING_SD_BUFFER  && wAddress <= END_SD_BUFFER)
+        else if (wAddress >= BEGINNING_SD_BUFFER  &&  wAddress <= END_SD_BUFFER)
             wReadData       = oBufferData;
 
         else
@@ -88,11 +88,17 @@ begin
 end
 
 // TODO: Calcular endereço de escrita no buffer
-always @(negedge wSDMemEnable)
+always @(posedge wSDMemClk)
 begin
-    wrSDMemAddr     <= wrSDMemAddr + 1'b1;
-    if (wrSDMemAddr == 7'b1111111 || SDReadEnable == 1'b1)
+    if (Reset == 1'b1)
         wrSDMemAddr     <= 7'b0000000;
+    else if (wSDMemEnable)
+    begin
+        if (wrSDMemAddr == 7'b1111111  ||  Reset == 1'b1)
+            wrSDMemAddr     <= 7'b0000000;
+        else
+            wrSDMemAddr     <= wrSDMemAddr + 1'b1;
+    end
 end
 
 

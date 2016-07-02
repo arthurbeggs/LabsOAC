@@ -229,7 +229,7 @@ parameter
     BEGINNING_SD_BUFFER         = 32'hFFFF0250,         // Início do buffer de leitura do cartão SD [512 bytes]
     END_SD_BUFFER               = 32'hFFFF044C,
     SD_INTERFACE_ADDR           = 32'hFFFF0450,         // Endereço do cartão SD a ser lido [4 bytes]
-    SD_INTERFACE_CTRL           = 32'hFFFF0254,         // Informações de controle da interface do cartão SD [1 byte]
+    SD_INTERFACE_CTRL           = 32'hFFFF0454,         // Informações de controle da interface do cartão SD [1 byte]
 
 /* STATES ************************************************************************************************************/
     FETCH           = 6'd0,

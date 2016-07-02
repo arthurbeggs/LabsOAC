@@ -18,7 +18,7 @@
 .eqv SD_BUFFER_INI      0xFFFF0250
 .eqv SD_BUFFER_END      0xFFFF044C
 .eqv SD_INTERFACE_ADDR  0xFFFF0450
-.eqv SD_INTERFACE_CTRL  0xFFFF0254
+.eqv SD_INTERFACE_CTRL  0xFFFF0454
 
 # Sintetizador - 2015/1
 
@@ -2527,7 +2527,7 @@ endlb:
 ############################################
 #  SD Card Read                            #                                    //TODO: Colocar nop's para garantir o funcionamento com o pipeline. DONE
 #  $a0    =    Origem Addr                 #                                    //TODO: Implementar identificação de falha na leitura do cartão.
-#  $a1    =    Destino Addr                #                                    //TODO: Reescrever procedimento para funcionar com o buffer
+#  $a1    =    Destino Addr                #                                    //TODO: Reescrever procedimento para funcionar com o buffer. DONE
 #  $a2    =    Quantidade de Bytes         #                                    //NOTE: $a2 deve ser uma quantidade de bytes alinhada em words
 #  $v0    =    Sucesso? 0 : 1              #
 ############################################
@@ -2544,6 +2544,8 @@ sdBusy:
 
 sdReadSector:
     sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0
+    nop                                     # HACK: Talvez o problema seja aqui...
+    nop
 
 sdWaitRead:
     lbu     $t1, 0($s1)                     # $t1 = SDCtrl
@@ -2560,6 +2562,7 @@ sdDataReady:
     bne     $t1, $t0, sdDataReady           # Se $t1 < 512 lê próxima word
 
     slti    $t2, $a2, 1                     # Testa se já leu todos os bytes desejados
+    nop
     bne     $t2, $zero, sdFim               # Finaliza o syscall
 
     addi    $a0, $a0, 512                   # Define endereço do próximo setor
