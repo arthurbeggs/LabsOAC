@@ -2525,9 +2525,9 @@ endlb:
 
 
 ############################################
-#  SD Card Read                            #                                    //TODO: Colocar nop's para garantir o funcionamento com o pipeline. DONE
+#  SD Card Read                            #                                    //TODO: Colocar nop's para garantir o funcionamento com o pipeline.
 #  $a0    =    Origem Addr                 #                                    //TODO: Implementar identificação de falha na leitura do cartão.
-#  $a1    =    Destino Addr                #                                    //TODO: Reescrever procedimento para funcionar com o buffer. DONE
+#  $a1    =    Destino Addr                #
 #  $a2    =    Quantidade de Bytes         #                                    //NOTE: $a2 deve ser uma quantidade de bytes alinhada em words
 #  $v0    =    Sucesso? 0 : 1              #
 ############################################
@@ -2536,7 +2536,6 @@ sdRead:
     la      $s0, SD_INTERFACE_ADDR
     la      $s1, SD_INTERFACE_CTRL
     la      $s2, SD_BUFFER_INI
-    li      $t0, 512                        # Tamanho do buffer em bytes
 
 sdBusy:
     lbu     $t1, 0($s1)                     # $t1 = SDCtrl
@@ -2544,26 +2543,23 @@ sdBusy:
 
 sdReadSector:
     sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0
-    nop                                     # HACK: Talvez o problema seja aqui...
     nop
 
 sdWaitRead:
     lbu     $t1, 0($s1)                     # $t1 = SDCtrl
     bne     $t1, $zero, sdWaitRead          # $t1 ? BUSY : READY
 
-    move    $t1, $zero                      # Contador de bytes lidos de um setor
+    li      $t0, 512                        # Tamanho do buffer em bytes
+
 sdDataReady:
     lw      $t2, 0($s2)                     # Lê word do buffer
     sw      $t2, 0($a1)                     # Salva word no destino
     addi    $s2, $s2, 4                     # Incrementa endereço do buffer
     addi    $a1, $a1, 4                     # Incrementa endereço de destino
-    addi    $t1, $t1, 4                     # Incrementa contador de bytes lidos no setor
-    addi    $a2, $a2, -4                    # Subtrai em 4 a quantidade de bytes a serem lidos
-    bne     $t1, $t0, sdDataReady           # Se $t1 < 512 lê próxima word
-
-    slti    $t2, $a2, 1                     # Testa se já leu todos os bytes desejados
-    nop
-    bne     $t2, $zero, sdFim               # Finaliza o syscall
+    addi    $a2, $a2, -4                    # Decrementa quantidade de bytes a serem lidos
+    addi    $t0, $t0, -4                    # Decrementa contador de bytes lidos no setor
+    beq     $a2, $zero, sdFim               # Se leu todos os bytes desejados, finaliza
+    bne     $t0, $zero, sdDataReady         # Lê próxima word
 
     addi    $a0, $a0, 512                   # Define endereço do próximo setor
     la      $s2, SD_BUFFER_INI              # Coloca o endereçamento do buffer na posição inicial
