@@ -846,29 +846,29 @@ fim_draw_fig:
 	add $t7, %endereçoPokemon, $zero
 	add $t8, %dadosPokemon, $zero
 	add $t9, %background, $zero
-	# "Limpa" tela
+	# "Limpa area onde o nosso pokemon esta na tela
 	addiu $a3, $t9, 23040
 	li $a1, 0x00480000
 	li $a2, 0x002900F0
 	#drawFig $a1, $a2, %background 
 	drawFig $a1, $a2, $a3
 	#Frame 1 Pokemon
-	li $a1, 0x00510030
-	li $a2, 0x00200030
+	li $a1, 0x004c0030
+	li $a2, 0x00240030
 	drawFig $a1, $a2, $t7
 	#Frame 1 Stats
 	li $a1, 0x00480080
 	li $a2, 0x00280064
 	drawFig $a1, $a2, $t8
-	# "Limpa" tela
+	# "Limpa area onde o nosso pokemon esta na tela
 	addiu $a3, $t9, 23040
 	li $a1, 0x00480000
 	li $a2, 0x002900F0
-	#drawFig $a1, $a2, %background #
+	#drawFig $a1, $a2, %background 
 	drawFig $a1, $a2, $a3
 	#Frame 2 Pokemon
-	li $a1, 0x00500030
-	li $a2, 0x00200030
+	li $a1, 0x004b0030
+	li $a2, 0x00240030
 	drawFig $a1, $a2, $t7
 	#Frame 2 Stats
 	li $a1, 0x00490080
@@ -876,10 +876,64 @@ fim_draw_fig:
 	drawFig $a1, $a2, $t8
 .end_macro
 
+.macro cleanAreaPokemon %background
+	addiu $a3, %background, 23040
+	li $a1, 0x00480030
+	li $a2, 0x00010048
+clsLine:drawFig $a1, $a2, $a3 	# "Limpa uma linha onde o nosso pokemon esta na tela
+	addi $a3, $a3, 80	######
+	li $t0, 0x00010000	# Pula para proxima linha
+	add $a1, $a1, $t0	#####
+	li $t0, 0x00700030	# Foram todas as linhas
+	bne $a1, $t0, clsLine	# necessarias?
+.end_macro
+
+.macro drawMyPokemonAttacking %endereçoPokemon, %background
+	add $t7, %endereçoPokemon, $zero
+	add $t9, %background, $zero
+	li $s0, 0x004c0030	#---------
+nextPixelX:
+	cleanAreaPokemon $t9	# "Limpa" tela
+	li $a2, 0x00240030	
+	drawFig $s0, $a2, $t7	# Frame 1 Pokemon
+	addiu $s0, $s0, 4	# Proxima Coluna
+	li $t0, 0x004c0040	# Foram todas as colunas
+	bne $s0, $t0, nextPixelX# necessarias?
+	
+	#Delay forçado###############
+	drawFig $s0, $a2, $t7
+	drawFig $s0, $a2, $t7
+	drawFig $s0, $a2, $t7
+	#############################
+	
+previousPixelX:
+	cleanAreaPokemon $t9	# "Limpa" tela
+	li $a2, 0x00240030	
+	drawFig $s0, $a2, $t7	# Frame 1 Pokemon
+	addiu $s0, $s0, -4	# Volta um Coluna
+	li $t0, 0x004c0030	# Foram todas as colunas
+	bne $s0, $t0, previousPixelX# necessarias?
+.end_macro
+
+.macro drawEnemyPokemonHP %dadosPokemon
+	add $t8, %dadosPokemon, $zero
+	#Frame Stats	
+	li $a1, 0x000E0010
+	li $a2, 0x00200058
+	drawFig $a1, $a2, $t8
+	
+.end_macro
 	
 .text	
-desenha:
-	la $a3, background
 	la $a0, imagem
+	drawEnemyPokemonHP $a0
+	li $a1, 0x000E0094
+	li $a2, 0x00300050
+	drawFig $a1, $a2, $a0
+desenha:
+	la $a0, imagem
+	la $a3, background
 	drawMyPokemonWaiting $a0, $a0, $a3
+	drawMyPokemonWaiting $a0, $a0, $a3
+	drawMyPokemonAttacking $a0, $a3
 FIM1: j desenha
