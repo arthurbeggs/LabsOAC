@@ -15,7 +15,7 @@
 
 ## **Ordem dos Tiles na Memória**
 
-[**Obs:** Tile nº 0 exite, no tileset, mas não é um elemento válido do jogo]
+[**Obs:** Tile nº 0 exite no tileset, mas não é um elemento válido do jogo]
 <!-- Abra com um visualizador de arquivos Markdown para ver as numerações corretas -->
 
 0. bkgPineDenseUL
