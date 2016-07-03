@@ -9,17 +9,26 @@
 ###############################################################################
 .eqv   SCREEN_DIM_X               320
 .eqv   SCREEN_DIM_Y               240
+.eqv   SCREEN_PIXEL0              0xff000000
+.eqv   GBA_SCREEN_DIM_X           240
+.eqv   GBA_SCREEN_DIM_Y           160
+.eqv   GBA_SCREEN_PIXEL0          0xff003228
+.eqv   GBA_SCREEN_X0              40
+.eqv   GBA_SCREEN_Y0              40
+.eqv   TILE_SIZE                  16
 
 # Memory Mapping --------------------------------------------------------------
 .eqv   MEM_SCREEN                 0xff000000
 .eqv   MEM_SCREEN_END             0xff002C00
 
 # Color Codes -----------------------------------------------------------------
-.eqv   COLOR_WHITE                0xFFFFFFFF
-.eqv   COLOR_BLACK                0x00000000
-.eqv   COLOR_BLUE                 0x000000FF
-.eqv   COLOR_PEN                  0x0000F00F
-.eqv   NO_COLOR                   0x11111111  # Invisible Ink (Hardware)
+.eqv   COLOR_WHITE                0xFFFFFF
+.eqv   COLOR_GREEN                0x00FF00
+.eqv   COLOR_BLACK                0x000000
+.eqv   COLOR_RED                  0xFF0000
+.eqv   COLOR_BLUE                 0x70C4CC
+.eqv   COLOR_PEN                  0x00F00F
+.eqv   NO_COLOR                   0x111111  # Invisible Ink (Hardware defined)
 
 # Syscall Codes ---------------------------------------------------------------
 .eqv   SYSCALL_PRINT_INT          101  # 1
@@ -56,6 +65,7 @@
 .end_macro
 
 .macro drawbox %posX,%posY,%sizeX,%sizeY
+    print_rectangle %posX,%posY,%sizeX,%sizeY,COLOR_BLACK
 .end_macro
 
 .macro drawtextbox %posX,%posY,%sizeX,%sizeY,%msg
@@ -105,6 +115,31 @@
      syscall                 # Print Int Value
 .end_macro
 
+.macro print_rectangle %x,%y,%width,%height,%color
+    addi    $a0,$0,%x           # X left top corner
+    addi    $a1,$0,%y   # Y left top corner
+    addi    $v0,$0,%color       # Color
+    
+    addi    $a2,$0,%width       # width
+    addi    $a3,$0,%height      # height
+    jal draw_rectangle
+.end_macro
+
+.macro print_figure %x,%y,%width,%height,%imageAddress
+    addi    $a0,$0,%x           # X left top corner
+    addi    $a1,$0,%y   # Y left top corner
+    la  $v0,%imageAddress       # Color
+    
+    addi    $a2,$0,%width       # width
+    addi    $a3,$0,%height      # height
+    jal draw_figure
+.end_macro
+
+.macro drawGameBoyAdavance
+    print_rectangle 0,0,SCREEN_DIM_X,SCREEN_DIM_Y,COLOR_BLUE
+    print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,GBA_SCREEN_DIM_Y,COLOR_RED
+.end_macro
+
 
 ###############################################################################
 # Scenes State Map
@@ -125,6 +160,7 @@
 # Map
 .eqv   SCENE_MAP                    0x00000003
 .eqv   SCENE_MAP_MENU               0x00010003
+.eqv   SCENE_MAP_BATTLE             0x00010003
 
 # Bag
 .eqv   SCENE_BAG                    0x00000004
@@ -217,10 +253,15 @@ gameInit:
     add     _CURRENT_HERO_STATE,$0,$0
     add     _CURRENT_GAME_STATE,$0,$0
 
+    # Draw GameBoy Advance
+    drawGameBoyAdavance
+
     # Load Images From SD Card
 
     # Load Openning Scene
-    setstate SCENE_OPENING
+    #setstate SCENE_OPENING
+
+    setstate SCENE_MAP
 
     # Load Tile Set from SD Card
 gameLoop:
@@ -238,8 +279,28 @@ gameOver:
 
 # Change Game State
 changeGameState:
-.include "changeGameState.asm" # Default Version
-#.include "changeGameState_magicVersion.asm" # Deep Optimized version
+    # Save $ra
+    add      $s5,$0,$ra
+
+    addi     $a0,$0,SCENE_MAP
+    beq      _CURRENT_GAME_STATE,$a0,sceneMap
+    nop      # For sake of Prevent Branch Harzards
+
+    addi     $a0,$0,SCENE_BATTLE
+    beq      _CURRENT_GAME_STATE,$a0,sceneBattle
+    nop      # For sake of Prevent Branch Harzards
+
+    addi     $a0,$0,SCENE_TUTORIAL
+    beq      _CURRENT_GAME_STATE,$a0,sceneTutorial
+    nop      # For sake of Prevent Branch Harzards
+
+    addi     $a0,$0,SCENE_OPENING
+    beq      _CURRENT_GAME_STATE,$a0,sceneOpening
+    nop      # For sake of Prevent Branch Harzards
+
+    j        gameInit # reset game if find an unknow state 
+finishGameState:
+    jr       $s5
 
 ##
 # States Triguer Procedures
@@ -256,8 +317,8 @@ sceneTutorial:
     jr      $ra
 
 sceneMap:
-#    j       sceneBattleInit
-#    .include "test_battle.asm"
+    j       sceneMapInit
+    .include "test_map.asm"
     jr      $ra
 
 sceneBag:
@@ -271,6 +332,96 @@ sceneBattle:
     jr      $ra
 
 # Auxiliar Procedures ---------------------------------------------------------
+
+##
+# Print a rectangle on the screen
+# 
+# Arguments:
+# $a0 x position
+# $a1 y position
+# $a2 width
+# $a3 height
+# $v0 color (format BBGG.GRRR.bbgg.grrr)
+#
+# Internal use:
+# $s0 x temp position
+# $s1 y temp position
+# $s2 color
+# $t3 counter
+# $t4 address to print
+# $t7 temporary
+# $s3 x end position
+# $s4 y end position
+#
+#
+# @TODO Verify bug : it dont't work well with some jump instruction before
+#                    no working, wrong calc for pixel position
+##
+draw_rectangle:
+    addi $sp, $sp, -52
+    sw $ra, 0($sp)
+    sw $a0, 4($sp)
+    sw $a1, 8($sp)
+    sw $a2, 12($sp)
+    sw $a3, 16($sp)
+    sw $s0, 20($sp)
+    sw $s1, 24($sp)
+    sw $s2, 28($sp)
+    sw $t3, 32($sp)
+    sw $t4, 36($sp)
+    sw $t7, 48($sp)
+    sw $s3, 52($sp)
+    sw $s4, 56($sp)
+
+draw_rectangle.init:
+    add   $s0,$0,$a0  # Start x
+    add   $s1,$0,$a1  # Start y
+    add   $s3,$s0,$a2 # end x
+    add   $s4,$s1,$a3 # end y
+    add   $s2,$0,$v0  # color
+
+draw_rectangle.loopY: 
+draw_rectangle.loopX:
+
+    # Calculate Pixel's Adress:
+    addi  $t3,$0,SCREEN_DIM_X
+    mul   $t3,$t3,$s0
+    add   $t3,$t3,$s1   # X*SCREEN_X + Y
+    sll   $t4,$t3,2
+    add   $t4,$t4,SCREEN_PIXEL0
+
+draw_rectangle.drawPixel:
+    sw    $s2,0($t4)    # Draw a pixel
+
+draw_rectangle.nextPixel:
+    addi  $s0,$s0,1 # X++
+    slt   $t7,$s0,$s3   # lim x
+    bne   $t7,$0,draw_rectangle.loopX
+end.draw_rectangle.loopX:
+    add   $s0,$0,$a0    # X = X0
+    addi  $s1,$s1,1 # Y++
+    slt   $t7,$s1,$s4   # lim y
+    bne   $t7,$0,draw_rectangle.loopY
+end.draw_rectangle.loopY:
+end.draw_rectangle:
+    lw $ra, 0($sp)
+    lw $a0, 4($sp)
+    lw $a1, 8($sp)
+    lw $a2, 12($sp)
+    lw $a3, 16($sp)
+    lw $s0, 20($sp)
+    lw $s1, 24($sp)
+    lw $s2, 28($sp)
+    lw $t3, 32($sp)
+    lw $t4, 36($sp)
+    lw $t7, 48($sp)
+    lw $s3, 52($sp)
+    lw $s4, 56($sp)
+
+    addi $sp, $sp, 52
+    add  $v0,$0,$0
+    jr  $ra
+
 
 ##
 # Print a figure on the screen
@@ -294,7 +445,7 @@ sceneBattle:
 #
 #
 # @TODO Verify bug : it dont't work well with some jump instruction before
-#
+#                    no working, wrong calc for pixel position
 ##
 draw_figure:
     addi $sp, $sp, -52
@@ -321,17 +472,8 @@ draw_figure.init:
 
 draw_figure.loopY: 
 draw_figure.loopX:
-#   slt   $t7,$s0,$0
-#   bne   $t7,$0,draw_figure.nextPixel
-#   slt   $t7,$s1,$0
-#   bne   $t7,$0,draw_figure.nextPixel
-#   slti  $t7,$s0,SCREEN_X
-#   beq   $t7,$0,draw_figure.nextPixel
-#   slti  $t7,$s1,SCREEN_Y
-#   beq   $t7,$0,draw_figure.nextPixel
-
     # Calculate Pixel's Adress:
-    addi  $t3,$0,SCREEN_X
+    addi  $t3,$0,SCREEN_DIM_X
     mul   $t3,$t3,$s0
     add   $t3,$t3,$s1   # X*SCREEN_X + Y
     sll   $t4,$t3,2
