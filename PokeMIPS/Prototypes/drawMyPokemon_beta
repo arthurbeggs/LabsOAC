@@ -384,18 +384,427 @@
 	.word 0xaaaaaaaa
 	.word 0xaaaaaaaa
 	.word 0xaaaaaaaa
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
-	.word 0x00000000
+	background:
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	.word 0xC4C4C4C4
+	
 	
 .macro drawFig %posicao, %tamanho, %imagem
 	sll $t0, %posicao, 16 	# x inicial :calculo 1
@@ -405,57 +814,72 @@
 	addi $t2, $zero, 320	# 320
 	mul $t2, $t2, $t1	# Y*320
 	li $t1, 0xFF003228	# Posição inical memoria
-	add $t2, $t1, $t2 	# Posição na memoria, para VGA, deslocamento apenas em Y
-	add $t2, $t2, $t0	# Posição na memoria, para VGA, deslocamento Y e X
-	add $t5, %imagem, $zero	# Posição memoria da figura
+	addu $t2, $t1, $t2 	# Posição na memoria, para VGA, deslocamento apenas em Y
+	addu $t2, $t2, $t0	# Posição na memoria, para VGA, deslocamento Y e X
+	addu $t5, %imagem, $zero# Posição memoria da figura
 	
 	srl $t1, %tamanho, 16	# Altura
 	sll $t0, %tamanho, 16	# Largura :calculo 1
 	srl $t0, $t0, 16	# Largura :conclui
 	
-	
 	add $t3, $zero, $zero	# Zera $t3
 	add $t4, $zero, $zero	# Zera $t4
-	addi $t2, $t2, -320 	# Correção
+	addiu $t2, $t2, -320 	# Correção
 loop1_draw_fig:
    beq $t4, $t1, fim_draw_fig 	# Acabou de printar figura
 	sub $t2, $t2, $t3	# Volta para posição delta X = 0
-	addi $t2, $t2, 320 	# Posição na memoria, para VGA, deslocado em Y
-	addi $t4, $t4, 1	# Contador Y
+	addiu $t2, $t2, 320 	# Posição na memoria, para VGA, deslocado em Y
+	addiu $t4, $t4, 1	# Contador Y
 	add  $t3, $zero, $zero	# Zera Contador X
 loop2_draw_fig:	
    beq $t3, $t0, loop1_draw_fig	# Acabou uma linha
 	lw $t6, 0($t5)		# Le word, da figura
 	sw $t6, 0($t2)		# Grava word, na VGA
-	addi $t2, $t2, 4	# Desloca X, onde $t2 é posição da memoria na VGA
-	addi $t5, $t5, 4	# Desloca leitura da figura
-	addi $t3, $t3, 4	# Contador linha
+	addiu $t2, $t2, 4	# Desloca X, onde $t2 é posição da memoria na VGA
+	addiu $t5, $t5, 4	# Desloca leitura da figura
+	addiu $t3, $t3, 4	# Contador linha
 	j loop2_draw_fig
 fim_draw_fig:
 .end_macro
 
-.macro drawMyPokemonWaiting %endereçoPokemon, %dadosPokemon
+.macro drawMyPokemonWaiting %endereçoPokemon, %dadosPokemon, %background
+	add $t7, %endereçoPokemon, $zero
+	add $t8, %dadosPokemon, $zero
+	add $t9, %background, $zero
+	# "Limpa" tela
+	addiu $a3, $t9, 23040
+	li $a1, 0x00480000
+	li $a2, 0x002900F0
+	#drawFig $a1, $a2, %background 
+	drawFig $a1, $a2, $a3
 	#Frame 1 Pokemon
 	li $a1, 0x00510030
 	li $a2, 0x00200030
-	drawFig $a1, $a2, %endereçoPokemon
+	drawFig $a1, $a2, $t7
 	#Frame 1 Stats
-	li $a1, 0x00400080
-	li $a2, 0x00300064
-	drawFig $a1, $a2, %dadosPokemon
+	li $a1, 0x00480080
+	li $a2, 0x00280064
+	drawFig $a1, $a2, $t8
+	# "Limpa" tela
+	addiu $a3, $t9, 23040
+	li $a1, 0x00480000
+	li $a2, 0x002900F0
+	#drawFig $a1, $a2, %background #
+	drawFig $a1, $a2, $a3
 	#Frame 2 Pokemon
 	li $a1, 0x00500030
 	li $a2, 0x00200030
-	drawFig $a1, $a2, %endereçoPokemon
+	drawFig $a1, $a2, $t7
 	#Frame 2 Stats
-	li $a1, 0x00410080
-	li $a2, 0x00300064
-	drawFig $a1, $a2, %dadosPokemon
+	li $a1, 0x00490080
+	li $a2, 0x00280064
+	drawFig $a1, $a2, $t8
 .end_macro
 
 	
 .text	
 desenha:
+	la $a3, background
 	la $a0, imagem
-	drawMyPokemonWaiting $a0, $a0
+	drawMyPokemonWaiting $a0, $a0, $a3
 FIM1: j desenha
