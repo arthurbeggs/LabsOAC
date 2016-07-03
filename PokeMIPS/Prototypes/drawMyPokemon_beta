@@ -841,8 +841,7 @@ loop2_draw_fig:
 	j loop2_draw_fig
 fim_draw_fig:
 .end_macro
-
-.macro drawMyPokemonWaiting %endereçoPokemon, %dadosPokemon, %background
+.macro actMyPokemonWaiting %endereçoPokemon, %dadosPokemon, %background
 	add $t7, %endereçoPokemon, $zero
 	add $t8, %dadosPokemon, $zero
 	add $t9, %background, $zero
@@ -887,8 +886,7 @@ clsLine:drawFig $a1, $a2, $a3 	# "Limpa uma linha onde o nosso pokemon esta na t
 	li $t0, 0x00700030	# Foram todas as linhas
 	bne $a1, $t0, clsLine	# necessarias?
 .end_macro
-
-.macro drawMyPokemonAttacking %endereçoPokemon, %background
+.macro actMyPokemonAttacking %endereçoPokemon, %background
 	add $t7, %endereçoPokemon, $zero
 	add $t9, %background, $zero
 	li $s0, 0x004c0030	#---------
@@ -899,13 +897,11 @@ nextPixelX:
 	addiu $s0, $s0, 4	# Proxima Coluna
 	li $t0, 0x004c0040	# Foram todas as colunas
 	bne $s0, $t0, nextPixelX# necessarias?
-	
 	#Delay forçado###############
 	drawFig $s0, $a2, $t7
 	drawFig $s0, $a2, $t7
 	drawFig $s0, $a2, $t7
 	#############################
-	
 previousPixelX:
 	cleanAreaPokemon $t9	# "Limpa" tela
 	li $a2, 0x00240030	
@@ -921,19 +917,79 @@ previousPixelX:
 	li $a1, 0x000E0010
 	li $a2, 0x00200058
 	drawFig $a1, $a2, $t8
-	
 .end_macro
+
+.macro actDamageEnemy %endereçoPokemon, %endereçoDadosPokemon, %endereçoDano
+
+################################################################################################
+# Primeira etapa	
+	li $v0, 0x000E0010
+	li $v1, 0x00200058
+	drawFig $v0, $v1, %endereçoDadosPokemon
+	addi $t8, $zero, -2			# Quantidade de vezes que ele samba
+	addi $t9, $zero, 1
+actDamageEnemy_label:	
+    beq  $t8, $zero, actDamageEnemy_label3	# Quantidade de vezes que ele samba
+	li $v0, 0x00200088			# Enemy
+	li $v1, 0x00240034			# Enemy
+    beq $t9, $zero, actDamageEnemy_label2	# Desloca pra um lado ou nao
+	addiu $v0, $v0, 8			# Deslocamento de fato
+	addi $t9, $zero, 1			# Na proxima irá deslocar
+actDamageEnemy_label2:
+	addi $t9, $t9, -1
+	drawFig $v0, $v1, %endereçoPokemon	# Draw Enemy	
+	li $v0, 0x0024008C			# Damage
+	li $v1, 0x00160014			# Damage	
+	drawFig $v0, $v1, %endereçoDano		# Draw Damage
+	addiu $t8, $t8, 1			# Quantidade de vezes que ele samba
+	j actDamageEnemy_label
+actDamageEnemy_label3:
 	
+	
+################################################################################################
+# Segunda etapa
+	
+	addi $t7, $zero, -3			# Quantidade de vezes que ele pisca
+	addi $t8, $zero, -2			# Quantidade de vezes que ele samba
+	addi $t9, $zero, 1
+	addi %endereçoDano, $zero, 1		# Reutilização de registrador
+
+actDamageEnemy_labe4:
+    beq $t7, $zero, actDamageEnemy_label7	# Quantidade de vezes que ele pisca
+    	addi $t7, $t7, 1			# - uma vezes que ele irá pisca
+    beq %endereçoDano, $zero, actDamageEnemy_labe8
+    	addi %endereçoDano, $zero, 1
+    	#printar inimigo
+actDamageEnemy_labe8:
+	addi %endereçoDano, %endereçoDano, -1
+    beq $t8, $zero, actDamageEnemy_label6	# Quantidade de vezes que ele samba
+	li $v0, 0x000E0010			# Barra HP
+	li $v1, 0x00200058			# Barra HP
+    beq $t9, $zero, actDamageEnemy_label5	# Desloca para cima ou nao
+    	li $t7, 0x00100000			# Deslocamento de fato
+	addiu $v0, $v0, $t7			# Deslocamento de fato
+	addi $t9, $zero, 1			# Na proxima irá deslocar
+actDamageEnemy_label5:
+	addi $t9, $t9, -1
+	drawFig $v0, $v1, %endereçoDadosPokemon	# Draw Barra HP	
+	addiu $t8, $t8, 1			# Quantidade de vezes que ele samba
+	j actDamageEnemy_labe4
+actDamageEnemy_label6:
+	j actDamageEnemy_labe4
+actDamageEnemy_label7:	
+.end_macro 
+
 .text	
 	la $a0, imagem
 	drawEnemyPokemonHP $a0
-	li $a1, 0x000E0094
-	li $a2, 0x00300050
-	drawFig $a1, $a2, $a0
+	#li $a1, 0x000E0094
+	#li $a2, 0x00300050
+	#drawFig $a1, $a2, $a0
 desenha:
 	la $a0, imagem
 	la $a3, background
-	drawMyPokemonWaiting $a0, $a0, $a3
-	drawMyPokemonWaiting $a0, $a0, $a3
-	drawMyPokemonAttacking $a0, $a3
+	actDamageEnemy $a0, $a0, $a0
+	#actMyPokemonWaiting $a0, $a0, $a3
+	#actMyPokemonWaiting $a0, $a0, $a3
+	#actMyPokemonAttacking $a0, $a3
 FIM1: j desenha
