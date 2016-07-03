@@ -1,0 +1,167 @@
+.data
+	imagem:
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	.word 0x87654321
+	.word 0x9ABCDEF0
+	.word 0x12345678
+	.word 0x9ABCDEF0
+	
+.macro draw_fig %posicao, %tamanho, %imagem
+	sll $t0, %posicao, 16 	# x inicial :calculo 1
+	srl $t0, $t0, 16	# x inicial :conclui
+	srl $t1, %posicao, 16	# y inicial
+
+	addi $t2, $zero, 320	# 320
+	mul $t2, $t2, $t1	# Y*320
+	li $t1, 0xFF000000	# Posição inical memoria
+	add $t2, $t1, $t2 	# Posição na memoria, para VGA, deslocamento apenas em Y
+	add $t2, $t2, $t0	#  Posição na memoria, para VGA, deslocamento Y e X
+	add $t7, %imagem, $zero	# Posição memoria da figura
+	
+	srl $t1, %tamanho, 16	# Altura
+	sll $t0, %tamanho, 16	# Largura :calculo 1
+	srl $t0, $t0, 16	# Largura :conclui
+	
+	
+	add $t3, $zero, $zero	# Zera $t3
+	add $t4, $zero, $zero	# Zera $t4
+	addi $t2, $t2, -320 
+loop1_draw_fig:
+   beq $t4, $t1, fim_draw_fig 	# Acabou de printar figura
+	sub $t2, $t2, $t3
+	addi $t2, $t2, 320 	# Posição na memoria, para VGA, deslocado em Y
+	move $t5, $t2		# Registrador com endereço para deslocamento em X
+	addi $t4, $t4, 1	# Contador Y
+	add  $t3, $zero, $zero	# Zera Contador X
+loop2_draw_fig:	
+   beq $t3, $t0, loop1_draw_fig	# Acabou uma linha
+	lw $t6, 0($t7)		
+	#sw $t6, 0($t5)
+	sw $t6, 0($t2)
+	#addi $t5, $t5, 4	# Desloca X, onde $t5 é posição da memoria
+	addi $t2, $t2, 4	# Desloca X, onde $t5 é posição da memoria
+	addi $t7, $t7, 4
+	addi $t3, $t3, 4	# Contador linha
+	j loop2_draw_fig
+
+fim_draw_fig:
+	
+.end_macro	
+.text	
+desenha:
+	li $a0, 0x00000000
+	li $a1, 0x00140014
+	la $a2, imagem
+	draw_fig $a0, $a1, $a2
+	li $a0, 0x00d00120
+	li $a1, 0x00140014
+	la $a2, imagem
+	draw_fig $a0, $a1, $a2	
+FIM1: j FIM1
