@@ -154,7 +154,7 @@ bkgInsideHouseChairDL
 bkgInsideHouseChairDR
 bkgInsideHousePlantU
 bkgInsideHousePlantD
-bkgInsideHousePlantDarkU        <<<< Colocar transparencia
+bkgInsideHousePlantDarkU
 bkgInsideHousePlantDarkD
 bkgInsideHouseSinkUL
 bkgInsideHouseSinkUR
@@ -257,3 +257,5 @@ bkgInsideLabPokeballTableUL
 bkgInsideLabPokeballTableUR
 bkgInsideLabPokeballTableDL
 bkgInsideLabPokeballTableDR
+bkgInsideLabShelfDarkFloorUL
+bkgInsideLabShelfDarkFloorDL
