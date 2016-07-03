@@ -9,26 +9,16 @@
 # Constansts and Macros stored at utils
 ##
 
-.macro draw_tile %x,%y,%imageAddress
-    addi    $a0,$0,%x           # X left top corner
-    addi    $a1,$0,%y   # Y left top corner
-    la  $v0,%imageAddress       # Color
-    
-    addi    $a2,$0,TILE_SIZE       # width
-    addi    $a3,$0,TILE_SIZE      # height
-    jal draw_figure
-.end_macro
-
 .text
 
 sceneMapInit:
     # Draw an green rectangle as map
     print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,GBA_SCREEN_DIM_Y,COLOR_GREEN
-sceneMapEnd:
-    setstate SCENE_MAP
-    j       finishGameState
 
+    print_rectangle 154,100,16,20,COLOR_RED    
 
+    # Force got to Battle
+    setstate SCENE_MAP_BATTLE
 sceneMap.loop:
     # Read Keys
     # Move on map
@@ -42,7 +32,14 @@ sceneMap.loop:
     nop      # For sake of Prevent Branch Harzards
 
     # It nothing happens keep at Default State
+    setstate SCENE_MAP
     j sceneMap.loop
+
+sceneMapEnd:
+    setstate SCENE_MAP
+    j       finishGameState
+
+
 
 
 # Map States Procedures -------------------------------------------------------
@@ -55,6 +52,7 @@ sceneMapChangeState:
 sceneMap.foundPokemon:
     # Get Pokemon ID
     # Save Current Map State
+    setstate SCENE_MAP
     saveGameState
     # Show Animation "Dark Screen"
     # Open Battle Scene

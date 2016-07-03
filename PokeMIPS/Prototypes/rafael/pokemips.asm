@@ -10,8 +10,10 @@
 .eqv   SCREEN_DIM_X               320
 .eqv   SCREEN_DIM_Y               240
 .eqv   SCREEN_PIXEL0              0xff000000
-.eqv   GBA_SCREEN_DIM_X           240
-.eqv   GBA_SCREEN_DIM_Y           160
+.eqv   GBA_SCREEN_DIM_X           240           # Pixels
+.eqv   GBA_SCREEN_DIM_Y           160           # Pixels
+.eqv   GBA_SCREEN_DIM_X_TILES     15           # Tiles
+.eqv   GBA_SCREEN_DIM_Y_TILES     10           # Tiles
 .eqv   GBA_SCREEN_PIXEL0          0xff003228
 .eqv   GBA_SCREEN_X0              40
 .eqv   GBA_SCREEN_Y0              40
@@ -22,11 +24,11 @@
 .eqv   MEM_SCREEN_END             0xff002C00
 
 # Color Codes -----------------------------------------------------------------
-.eqv   COLOR_WHITE                0xFF
-.eqv   COLOR_GREEN                0x3A
-.eqv   COLOR_BLACK                0x00
-.eqv   COLOR_RED                  0x07
-.eqv   COLOR_BLUE                 0xC0
+.eqv   COLOR_WHITE                0xFF      # 0b11111111
+.eqv   COLOR_GREEN                0x3A      # 0b00111000
+.eqv   COLOR_BLACK                0x00      # 0b00000000
+.eqv   COLOR_RED                  0x07      # 0b00000111
+.eqv   COLOR_BLUE                 0xC0      # 0b11000000
 .eqv   COLOR_PEN                  0x00F00F
 .eqv   NO_COLOR                   0x111111  # Invisible Ink (Hardware defined)
 
@@ -73,7 +75,7 @@
 .end_macro
 
 .macro drawDialogText %msg
-       drawtextbox DIALOG_TEX_BOX_X1.DIALOG_TEX_BOX_Y1, DIALOG_TEX_BOX_WIDTH,DIALOG_TEX_BOX_HEIGHT,%msg
+       print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,88,COLOR_WHITE
 .end_macro
 
 .macro drawimage %posX,%posY,%sizeX,%sizeY, %adrImage
@@ -132,6 +134,16 @@
     
     addi    $a2,$0,%width       # width
     addi    $a3,$0,%height      # height
+    jal draw_figure
+.end_macro
+
+.macro draw_tile %x,%y,%imageAddress
+    addi    $a0,$0,%x           # X left top corner
+    addi    $a1,$0,%y   # Y left top corner
+    la  $v0,%imageAddress       # Color
+    
+    addi    $a2,$0,TILE_SIZE       # width
+    addi    $a3,$0,TILE_SIZE      # height
     jal draw_figure
 .end_macro
 
@@ -265,7 +277,7 @@ gameInit:
 
     # Load Tile Set from SD Card
 gameLoop:
-    saveGameState
+    #saveGameState
 
     ## Change State
     jal     changeGameState
@@ -327,8 +339,8 @@ sceneBag:
     jr      $ra
 
 sceneBattle:
-#    j       sceneBattleInit
-#    .include "test_battle.s"
+    j       sceneBattleInit
+    .include "test_battle.asm"
     jr      $ra
 
 # Auxiliar Procedures ---------------------------------------------------------
@@ -421,8 +433,96 @@ end.draw_rectangle:
     add  $v0,$0,$0
     jr  $ra
 
-
 ##
+# Print a rectangle on the screen
+# 
+# Arguments:
+# $a0 x position
+# $a1 y position
+# $a2 width
+# $a3 height
+# $v0 color (format BBGG.GRRR.bbgg.grrr)
+#
+# Internal use:
+# $s0 x temp position
+# $s1 y temp position
+# $s2 color
+# $t3 counter
+# $t4 address to print
+# $t7 temporary
+# $s3 x end position
+# $s4 y end position
+#
+#
+# @TODO Verify bug : it dont't work well with some jump instruction before
+#                    no working, wrong calc for pixel position
+##
+draw_rectanglegba:
+    addi $sp, $sp, -52
+    sw $ra, 0($sp)
+    sw $a0, 4($sp)
+    sw $a1, 8($sp)
+    sw $a2, 12($sp)
+    sw $a3, 16($sp)
+    sw $s0, 20($sp)
+    sw $s1, 24($sp)
+    sw $s2, 28($sp)
+    sw $t3, 32($sp)
+    sw $t4, 36($sp)
+    sw $t7, 48($sp)
+    sw $s3, 52($sp)
+    sw $s4, 56($sp)
+
+draw_rectanglegba.init:
+    add   $s0,$0,$a0  # Start x
+    add   $s1,$0,$a1  # Start y
+    add   $s3,$s0,$a2 # end x
+    add   $s4,$s1,$a3 # end y
+    add   $s2,$0,$v0  # color
+
+draw_rectanglegba.loopY: 
+draw_rectanglegba.loopX:
+
+    # Calculate Pixel's Adress:
+    addi  $t3,$0,SCREEN_DIM_X
+    mul   $t3,$t3,$s1
+    add   $t3,$t3,$s0   # Y*SCREEN_X + X
+    add   $t4,$t3,GBA_SCREEN_PIXEL0
+
+draw_rectanglegba.drawPixel:
+    sb    $s2,0($t4)    # Draw a pixel
+
+draw_rectanglegba.nextPixel:
+    addi  $s0,$s0,1 # X++
+    slt   $t7,$s0,$s3   # lim x
+    bne   $t7,$0,draw_rectangle.loopX
+end.draw_rectanglegba.loopX:
+    add   $s0,$0,$a0    # X = X0
+    addi  $s1,$s1,1 # Y++
+    slt   $t7,$s1,$s4   # lim y
+    bne   $t7,$0,draw_rectangle.loopY
+end.draw_rectanglegba.loopY:
+end.draw_rectanglegba:
+    lw $ra, 0($sp)
+    lw $a0, 4($sp)
+    lw $a1, 8($sp)
+    lw $a2, 12($sp)
+    lw $a3, 16($sp)
+    lw $s0, 20($sp)
+    lw $s1, 24($sp)
+    lw $s2, 28($sp)
+    lw $t3, 32($sp)
+    lw $t4, 36($sp)
+    lw $t7, 48($sp)
+    lw $s3, 52($sp)
+    lw $s4, 56($sp)
+
+    addi $sp, $sp, 52
+    add  $v0,$0,$0
+    jr  $ra
+
+
+##x
 # Print a figure on the screen
 # 
 # Arguments:
