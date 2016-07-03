@@ -19,14 +19,11 @@
     jal draw_figure
 .end_macro
 
-.macro draw_map %x0,%y0
-    print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,GBA_SCREEN_DIM_Y,COLOR_GREEN
-.end_macro
-
 .text
 
 sceneMapInit:
-    draw_map 0,0
+    # Draw an green rectangle as map
+    print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,GBA_SCREEN_DIM_Y,COLOR_GREEN
 sceneMapEnd:
     setstate SCENE_MAP
     j       finishGameState
@@ -37,7 +34,7 @@ sceneMap.loop:
     # Move on map
 
     addi     $a0,$0,SCENE_MAP_BATTLE
-    beq      _CURRENT_GAME_STATE,$a0,sceneMap.foundPokemoncd GBA_SCREEN_DIM_Y
+    beq      _CURRENT_GAME_STATE,$a0,sceneMap.foundPokemon
     nop      # For sake of Prevent Branch Harzards
 
     addi     $a0,$0,SCENE_MAP_MENU

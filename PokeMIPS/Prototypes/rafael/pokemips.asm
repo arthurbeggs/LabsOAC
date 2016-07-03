@@ -22,11 +22,11 @@
 .eqv   MEM_SCREEN_END             0xff002C00
 
 # Color Codes -----------------------------------------------------------------
-.eqv   COLOR_WHITE                0xFFFFFF
-.eqv   COLOR_GREEN                0x00FF00
-.eqv   COLOR_BLACK                0x000000
-.eqv   COLOR_RED                  0xFF0000
-.eqv   COLOR_BLUE                 0x70C4CC
+.eqv   COLOR_WHITE                0xFF
+.eqv   COLOR_GREEN                0x3A
+.eqv   COLOR_BLACK                0x00
+.eqv   COLOR_RED                  0x07
+.eqv   COLOR_BLUE                 0xC0
 .eqv   COLOR_PEN                  0x00F00F
 .eqv   NO_COLOR                   0x111111  # Invisible Ink (Hardware defined)
 
@@ -385,13 +385,12 @@ draw_rectangle.loopX:
 
     # Calculate Pixel's Adress:
     addi  $t3,$0,SCREEN_DIM_X
-    mul   $t3,$t3,$s0
-    add   $t3,$t3,$s1   # X*SCREEN_X + Y
-    sll   $t4,$t3,2
-    add   $t4,$t4,SCREEN_PIXEL0
+    mul   $t3,$t3,$s1
+    add   $t3,$t3,$s0   # Y*SCREEN_X + X
+    add   $t4,$t3,SCREEN_PIXEL0
 
 draw_rectangle.drawPixel:
-    sw    $s2,0($t4)    # Draw a pixel
+    sb    $s2,0($t4)    # Draw a pixel
 
 draw_rectangle.nextPixel:
     addi  $s0,$s0,1 # X++
@@ -474,17 +473,16 @@ draw_figure.loopY:
 draw_figure.loopX:
     # Calculate Pixel's Adress:
     addi  $t3,$0,SCREEN_DIM_X
-    mul   $t3,$t3,$s0
-    add   $t3,$t3,$s1   # X*SCREEN_X + Y
-    sll   $t4,$t3,2
-    add   $t4,$t4,SCREEN_PIXEL0
+    mul   $t3,$t3,$s1
+    add   $t3,$t3,$s0   # Y*SCREEN_X + X
+    add   $t4,$t3,SCREEN_PIXEL0
 
     lw    $t7,0($s2)
     addi  $t8,$0,NO_COLOR
     beq   $t7,$t8,draw_figure.nextPixel
 
 draw_figure.drawPixel:
-    sw    $t7,0($t4)    # Draw a pixel
+    sb    $t7,0($t4)    # Draw a pixel
 
 draw_figure.nextPixel:
     addi   $s2,$s2,4
