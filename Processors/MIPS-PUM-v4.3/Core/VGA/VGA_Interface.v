@@ -52,26 +52,26 @@ always @(*)
     else wReadData    = 32'hzzzzzzzz;
 
 
-// Implementação em hardware da transparência 0xC8
+// Implementação em hardware da transparência 0xC7
 always @(*)
     if (wWriteEnable) begin
         if (wAddress >= BEGINNING_VGA  &&  wAddress <= END_VGA) begin
-            if (wWriteData[7:0]   == 8'hC8)
+            if (wWriteData[7:0]   == 8'hC7)
                 ByteSelect[0]   = 1'b0;
             else
                 ByteSelect[0]   = wByteEnable[0];
 
-            if (wWriteData[15:8]  == 8'hC8)
+            if (wWriteData[15:8]  == 8'hC7)
                 ByteSelect[1]   = 1'b0;
             else
                 ByteSelect[1]   = wByteEnable[1];
 
-            if (wWriteData[23:16] == 8'hC8)
+            if (wWriteData[23:16] == 8'hC7)
                 ByteSelect[2]   = 1'b0;
             else
                 ByteSelect[2]   = wByteEnable[2];
 
-            if (wWriteData[31:24] == 8'hC8)
+            if (wWriteData[31:24] == 8'hC7)
                 ByteSelect[3]   = 1'b0;
             else
                 ByteSelect[3]   = wByteEnable[3];
