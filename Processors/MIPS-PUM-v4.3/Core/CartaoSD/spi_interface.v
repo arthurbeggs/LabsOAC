@@ -38,7 +38,7 @@ sd_buffer SDMemBuffer(
 	.rdaddress(rdSDMemAddr),
 	.rdclock(iCLK_50),
 	.wraddress(wrSDMemAddr),
-	.wrclock(wSDMemClk),                       //NOTE: Tentar mudar pra iCLK_50 caso o CLKAutoFast continuar bugado
+	.wrclock(wSDMemClk),
 	.wren(wSDMemEnable),
 	.q(oBufferData)
 );
@@ -92,7 +92,7 @@ begin
 end
 
 // Calcula endereço de escrita no buffer
-always @(posedge wSDMemClk)                     // NOTE: 25 MHz; Tentar mudar pra iCLK_50 caso continue dando problema
+always @(posedge wSDMemClk)
 begin
     if (Reset == 1'b1)
         wrSDMemAddr     <= 7'b0000000;
