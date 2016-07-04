@@ -15,7 +15,7 @@
 
 ## **Ordem dos Tiles na Memória**
 
-[**Obs:** Tile nº 0 exite no tileset, mas não é um elemento válido do jogo]
+[**Obs:** Tile nº 0 usado para *padding*]
 <!-- Abra com um visualizador de arquivos Markdown para ver as numerações corretas -->
 
 0. bkgPineDenseUL
@@ -263,3 +263,60 @@
 0. bkgInsideLabPokeballTableDR
 0. bkgInsideLabShelfDarkFloorUL
 0. bkgInsideLabShelfDarkFloorDL
+
+0. PADDING
+0. objPokeballInTableL
+0. objPokeballInTableC
+0. objPokeballInTableR
+
+0. PADDING
+0. npcMomU
+0. npcMomD
+0. npcDaisyU
+0. npcDaisyD
+0. npcRivalFrontU
+0. npcRivalFrontD
+
+0. npcRivalBackU
+0. npcRivalBackD
+0. npcRivalLeftU
+0. npcRivalLeftD
+0. npcRivalRightU
+0. npcRivalRightD
+0. npcOakLabFrontU
+0. npcOakLabFrontD
+0. npcOakBrightGrassFrontU
+0. npcOakBrightGrassFrontD
+0. npcOakBrightGrassRightU
+0. npcOakBrightGrassRightD
+
+0. npcSnorlaxUL
+0. npcSnorlaxUR
+0. npcSnorlaxDL
+0. npcSnorlaxDR
+<!-- 0. npcSignGirlU
+0. npcSignGirlD
+0. npcTechBoyU
+0. npcTechBoyD
+0. npcSciGuyU
+0. npcSciGuyD
+0. npcSciLadyU
+0. npcSciLadyD -->
+
+
+
+## **Tiles do Player**
+
+0. playerHeroFront
+0. playerHeroBack
+0. playerHeroLeft
+0. playerHeroRight
+0. playerHeroineFront
+0. playerHeroineBack
+0. playerHeroineLeft
+0. playerHeroineRight
+
+
+## **Eventos**
+
+0. Interação com objeto
