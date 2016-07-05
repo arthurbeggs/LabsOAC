@@ -17,7 +17,6 @@
 .eqv   GBA_SCREEN_PIXEL0          0xff003228
 .eqv   GBA_SCREEN_X0              40
 .eqv   GBA_SCREEN_Y0              40
-.eqv   TILE_SIZE                  16
 
 # Memory Mapping --------------------------------------------------------------
 .eqv   MEM_SCREEN                 0xff000000
@@ -30,7 +29,7 @@
 .eqv   COLOR_RED                  0x07      # 0b00000111
 .eqv   COLOR_BLUE                 0xC0      # 0b11000000
 .eqv   COLOR_PEN                  0x00F00F
-.eqv   NO_COLOR                   0x111111  # Invisible Ink (Hardware defined)
+.eqv   NO_COLOR                   0xC8      # 0xFE00FF Invisible Ink (Hardware defined)
 
 # Syscall Codes ---------------------------------------------------------------
 .eqv   SYSCALL_PRINT_INT          101  # 1
@@ -147,9 +146,13 @@
     jal draw_figure
 .end_macro
 
-.macro drawGameBoyAdavance
+.macro drawGameBoyAdvance
     print_rectangle 0,0,SCREEN_DIM_X,SCREEN_DIM_Y,COLOR_BLUE
     print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,GBA_SCREEN_DIM_Y,COLOR_RED
+.end_macro
+
+.macro clear_screen
+    print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,GBA_SCREEN_DIM_Y,COLOR_BLACK
 .end_macro
 
 
@@ -184,10 +187,10 @@
 .eqv   SCENE_BATTLE_PLAYER_MOVES    0x00030005 # Player Chosing Move
 .eqv   SCENE_BATTLE_PLAYER_MOVING   0x00040005 # Player's Pokemon moving
 .eqv   SCENE_BATTLE_PLAYER_ENDTURN  0x00050005 # Move Result , Player finish Turn
-.eqv   SCENE_BATTLE_OPONENT_TURN    0x00060005 # Oponnet Chosing Move (Random Choice)
-.eqv   SCENE_BATTLE_OPONENT_MOVING  0x00070005 # Oponent's Pokemon moving
-.eqv   SCENE_BATTLE_OPONENT_ENDTURN 0x00080005 # Move Result , Oponent finish Turn
-.eqv   SCENE_BATTLE_OPONENT_DEF     0x00090005 # Oponent Defeated
+.eqv   SCENE_BATTLE_OPPONENT_TURN    0x00060005 # Oponnet Chosing Move (Random Choice)
+.eqv   SCENE_BATTLE_OPPONENT_MOVING  0x00070005 # Oponent's Pokemon moving
+.eqv   SCENE_BATTLE_OPPONENT_ENDTURN 0x00080005 # Move Result , Oponent finish Turn
+.eqv   SCENE_BATTLE_OPPONENT_DEF     0x00090005 # Oponent Defeated
 .eqv   SCENE_BATTLE_PLAYER_DEF      0x00100005 # Player Defeated
 .eqv   SCENE_BATTLE_OVER            0x00110005
 
@@ -197,31 +200,15 @@
 .end_macro
 
 .macro saveGameState
-    ## Return Previews State
+    # Save Previews State Data
     la      $a0,PREVIEWS_GAME_STATE
-    la      $a1,PREVIEWS_HERO_STATE
     sw      _CURRENT_GAME_STATE,0($a0)
-    sw      _CURRENT_HERO_STATE,0($a1)
 .end_macro
 
 .macro returnPreviewsState
-    ## Return Previews State
     la      $a0,PREVIEWS_GAME_STATE
-    la      $a1,PREVIEWS_HERO_STATE
     lw      _CURRENT_GAME_STATE,0($a0)
-    lw      _CURRENT_HERO_STATE,0($a1)
 .end_macro
-
-###############################################################################
-# Hero State Map 
-# - 22bits (empty), 2 Bit (Orientation) ,8bits (Map Position)
-###############################################################################
-# Orientation
-.eqv    HERO_ORIENTATION_MASK       0x00030000
-.eqv    HERO_ORIENTATION_DOWN       0x00000000
-.eqv    HERO_ORIENTATION_UP         0x00010000
-.eqv    HERO_ORIENTATION_LEFT       0x00020000
-.eqv    HERO_ORIENTATION_RIGHT      0x00030000
 
 ###############################################################################
 # Keyboard Keys MAP
@@ -235,21 +222,31 @@
 .eqv    KEY_UP                      0x1D
 .eqv    KEY_A                       
 .eqv    KEY_B                       
+.eqv    KEY_L                       
+.eqv    KEY_R                       
 .eqv    KEY_START                   
 .eqv    KEY_RESET                   
 
 ###############################################################################
 # Registers MAP
 ###############################################################################
-.eqv   _CURRENT_GAME_STATE          $s6  # Game State
-.eqv   _CURRENT_HERO_STATE          $s7  # Hero State 
+.eqv   _CURRENT_GAME_STATE          $s7  # Game State
+.eqv   _CURRENT_HERO_STATE          $s6  # Hero State 
 
 ###############################################################################
 # Data Segment - "Variables"
 ###############################################################################
 .data
+
+# Game Data -------------------------------------------------------------------
 PREVIEWS_GAME_STATE:    .word       1
 PREVIEWS_HERO_STATE:    .word       0
+
+# Player Data -----------------------------------------------------------------
+PLAYER_NAME:            .byte       0x00,0x00,0x00,0x00,0x00,0x00,0x00
+
+# Pokemon Data ----------------------------------------------------------------
+
 
 ###############################################################################
 # Text Segment
@@ -266,7 +263,7 @@ gameInit:
     add     _CURRENT_GAME_STATE,$0,$0
 
     # Draw GameBoy Advance
-    drawGameBoyAdavance
+    drawGameBoyAdvance
 
     # Load Images From SD Card
 
@@ -289,7 +286,16 @@ gameOver:
 
 # Game State Procedures -------------------------------------------------------
 
+##
 # Change Game State
+# 
+# Arguments:
+# $s6  Current Game State
+#
+# Internal Use:
+# $a0 
+# $s5  Store Previews $ra
+##
 changeGameState:
     # Save $ra
     add      $s5,$0,$ra
@@ -312,10 +318,11 @@ changeGameState:
 
     j        gameInit # reset game if find an unknow state 
 finishGameState:
+
     jr       $s5
 
 ##
-# States Triguer Procedures
+# State Triguer Procedures
 ##
 sceneOpening:
     # Load Game State
@@ -331,6 +338,8 @@ sceneTutorial:
 sceneMap:
     j       sceneMapInit
     .include "test_map.asm"
+    #j       WORD
+    #.include "world_takashi.asm"
     jr      $ra
 
 sceneBag:
@@ -370,7 +379,7 @@ sceneBattle:
 #                    no working, wrong calc for pixel position
 ##
 draw_rectangle:
-    addi $sp, $sp, -52
+    addi $sp, $sp, -56
     sw $ra, 0($sp)
     sw $a0, 4($sp)
     sw $a1, 8($sp)
@@ -429,7 +438,7 @@ end.draw_rectangle:
     lw $s3, 52($sp)
     lw $s4, 56($sp)
 
-    addi $sp, $sp, 52
+    addi $sp, $sp, 56
     add  $v0,$0,$0
     jr  $ra
 
