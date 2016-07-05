@@ -98,7 +98,7 @@ always @(negedge wSDMemClk)
 begin
     if (Reset == 1'b1)
         wrSDMemAddr     <= 7'b0000000;
-    else if (wSDMemEnable)
+    else if (iMemEnable)
     begin
         if (wrSDMemAddr == 7'b1111111  ||  Reset == 1'b1)
             wrSDMemAddr     <= 7'b0000000;
