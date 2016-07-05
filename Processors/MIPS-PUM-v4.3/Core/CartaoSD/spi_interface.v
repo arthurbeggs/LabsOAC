@@ -29,7 +29,7 @@ sd_controller sd1(
     .address(SDAddress),
     .iCLK(iCLK_50),
     .oSDMemClk(wSDMemClk),
-    .wordReady(wSDMemEnable),
+    .wordReady(iMemEnable),
     .idleSD(SDCtrl)
 );
 
@@ -38,8 +38,8 @@ sd_buffer SDMemBuffer(
 	.rdaddress(rdSDMemAddr),
 	.rdclock(iCLK_50),
 	.wraddress(wrSDMemAddr),
-	.wrclock(wSDMemClk),
-	.wren(wSDMemEnable),
+	.wrclock(~iCLK_50),
+	.wren(wBufferEn),
 	.q(oBufferData)
 );
 
@@ -50,7 +50,9 @@ reg  [6:0]  wrSDMemAddr;
 wire [6:0]  rdSDMemAddr;
 wire [3:0]  SDCtrl;             // [SDCtrl ? BUSY : READY]
 reg         SDReadEnable;
-wire        wSDMemClk, wSDMemEnable;
+wire        wSDMemClk, iMemEnable, wBufferEn;
+
+assign wBufferEn = iMemEnable && wSDMemClk;
 
 
 // Envia endereço do cartão a ser lido para o Controlador
@@ -92,7 +94,7 @@ begin
 end
 
 // Calcula endereço de escrita no buffer
-always @(posedge wSDMemClk)
+always @(negedge wSDMemClk)
 begin
     if (Reset == 1'b1)
         wrSDMemAddr     <= 7'b0000000;
