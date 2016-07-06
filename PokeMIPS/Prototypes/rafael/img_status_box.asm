@@ -752,7 +752,9 @@ POKEMON_STATUS_BOX:
 .word 0x5a5a5a5a
 .word 0x5a5a5a5a
 .word 0xa35a5a5a
+#HP_ALLY:
 .word 0xc7c7c7c7
+HP_ALLY:
 .word 0xc7c7c7c7
 .word 0xc7c7c7c7
 .word 0xc7c7c7c7

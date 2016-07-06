@@ -69,7 +69,7 @@
        addi    $a2,$0,%posy
        addi    $a3,$0,COLOR_PEN
        addi  $a3,$0,COLOR_PEN
-       syscall
+       #syscall
 .end_macro
 
 .macro printchar %char, %posx,%posy
@@ -78,7 +78,7 @@
      addi    $a2,$0,%posy
      addi    $a3,$0,COLOR_PEN
     addi    $v0,$0,SYSCALL_PRINT_CHAR
-    syscall                 # Print Char
+    #syscall                 # Print Char
 .end_macro
 
 .macro printinti %num, %posx,%posy
@@ -87,16 +87,16 @@
      addi    $a2,$0,%posy
      addi    $a3,$0,COLOR_PEN
      addi    $v0,$0,SYSCALL_PRINT_INT
-     syscall                 # Print Int Value
+     #syscall                 # Print Int Value
 .end_macro
 
 .macro printint %num, %posx,%posy
      add     $a0,$0,%num
      addi    $a1,$0,%posx
      addi    $a2,$0,%posy
-     addi    $a3,$0,COLOR_PEN
-     addi    $v0,$0,SYSCALL_PRINT_INT
-     syscall                 # Print Int Value
+     addi    $a3,$0, COLOR_PEN
+     addi    $v0,$0, SYSCALL_PRINT_INT
+     #syscall                 # Print Int Value
 .end_macro
 
 .macro print_rectangle %x,%y,%width,%height,%color
@@ -230,7 +230,7 @@ PLAYER_MONEY:           .word       0x00000300
 .include "img_text_box.asm"
 .include "img_background_battle.asm"
 .include "img_status_box.asm"
-
+.include "img_pokemon_set2.asm"
 ###############################################################################
 # Text Segment
 ###############################################################################
@@ -451,7 +451,7 @@ draw_figure:
     sw $t2, 8($sp)
     sw $t3, 12($sp)
     sw $t4, 16($sp)
-    sw $t5, 22($sp)
+    sw $t5, 20($sp)
     sw $t6, 24($sp)
 
     sll $t0, $a0, 24    # x inicial :calculo 1
@@ -493,7 +493,7 @@ fim_draw_fig:
     lw $t2, 8($sp)
     lw $t3, 12($sp)
     lw $t4, 16($sp)
-    lw $t5, 22($sp)
+    lw $t5, 20($sp)
     lw $t6, 24($sp)
     addi $sp, $sp, 28
     jr  $ra
