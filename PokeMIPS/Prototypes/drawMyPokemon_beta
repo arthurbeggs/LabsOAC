@@ -355,10 +355,16 @@ actDamageMy_label3:
 	#drawEnemyPokemonHP $a0
 	li $a1, 0x00000000
 	li $a2, 0x00A000f0
+	la $a1, background
+	la $a2, background
 	la $a3, background
-	li $a0, 0x48A03030
+	li $a0, 0x26384B28
+	jal cleanBackground
+	#li $a0, 0x48A03030
 	#drawFig $a1, $a2, $a3
-	#fim: j fim
+
+	
+	
 cleanBackground:
 	addi $sp, $sp, -32
 	sw $a0, 0($sp)
@@ -408,7 +414,6 @@ cleanBackground:
 	add $t6, $zero, $zero
 	
 cleanBackground_label1:
-	####### Intrução a baixo deverá ser substituida
 	drawFig $a0, $t4 			# "Limpa uma linha onde o nosso pokemon esta na tela
 	add $t4, $t4, $t2			# Endereço do background "+linha impressa"
 	
@@ -426,7 +431,6 @@ cleanBackground_label1:
  	lw $t5, 24($sp)
  	lw $t6, 28($sp)
  	addi $sp, $sp, 32
- 	fim: j fim
  	jr $ra
  	
 draw_figure:
@@ -451,9 +455,9 @@ draw_figure:
     addu $t2, $t2, $t0  # Posição na memoria, para VGA, deslocamento Y e X
     addu $t5, $a1, $zero# Posição memoria da figura
 
-    sll $t1, $a0, 8     # Largura
-    srl $t1, $t1, 24    # Largura :conclui
-    srl $t0, $a0, 24    # Altura
+    sll $t0, $a0, 8     # Largura
+    srl $t0, $t0, 24    # Largura :conclui
+    srl $t1, $a0, 24    # Altura
     
     add $t3, $zero, $zero   # Zera $t3
     add $t4, $zero, $zero   # Zera $t4
