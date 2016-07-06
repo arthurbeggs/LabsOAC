@@ -269,6 +269,7 @@ cleanAreaPokemon:
     jal draw_figure
     lw $ra, 0($sp)
     addi $sp, $sp, 4
+    jr $ra
     
 animationEnemyDamage:
     addi $sp, $sp, -20
@@ -281,7 +282,11 @@ animationEnemyDamage:
     la $t9, background
     li $s0, 0x302420a0
 animationEnemyDamage.nextPixelX:
-
+    addi $sp, $sp, -4
+    sw $ra, 0($sp)
+    jal drawEnemyPokemonHP
+    lw $ra, 0($sp)
+     addi $sp, $sp, 4
     la $a1, enemy
     move $a0, $s0
     jal draw_figure
@@ -292,6 +297,11 @@ animationEnemyDamage.nextPixelX:
 
 animationEnemyDamage.previousPixelX:
 #    cleanAreaPokemon $t9    # "Limpa" tela  
+    addi $sp, $sp, -4
+    sw $ra, 0($sp)
+    jal drawEnemyPokemonHP
+    lw $ra, 0($sp)
+     addi $sp, $sp, 4
     move $a0, $s0
     la $a1, enemy
     jal draw_figure   # Frame 1 Pokemon
@@ -495,7 +505,7 @@ drawEnemyPokemonHP:
 	sw $ra, 8($sp)
 	la $a1, POKEMON_STATUS_BOX
 	#Frame Stats	
-	li $a0, 0x58200E10 
+	li $a0, 0x681d0E10 
 	jal draw_figure
 	lw $a0, 0($sp)
     	lw $a1, 4($sp)
@@ -574,7 +584,79 @@ end.animationPlayerPokemonAtack:
 
 
 animationOpponentPokemonAtack:
+    
+    drawEnemyPokemonHP:
+	addi $sp, $sp, -12
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	sw $ra, 8($sp)
+	la $a1, POKEMON_STATUS_BOX
+	#Frame Stats	
+	li $a0, 0x681d0E10 
+	jal draw_figure
+	lw $a0, 0($sp)
+	lw $a1, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12
+	jr $ra
 
+
+
+
+
+
+draw_figure:
+    addi $sp, $sp, -28
+    sw $t0, 0($sp)
+    sw $t1, 4($sp)
+    sw $t2, 8($sp)
+    sw $t3, 12($sp)
+    sw $t4, 16($sp)
+    sw $t5, 20($sp)
+    sw $t6, 24($sp)
+
+    sll $t0, $a0, 24    # x inicial :calculo 1
+    srl $t0, $t0, 24    # x inicial :conclui
+    sll $t1, $a0, 16    # y inicial
+    srl $t1, $t1, 24    # y inicial :conclui
+
+    addi $t2, $zero, SCREEN_DIM_X    # 320
+    mul $t2, $t2, $t1   # Y*320
+    li $t1, GBA_SCREEN_PIXEL0  # Posição inical memoria
+    addu $t2, $t1, $t2  # Posição na memoria, para VGA, deslocamento apenas em Y
+    addu $t2, $t2, $t0  # Posição na memoria, para VGA, deslocamento Y e X
+    addu $t5, $a1, $zero# Posição memoria da figura
+
+    sll $t1, $a0, 8     # Largura
+    srl $t1, $t1, 24    # Largura :conclui
+    srl $t0, $a0, 24    # Altura
+    
+    add $t3, $zero, $zero   # Zera $t3
+    add $t4, $zero, $zero   # Zera $t4
+    addiu $t2, $t2, -320    # Correção
+loop1_draw_fig:
+    beq $t4, $t1, fim_draw_fig   # Acabou de printar figura
+    sub $t2, $t2, $t3   # Volta para posição delta X = 0
+    addiu $t2, $t2, 320     # Posição na memoria, para VGA, deslocado em Y
+    addiu $t4, $t4, 1   # Contador Y
+    add  $t3, $zero, $zero  # Zera Contador X
+loop2_draw_fig: 
+    beq $t3, $t0, loop1_draw_fig # Acabou uma linha
+    lw $t6, 0($t5)      # Le word, da figura
+    sw $t6, 0($t2)      # Grava word, na VGA
+    addiu $t2, $t2, 4   # Desloca X, onde $t2 é posição da memoria na VGA
+    addiu $t5, $t5, 4   # Desloca leitura da figura
+    addiu $t3, $t3, 4   # Contador linha
+    j loop2_draw_fig
+fim_draw_fig:
+    lw $t0, 0($sp)
+    lw $t1, 4($sp)
+    lw $t2, 8($sp)
+    lw $t3, 12($sp)
+    lw $t4, 16($sp)
+    lw $t5, 20($sp)
+    lw $t6, 24($sp)
+    addi $sp, $sp, 28
 end.animationOpponentPokemonAtack:
     jr $ra
 
