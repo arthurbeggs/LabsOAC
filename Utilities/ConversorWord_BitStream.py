@@ -31,8 +31,9 @@ def main(argv):
     fileData = '\n'+mFile.read()             # Read File
 
     # Break into substrings
-    vectorLines =  ''.join(fileData.split())
-    vectorLines = vectorLines.split(".word 0x")
+    vectorLines = fileData.rstrip('\r\n')
+    vectorLines =  ''.join(vectorLines.split())
+    vectorLines = vectorLines.split(".word0x")
     newVectorLine = vectorLines
 
     # take each substring and invert number
@@ -40,14 +41,18 @@ def main(argv):
     for i in range(len(vectorLines)):
         line = vectorLines[i]            # Get each substring
         newVectorLine[i] = ''
-        if(line.find(':')==-1):            # Check if is label
-            # Change to bigendian
-            newline = str(chr(int(line[6:8],16))) + str(chr(int(line[4:6],16)))+str(chr(int(line[2:4],16)))+str(chr(int(line[0:2],16)))
+        if((line.find(':')==-1) and line!=''):            # Check if is label
+            # Change to bigendian)
+            print(line,'...')
+            newline =  str(chr(int(line[0:2],16)))+str(chr(int(line[2:4],16))) + str(chr(int(line[4:6],16))) + str(chr(int(line[6:8],16)))
             newVectorLine[i] = newline
+            print(line,newline)
 
     # Make a new file
+    text = ''.join(newVectorLine)
+    print(text)
     mNewFile = open(outputfile,'w')
-    mNewFile.write(''.join(newVectorLine))
+    mNewFile.write(""+text)
     mNewFile.close()
     mFile.close()
     print 'Output file is "', outputfile,'"'
