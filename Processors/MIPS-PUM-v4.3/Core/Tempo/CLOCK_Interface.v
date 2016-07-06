@@ -81,7 +81,8 @@ assign divisor=fdiv-8'd1;
 
 always @(posedge CLK_CTRL)   // Divisores do clock
 begin
-	if (CLKCount == {divisor, 18'b0}) //Clock Slow
+	if (CLKCount == {10'b0, divisor, 8'b0}) //Clock Slow
+	// if (CLKCount == {divisor, 18'b0}) //Clock Slow
 		begin
 			CLKAutoSlow <= ~CLKAutoSlow;
 			CLKCount <= 26'b0;

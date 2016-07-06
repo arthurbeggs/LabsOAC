@@ -2543,7 +2543,6 @@ sdBusy:
 
 sdReadSector:
     sw      $a0, 0($s0)                     # &SD_INTERFACE_ADDR = $a0
-    nop
 
 sdWaitRead:
     lbu     $t1, 0($s1)                     # $t1 = SDCtrl
