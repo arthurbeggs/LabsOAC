@@ -4,7 +4,6 @@ import sys, getopt
 
 ##
 # Conversor from asm mips words to binary big endian
-#
 # @author Rafael
 # @version 0.01
 ##
@@ -31,10 +30,9 @@ def main(argv):
     mFile = open(inputfile,'r')        # Open File
     fileData = '\n'+mFile.read()             # Read File
 
-    #fileData = \n+".word 0x01020304\n.word 0x11121314"
-
     # Break into substrings
-    vectorLines = fileData.split("\n.word 0x")
+    vectorLines =  ''.join(fileData.split())
+    vectorLines = vectorLines.split(".word 0x")
     newVectorLine = vectorLines
 
     # take each substring and invert number
