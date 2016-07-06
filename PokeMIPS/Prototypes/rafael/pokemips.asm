@@ -225,9 +225,11 @@ PREVIEWS_HERO_STATE:    .word       0
 PLAYER_NAME:            .byte       0x00,0x00,0x00,0x00,0x00,0x00,0x00
 PLAYER_MONEY:           .word       0x00000300
 
-# Pokemons --------------------------------------------------------------------
+# Battle Images ---------------------------------------------------------------
 .include "img_pokemon_set.asm"
 .include "img_text_box.asm"
+.include "img_background_battle.asm"
+.include "img_status_box.asm"
 
 ###############################################################################
 # Text Segment

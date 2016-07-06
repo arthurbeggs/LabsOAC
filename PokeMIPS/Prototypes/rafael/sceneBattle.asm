@@ -21,6 +21,7 @@
 .eqv   PLAYER_POKEMON_SIZEPOS   0x30244C30
 .eqv   OPPONENT_POKEMON_SIZEPOS 0x30242088
 .eqv   BATTLE_TEXT_BOX_SIZEPOS  0xF0307000
+.eqv   OPPONENT_STATUS_SIZEPOS  0x58200E10
 
 # Damage ----------------------------------------------------------------------
 .eqv   OPPONENT_POKEMON_DAMAGE_HIT  2
@@ -78,12 +79,12 @@ OPPONENT_POKEMON4_ID:           .word    0x00000004
 OPPONENT_POKEMON5_ID:           .word    0x00000000
 OPPONENT_POKEMON6_ID:           .word    0x00000000
 
-OPPONENT_POKEMON1_HP:           .word    0x00000000
-OPPONENT_POKEMON2_HP:           .word    0x00000000
-OPPONENT_POKEMON3_HP:           .word    0x00000000
-OPPONENT_POKEMON4_HP:           .word    0x00000000
-OPPONENT_POKEMON5_HP:           .word    0x00000000
-OPPONENT_POKEMON6_HP:           .word    0x00000000
+OPPONENT_POKEMON1_HP:           .word    0x00000014
+OPPONENT_POKEMON2_HP:           .word    0x00000014
+OPPONENT_POKEMON3_HP:           .word    0x00000014
+OPPONENT_POKEMON4_HP:           .word    0x00000014
+OPPONENT_POKEMON5_HP:           .word    0x00000014
+OPPONENT_POKEMON6_HP:           .word    0x00000014
 
 OPPONENT_POKEMON1_LV:           .word    0x00000000
 OPPONENT_POKEMON2_LV:           .word    0x00000000
@@ -128,22 +129,24 @@ sceneBattleInit:
     sw $s6, 36($sp)
     sw $s7, 40($sp)
 
-    # Clear Screen
+    # Clear Screen and Draw background
     clear_screen
+    drawFig 0xF0A00000,background
+
 
     # Get Player Pokemon Data   
     la  $t0,PLAYER_POKEMON1_ID
     sw  _CURRENT_PLAYER_POKEMON_ID,0($t0)                # Save Current Player Pokemon ID
     jal getPokemonNumber
     # $v0 = Number of pokeoons
-    # Print Pokeball
+    # Print Pokeballs
 
     # Get Oponent Pokemon Data
     la  $t0,OPPONENT_POKEMON1_ID
     sw  _CURRENT_OPPONENT_POKEMON_ID,0($t0)                # Save Current Opponent Pokemon ID
     jal getPokemonNumber
     # $v0 = Number of pokeoons
-    # Print Pokeball
+    # Print Pokeballs
 
 sceneBattleStart:
     # Show Dialog Battle Animation
@@ -154,6 +157,8 @@ sceneBattleStart:
 
     # Print Opponent First Pokemon
     drawFig OPPONENT_POKEMON_SIZEPOS,pokeoac
+
+    #jal draw_opponentPokemonStatus
 
     setstate SCENE_BATTLE_PLAYER_TURN
 
@@ -256,7 +261,7 @@ sceneBattlePlayerDoMove:
     # Write Text
 
     # Write Text Move
-    jal animationOpponentPokemonAtack
+    #jal animationPlayerPokemonAtack
 
     # Moviment Will Be Always Hit
     lw $t1,24(_CURRENT_OPPONENT_POKEMON_ID)
@@ -434,6 +439,22 @@ end.draw_playerPokemonStatus:
 draw_opponentPokemonStatus:
     # Draw Opponent's Pokemon Status Box
     # ...
+    addi $sp, $sp, -12
+    sw $t8, 0($sp)
+    sw $a1, 4($sp)
+    sw $a2, 8($sp)
+    #Frame Stats
+    drawFig OPPONENT_STATUS_SIZEPOS, POKEMON_STATUS_BOX
+    addi $sp, $sp, 12
+    lw $t8, 0($sp)
+    lw $a1, 4($sp)
+    lw $a2, 8($sp)
+    addi $sp, $sp, 20
+    lw $a0, 0($sp)
+    lw $a1, 4($sp)
+    lw $a2, 8($sp)
+    lw $a3, 12($sp)
+    lw $ra, 16($sp)
 
     # Draw Pokemon Status
     addi  $sp,$sp,-4
@@ -445,7 +466,33 @@ end.draw_opponnetPokemonStatus:
     jr   $ra
 
 animationPlayerPokemonAtack:
-
+    addi $sp, $sp, -20
+    sw $a0, 0($sp)
+    sw $a1, 4($sp)
+    sw $a2, 8($sp)
+    sw $a3, 12($sp)
+    sw $ra, 16($sp)
+    la $t7,backSquirtle
+    la $t9, background
+#    li $s0, 0x  #---------
+animationPlayerPokemonAtack.nextPixelX:
+#    cleanAreaPokemon $t9    # "Limpa" tela
+    drawFig 0x30244c30, backSquirtle   # Frame 1 Pokemon
+    addiu $s0, $s0, 4   # Proxima Coluna
+    li $t0, 0x004c40  # Foram todas as colunas
+    bne $s0, $t0, animationPlayerPokemonAtack.nextPixelX# necessarias?
+    #Delay forçado###############
+    addiu $s0, $s0, -4  # Correção
+    drawFig 0x30244c40, backSquirtle
+    drawFig 0x30244c40, backSquirtle
+    drawFig 0x30244c40, backSquirtle
+    #############################
+animationPlayerPokemonAtack.previousPixelX:
+#    cleanAreaPokemon $t9    # "Limpa" tela  
+    drawFig 0x30242430 backSquirtle   # Frame 1 Pokemon
+    addiu $s0, $s0, -4  # Volta um Coluna
+    li $t0, 0x30244c30  # Foram todas as colunas
+    bne $s0, $t0, animationPlayerPokemonAtack.previousPixelX# necessarias?
 end.animationPlayerPokemonAtack:
     jr $ra
 
@@ -459,9 +506,9 @@ end.animationOpponentPokemonAtack:
 # @TODO Complete this
 ##
 animationPlayerPokemonWaiting:
-    #add $t7, %endereçoPokemon, $zero
-    #add $t8, %dadosPokemon, $zero
-    #add $t9, %background, $zero
+    la $t7, backSquirtle
+    la $t8, backSquirtle
+    la $t9, background
     # "Limpa" tela
     addiu $a1, $t9, 23040
     li $a0, 0xF0294800
