@@ -803,6 +803,7 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LE
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=61342" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=54504" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=sld_reserved_TopDE_FastCompilation_auto_signaltap_0_1_c4d3,basic,1,basic,1," -section_id auto_signaltap_0
+set_global_assignment -name MIF_FILE VGA/display.mif
 set_global_assignment -name VERILOG_FILE TopDE.v
 set_global_assignment -name VERILOG_FILE Parametros.v
 set_global_assignment -name VERILOG_FILE CPU/CPU.v
@@ -880,7 +881,6 @@ set_global_assignment -name VERILOG_FILE VGA/VgaAdapter.v
 set_global_assignment -name VERILOG_FILE VGA/VGA_Audio_PLL.v
 set_global_assignment -name QIP_FILE VGA/MemoryVGA.qip
 set_global_assignment -name VERILOG_FILE VGA/MemoryVGA.v
-set_global_assignment -name MIF_FILE VGA/display.mif
 set_global_assignment -name VERILOG_FILE Sintetizador/Sintetizador_Interface.v
 set_global_assignment -name VERILOG_FILE Sintetizador/Sintetizador.v
 set_global_assignment -name VERILOG_FILE Sintetizador/SineTable.v
@@ -933,5 +933,5 @@ set_global_assignment -name VECTOR_WAVEFORM_FILE Testes/TopDE2.vwf
 set_global_assignment -name SIGNALTAP_FILE Testes/stp1.stp
 set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_global_assignment -name CDF_FILE output_files/Chain2.cdf
-set_global_assignment -name SLD_FILE "C:/Users/Arthur/Documents/GitHub/LabsOAC/Processors/MIPS-PUM-v4.3/Core/Testes/stp1_auto_stripped.stp"
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name SLD_FILE "C:/Users/Arthur/Documents/GitHub/LabsOAC/Processors/MIPS-PUM-v4.3/Core/Testes/stp1_auto_stripped.stp"
