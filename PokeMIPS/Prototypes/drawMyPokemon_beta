@@ -1,0 +1,490 @@
+.data
+	.include "background.s"
+	.eqv SCREEN_DIM_X 320
+	.eqv GBA_SCREEN_PIXEL0 0xff003228
+.macro drawEnemyPokemonHP %dadosPokemon
+	addi $sp, $sp, -12
+	sw $t8, 0($sp)
+	sw $a1, 4($sp)
+	sw $a2, 8($sp)
+	add $t8, %dadosPokemon, $zero
+	#Frame Stats	
+	li $a1, 0x000E0010
+	li $a2, 0x00200058
+	drawFig $a1, $a2, $t8
+	addi $sp, $sp, 12
+	lw $t8, 0($sp)
+	lw $a1, 4($sp)
+	lw $a2, 8($sp)
+	addi $sp, $sp, 20
+	lw $a0, 0($sp)
+	lw $a1, 4($sp)
+	lw $a2, 8($sp)
+	lw $a3, 12($sp)
+	lw $ra, 16($sp)
+.end_macro
+
+.macro cleanEnemy %background
+	addi $sp, $sp, -12
+	sw $s3, 0($sp)
+	sw $a1, 4($sp)
+	sw $a2, 8($sp)
+	addiu $s3, %background, 3360		# Deslocamento da memoria para pegar no lugar certo
+	li $a1, 0x000e0000			# Posição
+	li $a2, 0x00010068			# Tamanho
+cleanEnemy_clsLine:
+	drawFig $a1, $a2, $s3 	# "Limpa uma linha onde o nosso pokemon esta na tela
+	addi $s3, $s3, 80	######
+	li $t0, 0x00010000	# Pula para proxima linha
+	add $a1, $a1, $t0	#####
+	li $t0, 0x00400000	# Foram todas as linhas
+	bne $a1, $t0, cleanEnemy_clsLine	# necessarias?
+	addi $sp, $sp, 12
+	lw $s3, 0($sp)
+	lw $a1, 4($sp)
+	lw $a2, 8($sp)
+.end_macro 
+
+.macro actDamageEnemy %endereçoPokemon, %endereçoDadosPokemon, %endereçoDano, %background
+################################################################################################
+# Primeira etapa
+	addi $sp, $sp, -24
+	sw $s3, 4($sp)
+    	sw $s2, 8($sp)
+    	sw $s1, 12($sp)
+    	sw $v0, 16($sp)
+    	sw $v1, 20($sp)
+    	sw $ra, 0($sp)
+	li $v0, 0x000E0010
+	li $v1, 0x00200058
+	drawFig $v0, $v1, %endereçoDadosPokemon
+	addi $t8, $zero, -2			# Quantidade de vezes que ele samba
+	addi $t9, $zero, 1
+actDamageEnemy_label:	
+    beq  $t8, $zero, actDamageEnemy_label3	# Quantidade de vezes que ele samba
+	li $v0, 0x00200088			# Enemy
+	li $v1, 0x00240034			# Enemy
+    beq $t9, $zero, actDamageEnemy_label2	# Desloca pra um lado ou nao
+	addiu $v0, $v0, 8			# Deslocamento de fato
+	addi $t9, $zero, 1			# Na proxima irá deslocar
+actDamageEnemy_label2:
+	addi $t9, $t9, -1
+	cleanEnemy %background
+	drawFig $v0, $v1, %endereçoPokemon	# Draw Enemy	
+	li $v0, 0x002800a0			# Damage
+	li $v1, 0x00160014			# Damage	
+	drawFig $v0, $v1, %endereçoDano		# Draw Damage
+	addiu $t8, $t8, 1			# Quantidade de vezes que ele samba
+	j actDamageEnemy_label
+actDamageEnemy_label3:
+################################################################################################
+# Segunda etapa
+	addi $sp, $sp, -4			# salva dados 
+	sw $a3, 0($sp)				# salva dados 
+	
+	addi $t8, $zero, 2
+	
+	actDamageEnemy_label5:
+	
+	addiu $a3, %background, 3360		# Deslocamento da memoria para pegar no lugar certo
+	li $v0, 0x000E0000			# Posição
+	li $v1, 0x003c00F0			# Tamanho
+	drawFig $v0, $v1, $a3			#"Limpa tela"
+
+	addi $t7, $zero, 2
+	actDamageEnemy_label4:
+	
+	cleanEnemy %background
+	
+	li $v0, 0x000E0010
+	li $v1, 0x00200058
+	drawFig $v0, $v1, %endereçoDadosPokemon
+	
+	cleanEnemy %background
+	
+	li $v0, 0x00100010
+	li $v1, 0x00200058
+	drawFig $v0, $v1, %endereçoDadosPokemon
+	
+	li $v0, 0x00200088			# Enemy
+	li $v1, 0x00240034			# Enemy
+	drawFig $v0, $v1, %endereçoPokemon	# Enemy
+	
+	addi $t7, $t7, -1
+	bne $t7, $zero, actDamageEnemy_label4
+	
+	addi $t8, $t8, -1
+	bne $t8, $zero, actDamageEnemy_label5
+	
+	addi $sp, $sp, 28
+	lw $a3, 0($sp)				# volta dados
+	lw $s3, 4($sp)
+    	lw $s2, 8($sp)
+    	lw $s1, 12($sp)
+    	lw $v0, 16($sp)
+    	lw $v1, 20($sp)
+    	lw $ra, 24($sp)
+.end_macro 
+		
+.macro drawFig %posicao, %tamanho, %imagem
+	sll $t0, %posicao, 16 	# x inicial :calculo 1
+	srl $t0, $t0, 16	# x inicial :conclui
+	srl $t1, %posicao, 16	# y inicial
+
+	addi $t2, $zero, 320	# 320
+	mul $t2, $t2, $t1	# Y*320
+	li $t1, 0xFF003228	# Posição inical memoria
+	addu $t2, $t1, $t2 	# Posição na memoria, para VGA, deslocamento apenas em Y
+	addu $t2, $t2, $t0	# Posição na memoria, para VGA, deslocamento Y e X
+	addu $t5, %imagem, $zero# Posição memoria da figura
+	
+	srl $t1, %tamanho, 16	# Altura
+	sll $t0, %tamanho, 16	# Largura :calculo 1
+	srl $t0, $t0, 16	# Largura :conclui
+	
+	add $t3, $zero, $zero	# Zera $t3
+	add $t4, $zero, $zero	# Zera $t4
+	addiu $t2, $t2, -320 	# Correção
+loop1_draw_fig:
+   beq $t4, $t1, fim_draw_fig 	# Acabou de printar figura
+	sub $t2, $t2, $t3	# Volta para posição delta X = 0
+	addiu $t2, $t2, 320 	# Posição na memoria, para VGA, deslocado em Y
+	addiu $t4, $t4, 1	# Contador Y
+	add  $t3, $zero, $zero	# Zera Contador X
+loop2_draw_fig:	
+   beq $t3, $t0, loop1_draw_fig	# Acabou uma linha
+	lw $t6, 0($t5)		# Le word, da figura
+	sw $t6, 0($t2)		# Grava word, na VGA
+	addiu $t2, $t2, 4	# Desloca X, onde $t2 é posição da memoria na VGA
+	addiu $t5, $t5, 4	# Desloca leitura da figura
+	addiu $t3, $t3, 4	# Contador linha
+	j loop2_draw_fig
+fim_draw_fig:
+.end_macro
+.macro actMyPokemonWaiting %endereçoPokemon, %dadosPokemon, %background
+	addi $sp, $sp, -20
+	sw $at, 0($sp)
+	sw $a1, 4($sp)
+	sw $a2, 8($sp)
+	sw $a3, 12($sp)
+	sw $ra, 16($sp)
+	
+	add $t7, %endereçoPokemon, $zero
+	add $t8, %dadosPokemon, $zero
+	add $t9, %background, $zero
+	# "Limpa area onde o nosso pokemon esta na tela
+	addiu $a3, $t9, 23040
+	li $a1, 0x00480000
+	li $a2, 0x002900F0
+	#drawFig $a1, $a2, %background 
+	drawFig $a1, $a2, $a3
+	#Frame 1 Pokemon
+	li $a1, 0x004c0030
+	li $a2, 0x00240030
+	drawFig $a1, $a2, $t7
+	#Frame 1 Stats
+	li $a1, 0x00480080
+	li $a2, 0x00280064
+	drawFig $a1, $a2, $t8
+	# "Limpa area onde o nosso pokemon esta na tela
+	addiu $a3, $t9, 23040
+	li $a1, 0x00480000
+	li $a2, 0x002900F0
+	#drawFig $a1, $a2, %background 
+	drawFig $a1, $a2, $a3
+	#Frame 2 Pokemon
+	li $a1, 0x004b0030
+	li $a2, 0x00240030
+	drawFig $a1, $a2, $t7
+	#Frame 2 Stats
+	li $a1, 0x00490080
+	li $a2, 0x00280064
+	drawFig $a1, $a2, $t8
+	addi $sp, $sp, 20
+	lw $a0, 0($sp)
+	lw $a1, 4($sp)
+	lw $a2, 8($sp)
+	lw $a3, 12($sp)
+	lw $ra, 16($sp)
+.end_macro
+
+.macro cleanAreaPokemon %background
+	addi $sp, $sp, -12
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	sw $a2, 8($sp)
+	addiu $a3, %background, 23040
+	li $a1, 0x00480030
+	li $a2, 0x00010048
+cleanAreaPokemon_clsLine:
+	drawFig $a1, $a2, $a3 	# "Limpa uma linha onde o nosso pokemon esta na tela
+	addi $a3, $a3, 80	######
+	li $t0, 0x00010000	# Pula para proxima linha
+	add $a1, $a1, $t0	#####
+	li $t0, 0x00700030	# Foram todas as linhas
+	bne $a1, $t0, cleanAreaPokemon_clsLine	# necessarias?
+	
+	lw $a0, 0($sp)
+	lw $a1, 4($sp)
+	lw $a2, 8($sp)
+	addi $sp, $sp, 12
+.end_macro
+.macro actMyPokemonAttacking %endereçoPokemon, %background
+	addi $sp, $sp, -20
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	sw $a2, 8($sp)
+	sw $a3, 12($sp)
+	sw $ra, 16($sp)
+	add $t7, %endereçoPokemon, $zero
+	add $t9, %background, $zero
+	li $s0, 0x004c0030	#---------
+nextPixelX:
+	cleanAreaPokemon $t9	# "Limpa" tela
+	li $a2, 0x00240030	
+	drawFig $s0, $a2, $t7	# Frame 1 Pokemon
+	addiu $s0, $s0, 4	# Proxima Coluna
+	li $t0, 0x004c0040	# Foram todas as colunas
+	bne $s0, $t0, nextPixelX# necessarias?
+	#Delay forçado###############
+	addiu $s0, $s0, -4	# Correção
+	drawFig $s0, $a2, $t7
+	drawFig $s0, $a2, $t7
+	drawFig $s0, $a2, $t7
+	#############################
+previousPixelX:
+	cleanAreaPokemon $t9	# "Limpa" tela
+	li $a2, 0x00240030	
+	drawFig $s0, $a2, $t7	# Frame 1 Pokemon
+	addiu $s0, $s0, -4	# Volta um Coluna
+	li $t0, 0x004c0030	# Foram todas as colunas
+	bne $s0, $t0, previousPixelX# necessarias?
+.end_macro
+
+.macro actDamageMy %endereçoPokemon, %endereçoDadosPokemon, %endereçoDano, %background
+################################################################################################
+# Primeira etapa
+	addi $sp, $sp, -24
+	sw $s3, 4($sp)
+    	sw $s2, 8($sp)
+    	sw $s1, 12($sp)
+    	sw $v0, 16($sp)
+    	sw $v1, 20($sp)
+    	sw $ra, 0($sp)
+	li $v0, 0x00480080
+	li $v1, 0x00280064
+	drawFig $v0, $v1, %endereçoDadosPokemon
+	addi $t8, $zero, -2			# Quantidade de vezes que ele samba
+	addi $t9, $zero, 1
+actDamageMy_label:	
+    beq  $t8, $zero, actDamageMy_label3	# Quantidade de vezes que ele samba
+	li $v0, 0x004c0030	# Draw me
+	li $v1, 0x00240030	# Draw me
+    beq $t9, $zero, actDamageMy_label2		# Desloca pra um lado ou nao
+	addiu $v0, $v0, 8			# Deslocamento de fato
+	addi $t9, $zero, 1			# Na proxima irá deslocar
+actDamageMy_label2:
+	addi $t9, $t9, -1
+	cleanAreaPokemon %background
+	drawFig $v0, $v1, %endereçoPokemon	# Draw me	
+	li $v0, 0x00500038			# Damage
+	li $v1, 0x00160014			# Damage
+	drawFig $v0, $v1, %endereçoDano		# Draw Damage
+	addiu $t8, $t8, 1			# Quantidade de vezes que ele samba
+	j actDamageMy_label
+actDamageMy_label3:
+################################################################################################
+# Segunda etapa
+	addi $sp, $sp, -4			# salva dados 
+	sw $a3, 0($sp)				# salva dados 
+	
+	addi $t8, $zero, 2
+	
+	actDamageMy_label5:
+	
+	addiu $a3, %background, 3360		# Deslocamento da memoria para pegar no lugar certo
+	li $a1, 0x00480000
+	li $a2, 0x002900F0			# Tamanho
+	drawFig $v0, $v1, $a3			#"Limpa tela"
+
+	addi $t7, $zero, 2
+	actDamageMy_label4:
+	
+	cleanAreaPokemon %background
+	
+	li $v0, 0x00500080
+	li $v1, 0x00280064
+	drawFig $v0, $v1, %endereçoDadosPokemon
+	
+	cleanAreaPokemon %background
+	
+	li $v0, 0x00500080
+	li $v1, 0x00280064
+	drawFig $v0, $v1, %endereçoDadosPokemon
+	
+	li $v0, 0x004c0030	# Draw me
+	li $v1, 0x00240030	# Draw me
+	drawFig $v0, $v1, %endereçoPokemon	# Enemy
+	
+	addi $t7, $t7, -1
+	bne $t7, $zero, actDamageMy_label4
+	
+	addi $t8, $t8, -1
+	bne $t8, $zero, actDamageMy_label5
+	
+	addi $sp, $sp, 28
+	lw $a3, 0($sp)				# volta dados
+	lw $s3, 4($sp)
+    	lw $s2, 8($sp)
+    	lw $s1, 12($sp)
+    	lw $v0, 16($sp)
+    	lw $v1, 20($sp)
+    	lw $ra, 24($sp)
+.end_macro
+.macro drawFig %sizepos, %imagem
+    move   $a0, %sizepos
+    move   $a1, %imagem
+
+    jal  draw_figure
+.end_macro
+
+#############################################################################################
+.text	
+	#la $a0, imagem
+	#move $s5, $a0
+	#drawEnemyPokemonHP $a0
+	li $a1, 0x00000000
+	li $a2, 0x00A000f0
+	la $a1, background
+	la $a2, background
+	la $a3, background
+	li $a0, 0x26384B28
+	jal cleanBackground
+	#li $a0, 0x48A03030
+	#drawFig $a1, $a2, $a3
+
+	
+	
+cleanBackground:
+	addi $sp, $sp, -32
+	sw $a0, 0($sp)
+    	sw $t1, 4($sp)
+    	sw $t2, 8($sp)
+    	sw $t3, 12($sp)
+    	sw $t4, 16($sp)
+ 	sw $t5, 24($sp)
+ 	sw $t6, 28($sp)
+ 	
+	sll $t0, $a0, 24 	# x inicial :calculo 1
+	srl $t0, $t0, 24	# x inicial :conclui
+	sll $t1, $a0, 16	# y inicial
+	srl $t1, $t1, 24	# y inicial :conclui
+	sll $t2, $a0, 8		# Largura
+	srl $t2, $t2, 24	# Largura :conclui
+	srl $t3, $a0, 24	# Altura
+	
+	####### Parte que esta sendo usada apenas para integração de funções e que será modificada
+	#add $t7, $zero, $t1
+	#sll $t7, $t7, 16
+	#addu $t7, $t7, $t0
+	
+	#addi $t8, $zero, 1	#linha a linha
+	#sll $t8, $t8, 16
+	#addu $t8, $t8, $t2
+	#######
+	
+	addiu $t4, $zero, 240	# 320
+	mul $t4, $t4, $t1	# Y*320
+	add $t4, $t4, $t0	# Y*320 + X
+	la $t5, background	# Background
+	add $t4, $t4, $t5	# Background + (Y*320 + X)*4 = endereço correto
+	
+	add $t1, $zero, $t3	# Y final, acabou utilidade de saber a altura
+	addi $t3, $zero, 240	# Tamanho maximo da tela
+	sub $t3, $t3, $t2	# Quantidade de memorias a pular, por causa da largura
+	
+	addu $a0, $zero, $t2
+	sll $a0, $a0, 8
+	addi  $a0, $a0, 1
+	sll $a0, $a0, 8
+	addu $a0, $a0, $t1
+	sll $a0, $a0, 8
+	addu $a0, $a0, $t0
+	
+	add $t6, $zero, $zero
+	
+cleanBackground_label1:
+	drawFig $a0, $t4 			# "Limpa uma linha onde o nosso pokemon esta na tela
+	add $t4, $t4, $t2			# Endereço do background "+linha impressa"
+	
+	add $t4, $t4, $t3			# Endereço do background "+valor até proxima linha"
+	li $t5, 0x00000100			# Pula para proxima linha
+	add $a0, $a0, $t5			#####
+	addi $t6, $t6, 1
+	bne $t1, $t6, cleanBackground_label1	# necessarias?
+	
+	lw $a0, 0($sp)
+    	lw $t1, 4($sp)
+    	lw $t2, 8($sp)
+    	lw $t3, 12($sp)
+    	lw $t4, 16($sp)
+ 	lw $t5, 24($sp)
+ 	lw $t6, 28($sp)
+ 	addi $sp, $sp, 32
+ 	jr $ra
+ 	
+draw_figure:
+    addi $sp, $sp, -28
+    sw $t0, 0($sp)
+    sw $t1, 4($sp)
+    sw $t2, 8($sp)
+    sw $t3, 12($sp)
+    sw $t4, 16($sp)
+    sw $t5, 20($sp)
+    sw $t6, 24($sp)
+
+    sll $t0, $a0, 24    # x inicial :calculo 1
+    srl $t0, $t0, 24    # x inicial :conclui
+    sll $t1, $a0, 16    # y inicial
+    srl $t1, $t1, 24    # y inicial :conclui
+
+    addi $t2, $zero, SCREEN_DIM_X    # 320
+    mul $t2, $t2, $t1   # Y*320
+    li $t1, GBA_SCREEN_PIXEL0  # Posição inical memoria
+    addu $t2, $t1, $t2  # Posição na memoria, para VGA, deslocamento apenas em Y
+    addu $t2, $t2, $t0  # Posição na memoria, para VGA, deslocamento Y e X
+    addu $t5, $a1, $zero# Posição memoria da figura
+
+    sll $t0, $a0, 8     # Largura
+    srl $t0, $t0, 24    # Largura :conclui
+    srl $t1, $a0, 24    # Altura
+    
+    add $t3, $zero, $zero   # Zera $t3
+    add $t4, $zero, $zero   # Zera $t4
+    addiu $t2, $t2, -320    # Correção
+loop1_draw_fig:
+   beq $t4, $t1, fim_draw_fig   # Acabou de printar figura
+    sub $t2, $t2, $t3   # Volta para posição delta X = 0
+    addiu $t2, $t2, 320     # Posição na memoria, para VGA, deslocado em Y
+    addiu $t4, $t4, 1   # Contador Y
+    add  $t3, $zero, $zero  # Zera Contador X
+loop2_draw_fig: 
+   beq $t3, $t0, loop1_draw_fig # Acabou uma linha
+    lw $t6, 0($t5)      # Le word, da figura
+    sw $t6, 0($t2)      # Grava word, na VGA
+    addiu $t2, $t2, 4   # Desloca X, onde $t2 é posição da memoria na VGA
+    addiu $t5, $t5, 4   # Desloca leitura da figura
+    addiu $t3, $t3, 4   # Contador linha
+    j loop2_draw_fig
+fim_draw_fig:
+    lw $t0, 0($sp)
+    lw $t1, 4($sp)
+    lw $t2, 8($sp)
+    lw $t3, 12($sp)
+    lw $t4, 16($sp)
+    lw $t5, 20($sp)
+    lw $t6, 24($sp)
+    addi $sp, $sp, 28
+    jr  $ra
+	
+FIM1: j cleanBackground
