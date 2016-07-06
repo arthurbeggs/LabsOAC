@@ -56,27 +56,27 @@
 .data
 #tela
 .eqv	VGAiniAdress			0xFF000000
-.eqv	SCREENiniAdress			#0x00000000
+.eqv	SCREENiniAdress			0x00000000
 .eqv	VGAsize					0x00011BFF
-.eqv	SCREENSize				#0x00000000
+.eqv	SCREENSize				0x00000000
 .eqv	VGAendAdress			0xFF011BFF
-.eqv	SCREENendAdress			#0x00000000
+.eqv	SCREENendAdress			0x00000000
 
 #MENUS
-.eqv	BMenu					#0x00000000
-.eqv	AMenu					#0x00000000
+.eqv	BMenu					0x00000000
+.eqv	AMenu					0x00000000
 
 #seta
-.eqv	ps1						#0x00000000
-.eqv	ps2						#0x00000000
-.eqv	ps3						#0x00000000
-.eqv	ps4						#0x00000000
-.eqv	ps5						#0x00000000
-.eqv	ps6						#0x00000000
-.eqv	ps7						#0x00000000
+.eqv	ps1						0x00000000
+.eqv	ps2						0x00000000
+.eqv	ps3						0x00000000
+.eqv	ps4						0x00000000
+.eqv	ps5						0x00000000
+.eqv	ps6						0x00000000
+.eqv	ps7						0x00000000
 
 #escrever azul
-.eqv	pta						#0x00000000
+.eqv	pta						0x00000000
 
 
 
@@ -118,7 +118,7 @@ jal PRINTA_TELA
 ########
 
 SETA:
-la $
+
 
 
 
@@ -197,7 +197,7 @@ MENU_TESTE_TECLADO:
 	j	MENU_FIM_TESTE_TECLADO
 
 # Teste A
-	TESTE_A:
+	MENU_TESTE_A:
 	la	$t5, 0x1C000000
 	bne	$t4, $t5, MENU_TESTE_D
 
@@ -205,7 +205,7 @@ MENU_TESTE_TECLADO:
 	j	MENU_FIM_TESTE_TECLADO
 
 	# Teste D
-	TESTE_D:
+	MENU_TESTE_D:
 	la	$t5, 0x23000000
 	bne	$t4, $t5, MENU_TESTE_M
 
@@ -238,7 +238,6 @@ MENU_TESTE_TECLADO:
 	
 MENU_FIM_TESTE_TECLADO:
 
-li	Acao, 1					# Realizar ação.
 la	$t6, 0xFFFF0100			# Buffer0 Teclado.
 la	$t7, 0xFFFF0104			# Buffer1 Teclado.
 li	$t8, 0
@@ -251,7 +250,7 @@ or	$t1, $t1, $t5
 sll	$t0, $t0, 8
 
 addi	$t2, $t2, 1				# i++.
-beq		$t2, $t3, FIM_LEITURA	# Condição de parada.
+beq		$t2, $t3, MENU_FIM_LEITURA	# Condição de parada.
 j	MENU_VARBUFFER	
 MENU_FIM_LEITURA:
 
@@ -340,6 +339,33 @@ jr $ra
 #######################################################################################################################
 #######################################################################################################################
 
+##################
+# PASSA_16_BYTES #
+##################
+
+PASSA_16_BYTES:
+# Argumentos:
+# 	$a0 = Início endereço de origem.
+# 	$a1 = Início endereço de destino.
+# Temporais usados:
+#	$a2.
+# Retorno
+#	n/a 
+
+lw		$a2, 0($a0)
+sw 		$a2, 0($a1)
+lw		$a2, 4($a0)
+sw 		$a2, 4($a1)
+lw		$a2, 8($a0)
+sw 		$a2, 8($a1)
+lw		$a2, 12($a0)
+sw 		$a2, 12($a1)
+jr		$ra
+
+
+#######################################################################################################################
+#######################################################################################################################
+
 
 ########
 # FIM  #
@@ -348,4 +374,4 @@ FimMenu:
 lw $ra, 4($sp)
 addiu $sp, $sp, 4
 
-j VOLTA_MENU
+VOLTA_MENU: j VOLTA_MENU
