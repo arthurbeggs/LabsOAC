@@ -19,8 +19,18 @@
 
 # Screen Elements Position SIZEpos (YYXXxxyy) ---------------------------------
 .eqv   PLAYER_POKEMON_SIZEPOS   0x30244C30
-.eqv   OPPONENT_POKEMON_SIZEPOS 0x30244C30
+.eqv   OPPONENT_POKEMON_SIZEPOS 0x30242088
 .eqv   BATTLE_TEXT_BOX_SIZEPOS  0xF0307000
+
+# Damage ----------------------------------------------------------------------
+.eqv   OPPONENT_POKEMON_DAMAGE_HIT  2
+.eqv   PLAYER_POKEMON_DAMAGE_HIT    3
+
+###############################################################################
+# Registers MAP
+###############################################################################
+.eqv   _CURRENT_PLAYER_POKEMON_ID   $s1  # Game State
+.eqv   _CURRENT_OPPONENT_POKEMON_ID $s2  # Hero State
 
 ###############################################################################
 # Memory Segment - "Variables"
@@ -36,48 +46,35 @@ PLAYER_POKEMON4_ID:           .word    0x00000004
 PLAYER_POKEMON5_ID:           .word    0x00000000
 PLAYER_POKEMON6_ID:           .word    0x00000000
 
-PLAYER_POKEMON1_HP:           .word    0x00000000
-PLAYER_POKEMON2_HP:           .word    0x00000000
-PLAYER_POKEMON3_HP:           .word    0x00000000
-PLAYER_POKEMON4_HP:           .word    0x00000000
-PLAYER_POKEMON5_HP:           .word    0x00000000
-PLAYER_POKEMON6_HP:           .word    0x00000000
+PLAYER_POKEMON1_HP:           .word    0x00000014
+PLAYER_POKEMON2_HP:           .word    0x00000014
+PLAYER_POKEMON3_HP:           .word    0x00000014
+PLAYER_POKEMON4_HP:           .word    0x00000014
+PLAYER_POKEMON5_HP:           .word    0x00000014
+PLAYER_POKEMON6_HP:           .word    0x00000014
 
-PLAYER_POKEMON1_LV:           .word    0x00000000
-PLAYER_POKEMON2_LV:           .word    0x00000000
-PLAYER_POKEMON3_LV:           .word    0x00000000
-PLAYER_POKEMON4_LV:           .word    0x00000000
-PLAYER_POKEMON5_LV:           .word    0x00000000
-PLAYER_POKEMON6_LV:           .word    0x00000000
+PLAYER_POKEMON1_LV:           .word    0x00000005
+PLAYER_POKEMON2_LV:           .word    0x00000005
+PLAYER_POKEMON3_LV:           .word    0x00000005
+PLAYER_POKEMON4_LV:           .word    0x00000005
+PLAYER_POKEMON5_LV:           .word    0x00000005
+PLAYER_POKEMON6_LV:           .word    0x00000005
 
 PLAYER_POKEMON1_MOVE1:         .byte    0x00
-PLAYER_POKEMON1_MOVE2:         .byte    0x00
-PLAYER_POKEMON1_MOVE3:         .byte    0x00
-PLAYER_POKEMON1_MOVE4:         .byte    0x00
-
 PLAYER_POKEMON2_MOVE1:         .byte    0x00
-PLAYER_POKEMON2_MOVE2:         .byte    0x00
-PLAYER_POKEMON2_MOVE3:         .byte    0x00
-PLAYER_POKEMON2_MOVE4:         .byte    0x00
-
 PLAYER_POKEMON3_MOVE1:         .byte    0x00
-PLAYER_POKEMON3_MOVE2:         .byte    0x00
-PLAYER_POKEMON3_MOVE3:         .byte    0x00
-PLAYER_POKEMON3_MOVE4:         .byte    0x00
-
 PLAYER_POKEMON4_MOVE1:         .byte    0x00
-PLAYER_POKEMON4_MOVE2:         .byte    0x00
-PLAYER_POKEMON4_MOVE3:         .byte    0x00
-PLAYER_POKEMON4_MOVE4:         .byte    0x00
+PLAYER_POKEMON5_MOVE1:         .byte    0x00
+PLAYER_POKEMON6_MOVE1:         .byte    0x00
 
 # Opponent Data ----------------------------------------------------------------
 OPPONENT_ID:
 
 # Opponent Pokemoon Data -------------------------------------------------------
-OPPONENT_POKEMON1_ID:           .word    0x00000000
-OPPONENT_POKEMON2_ID:           .word    0x00000000
-OPPONENT_POKEMON3_ID:           .word    0x00000000
-OPPONENT_POKEMON4_ID:           .word    0x00000000
+OPPONENT_POKEMON1_ID:           .word    0x00000001
+OPPONENT_POKEMON2_ID:           .word    0x00000002
+OPPONENT_POKEMON3_ID:           .word    0x00000003
+OPPONENT_POKEMON4_ID:           .word    0x00000004
 OPPONENT_POKEMON5_ID:           .word    0x00000000
 OPPONENT_POKEMON6_ID:           .word    0x00000000
 
@@ -96,24 +93,11 @@ OPPONENT_POKEMON5_LV:           .word    0x00000000
 OPPONENT_POKEMON6_LV:           .word    0x00000000
 
 OPPONENT_POKEMON1_MOVE1:         .byte    0x00
-OPPONENT_POKEMON1_MOVE2:         .byte    0x00
-OPPONENT_POKEMON1_MOVE3:         .byte    0x00
-OPPONENT_POKEMON1_MOVE4:         .byte    0x00
-
 OPPONENT_POKEMON2_MOVE1:         .byte    0x00
-OPPONENT_POKEMON2_MOVE2:         .byte    0x00
-OPPONENT_POKEMON2_MOVE3:         .byte    0x00
-OPPONENT_POKEMON2_MOVE4:         .byte    0x00
-
 OPPONENT_POKEMON3_MOVE1:         .byte    0x00
-OPPONENT_POKEMON3_MOVE2:         .byte    0x00
-OPPONENT_POKEMON3_MOVE3:         .byte    0x00
-OPPONENT_POKEMON3_MOVE4:         .byte    0x00
-
 OPPONENT_POKEMON4_MOVE1:         .byte    0x00
-OPPONENT_POKEMON4_MOVE2:         .byte    0x00
-OPPONENT_POKEMON4_MOVE3:         .byte    0x00
-OPPONENT_POKEMON4_MOVE4:         .byte    0x00
+OPPONENT_POKEMON5_MOVE1:         .byte    0x00
+OPPONENT_POKEMON6_MOVE1:         .byte    0x00
 
 .text
 ###############################################################################
@@ -149,14 +133,14 @@ sceneBattleInit:
 
     # Get Player Pokemon Data   
     la  $t0,PLAYER_POKEMON1_ID
-    sw  $s1,0($t0)                # Save Current Player Pokemon ID
+    sw  _CURRENT_PLAYER_POKEMON_ID,0($t0)                # Save Current Player Pokemon ID
     jal getPokemonNumber
     # $v0 = Number of pokeoons
     # Print Pokeball
 
     # Get Oponent Pokemon Data
     la  $t0,OPPONENT_POKEMON1_ID
-    sw  $s2,0($t0)                # Save Current Opponent Pokemon ID
+    sw  _CURRENT_OPPONENT_POKEMON_ID,0($t0)                # Save Current Opponent Pokemon ID
     jal getPokemonNumber
     # $v0 = Number of pokeoons
     # Print Pokeball
@@ -166,10 +150,10 @@ sceneBattleStart:
     drawFig BATTLE_TEXT_BOX_SIZEPOS,TEXT_BOX_DIALOG
 
     # Print Player First Pokemon ($s1)
-    drawFig PLAYER_POKEMON_SIZEPOS,squirtle
+    drawFig PLAYER_POKEMON_SIZEPOS,backSquirtle
 
     # Print Opponent First Pokemon
-    drawFig OPPONENT_POKEMON_SIZEPOS,charmander
+    drawFig OPPONENT_POKEMON_SIZEPOS,pokeoac
 
     setstate SCENE_BATTLE_PLAYER_TURN
 
@@ -257,12 +241,36 @@ sceneBattleFlee:
 # Player Turn
 ##
 sceneBattlePlayerTurn:
-    drawFig BATTLE_TEXT_BOX_SIZEPOS,TEXT_BOX_BATTLE_MOVES
-    drawFig BATTLE_TEXT_BOX_SIZEPOS,TEXT_BOX_DIALOG
 
+sceneBattlePlayerSelectMove:
+    #jal animationPlayerPokemonWaiting
+
+    # Player Just Have One Movement
+    setstate BATTLE_ATACK_MENU1
+
+sceneBattlePlayerMove1:
+    drawFig BATTLE_TEXT_BOX_SIZEPOS,TEXT_BOX_BATTLE_MOVES
+    
+sceneBattlePlayerDoMove:
+    drawFig BATTLE_TEXT_BOX_SIZEPOS,TEXT_BOX_DIALOG
+    # Write Text
+
+    # Write Text Move
+    jal animationOpponentPokemonAtack
+
+    # Moviment Will Be Always Hit
+    lw $t1,24(_CURRENT_OPPONENT_POKEMON_ID)
+    addi $t1,$t1,PLAYER_POKEMON_DAMAGE_HIT
+
+    # Check HP == 0
+    sltu $t0,$t1,$0
+    beq  $t0,$0,sceneBattleOpponentDefeated
+
+endsceneBattlePlayerTurn:
+    sw $t1,24(_CURRENT_OPPONENT_POKEMON_ID)
     # After Everything Change to opponent
     setstate SCENE_BATTLE_OPPONENT_TURN
-endsceneBattlePlayerTurn:
+
     # Select Next Action
     j  sceneBattleLoop
 
@@ -271,14 +279,31 @@ endsceneBattlePlayerTurn:
 ##
 sceneBattleOpponentTurn:
     # Show Dialog Battle Animation
+
+    jal animationOpponentPokemonAtack
+
+    # Write Text Move
+    # Moviment Will Be Always Hit
+    lw $t1,24(_CURRENT_PLAYER_POKEMON_ID)             # 6*4 bytes
+    addi $t1,$t1,OPPONENT_POKEMON_DAMAGE_HIT
+
+
     drawFig BATTLE_TEXT_BOX_SIZEPOS,TEXT_BOX_DIALOG
+
+    # Check HP == 0
+    sltu $t0,$t1,$0
+    beq  $t0,$0,sceneBattlePlayerDefeated
+
+endsceneBattleOpponentTurn:
+    sw $t1,24(_CURRENT_PLAYER_POKEMON_ID)
     # After Everything Change to Player
     setstate SCENE_BATTLE_PLAYER_TURN
-endsceneBattleOpponentTurn:
+
     # Select Next Action
     j  sceneBattleLoop
 
 sceneBattleOpponentDefeated:
+    sw $0,24(_CURRENT_OPPONENT_POKEMON_ID)
     # Show Animation Player Defeated
     # Clear Opponent Pokemon
     # Calc Prize Amount
@@ -290,6 +315,7 @@ sceneBattleOpponentDefeated:
     j    sceneBattleOver
 
 sceneBattlePlayerDefeated:
+    sw $t0,24(_CURRENT_PLAYER_POKEMON_ID)
     # Show Animation Player Defeated
     # Clear Player Pokemon
     # Calc Amount Money Lost
@@ -418,10 +444,24 @@ draw_opponentPokemonStatus:
 end.draw_opponnetPokemonStatus:
     jr   $ra
 
+animationPlayerPokemonAtack:
+
+end.animationPlayerPokemonAtack:
+    jr $ra
+
+animationOpponentPokemonAtack:
+
+end.animationOpponentPokemonAtack:
+    jr $ra
+
+##
+#
+# @TODO Complete this
+##
 animationPlayerPokemonWaiting:
-    add $t7, %endereçoPokemon, $zero
-    add $t8, %dadosPokemon, $zero
-    add $t9, %background, $zero
+    #add $t7, %endereçoPokemon, $zero
+    #add $t8, %dadosPokemon, $zero
+    #add $t9, %background, $zero
     # "Limpa" tela
     addiu $a1, $t9, 23040
     li $a0, 0xF0294800
@@ -431,14 +471,19 @@ animationPlayerPokemonWaiting:
     li $a0,0x30244c30
     jal  draw_figure
     #Frame 1 Stats
-    drawFig 0x64284880, $t8
+    add $a1,$0,$t8
+    li $a0,0x64284880
+    jal  draw_figure
     # "Limpa" tela
     addiu $a1, $t9, 23040
-    #drawFig $a1, $a2, %background #
-    drawFig 0xF0294800, $a3
+    li $a0,0xF0294800
+    jal  draw_figure
     #Frame 2 Pokemom
-    drawFig 0x30244b30, $t7
-    #Frame 2 Stats    
-    drawFig 0x64284980, $t8
+    add $a1,$0,$t7
+    li $a0,0x30244b30
+    jal  draw_figure
+    #Frame 2 Stats
+    add $a1,$0,$t8
+    li $a0,0x64284980
 end.animationPlayerPokemonWaiting:
     jr $ra

@@ -1,7 +1,7 @@
 ##
 # PokeMips - Drawing Functions
 # "Battle Scene"
-# @version 0.1 First Complete function
+# @version 0.1 First Complete
 # @authors Gabriel
 ##
 

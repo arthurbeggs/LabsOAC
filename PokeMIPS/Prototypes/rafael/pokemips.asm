@@ -62,17 +62,6 @@
 ###############################################################################
 # Macro Segment - Often repeted Routines
 ###############################################################################
-.macro drawbox %posX,%posY,%sizeX,%sizeY
-    print_rectangle %posX,%posY,%sizeX,%sizeY,COLOR_BLACK
-.end_macro
-
-.macro drawtextbox %posX,%posY,%sizeX,%sizeY,%msg
-    drawbox %posX,%posY,%sizeX,%sizeY
-.end_macro
-
-.macro drawDialogText %msg
-       print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,88,COLOR_WHITE
-.end_macro
 
 .macro printstr %str, %posx,%posy
        la     $a0,%str
