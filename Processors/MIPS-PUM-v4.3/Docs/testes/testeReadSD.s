@@ -48,20 +48,28 @@ main:
     li      $v0, 49                     # Syscall 49 - SD Card Read
     syscall
 
+    la      $a0, SD_DATA_ADDR
+    la      $a1, USER_DATA              # Usado para verificação dos dados lidos
+    # la      $a1, VGA_INI_ADDR
+    la      $a2, VGA_QTD_BYTE
 
-# Usado para verificar os dados lidos usando o In System Memory Content Editor
-    la      $t0, VGA_INI_ADDR
-    la      $t1, USER_DATA
-    li      $t3, VGA_QTD_BYTE
+    li      $v0, 49                     # Syscall 49 - SD Card Read
+    syscall
 
-writeVGA:
-    lw      $t2, 0($t1)
-    sw      $t2, 0($t0)
-    addi    $t0, $t0, 4
-    addi    $t1, $t1, 4
-    addi    $t3, $t3, -4
-    slti    $t4, $t3, 1
-    beq     $t4, $zero, writeVGA
+
+# # Usado para verificar os dados lidos usando o In System Memory Content Editor
+#     la      $t0, VGA_INI_ADDR
+#     la      $t1, USER_DATA
+#     li      $t3, VGA_QTD_BYTE
+
+# writeVGA:
+#     lw      $t2, 0($t1)
+#     sw      $t2, 0($t0)
+#     addi    $t0, $t0, 4
+#     addi    $t1, $t1, 4
+#     addi    $t3, $t3, -4
+#     slti    $t4, $t3, 1
+#     beq     $t4, $zero, writeVGA
 
 end:
     li      $v0, 10                     # Syscal 10 - exit
