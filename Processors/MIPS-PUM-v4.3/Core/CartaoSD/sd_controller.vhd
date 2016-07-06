@@ -16,20 +16,22 @@ use ieee.numeric_std.all;
 
 entity sd_controller is
 port (
-    cs      : out   std_logic;
-    mosi    : out   std_logic;
-    miso    : in    std_logic;
-    sclk    : out   std_logic;
+    cs          : out       std_logic;
+    mosi        : out       std_logic;
+    miso        : in        std_logic;
+    sclk        : out       std_logic;
 
-    rd      : in    std_logic;
-    wr      : in    std_logic;
-    dm_in   : in    std_logic;                      -- data mode, 0 = write continuously, 1 = write single block
-    reset   : in    std_logic;
-    din     : in    std_logic_vector(7 downto 0);
-    dout    : out   std_logic_vector(7 downto 0);
-    address : in    std_logic_vector(31 downto 0);  -- Endereço do byte a ser lido
-    iCLK    : in    std_logic;                      -- twice the SPI clk
-    idleSD  : out   std_logic_vector(3 downto 0)    -- Indica se o controlador está pronto para realizar uma nova leitura. idleSD ? BUSY : READY
+    rd          : in        std_logic;
+    wr          : in        std_logic;
+    dm_in       : in        std_logic;                      -- data mode, 0 = write continuously, 1 = write single block
+    reset       : in        std_logic;
+    din         : in        std_logic_vector(7 downto 0);
+    dout        : buffer    std_logic_vector(31 downto 0);
+    address     : in        std_logic_vector(31 downto 0);  -- Endereço do byte a ser lido
+    iCLK        : in        std_logic;                      -- twice the SPI clk
+    oSDMemClk   : out       std_logic;
+    wordReady   : out       std_logic;
+    idleSD      : out       std_logic_vector(3 downto 0)    -- Indica se o controlador está pronto para realizar uma nova leitura. idleSD ? BUSY : READY
 );
 
 end sd_controller;
@@ -77,6 +79,7 @@ signal response_mode    : std_logic := '1';
 signal data_sig         : std_logic_vector(7 downto 0) := x"00";
 
 signal clk              : std_logic := '0';
+signal word_received    : std_logic := '0';
 signal status           : std_logic_vector(3 downto 0);
 
 COMPONENT CLK_Divider PORT (
@@ -94,8 +97,9 @@ begin
     );
 
     process(clk, reset, dm_in)
-        variable byte_counter   : integer range 0 to 1;                 -- NOTE: Quantidade de bytes de dado a serem lidos.
-        variable bit_counter    : integer range 0 to 255;
+        variable byte_counter       : integer range 0 to 512;             -- NOTE: Quantidade de bytes de dado a serem lidos.
+        variable bit_counter        : integer range 0 to 255;
+        variable full_word_counter  : integer range 0 to 3;
     begin
         data_mode <= dm_in;
 
@@ -111,6 +115,8 @@ begin
                         sclk_sig        <= '0';
                         cmd_out         <= (others => '1');
                         byte_counter    := 0;
+                        full_word_counter   := 0;
+                        word_received   <= '0';
                         cmd_mode        <= '1';                 -- 0=data, 1=command
                         response_mode   <= '1';                 -- 0=data, 1=command
                         bit_counter     := 255;
@@ -159,7 +165,7 @@ begin
 
                     when CMD16 =>                                       -- SET_BLOCKLEN to 1 byte
                         status          <= x"7";
-                        cmd_out         <= x"FF50000000012B";
+                        cmd_out         <= x"FF50000002002B";
                         bit_counter     := 55;
                         return_state    <= IDLE;
                         state           <= SEND_CMD;
@@ -184,7 +190,8 @@ begin
                     when READ_BLOCK_WAIT =>                             -- NOTE: Recebe o Start Block e prepara para ler os dados
                         status          <= x"9";
                         if (sclk_sig = '1' and miso = '0') then
-                            byte_counter    := 1;                       -- NOTE: Número de bytes de dado
+                            byte_counter    := 512;                     -- NOTE: Número de bytes de dado
+                            full_word_counter   := 0;
                             bit_counter     := 7;
                             return_state    <= READ_BLOCK_DATA;
                             state           <= RECEIVE_BYTE;
@@ -193,6 +200,7 @@ begin
 
                     when READ_BLOCK_DATA =>
                         status          <= x"A";
+                        word_received   <= '0';
                         if (byte_counter = 0) then
                             bit_counter     := 7;
                             return_state    <= READ_BLOCK_CRC;
@@ -240,8 +248,15 @@ begin
                             recv_data       <= recv_data(6 downto 0) & miso;
                             if (bit_counter = 0) then
                                 state           <= return_state;
-                                if (byte_counter = 1) then              -- NOTE: Seleciona somente bytes de dado
-                                    dout            <= recv_data(6 downto 0) & miso;
+                                if (byte_counter > 0) then              -- NOTE: Seleciona somente bytes de dado
+                                    dout            <= recv_data(6 downto 0) & miso & dout(31 downto 8);
+                                    if (full_word_counter = 3) then
+                                        full_word_counter   := 0;
+                                        word_received       <= '1';
+                                    else
+                                        full_word_counter   := full_word_counter + 1;
+                                        word_received       <= '0';
+                                    end if;
                                 end if;
                             else
                                 bit_counter     := bit_counter - 1;
@@ -319,8 +334,10 @@ begin
         end if;
     end process;
 
-idleSD  <= status;
-sclk    <= sclk_sig;
-mosi    <= cmd_out(55) when cmd_mode='1' else data_sig(7);
+idleSD      <= status;
+sclk        <= sclk_sig;
+mosi        <= cmd_out(55) when cmd_mode='1' else data_sig(7);
+oSDMemClk   <= clk;
+wordReady   <= word_received;
 
 end rtl;

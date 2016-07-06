@@ -471,29 +471,29 @@ VGA_Interface VGA0 (
 /* ************************* Audio CODEC Interface ************************** */
 wire audio_clock_flip_flop,audio_proc_clock_flip_flop;
 
-AudioCODEC_Interface Audio0 (
-    .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset), .iCLK_50_2(iCLK_50_2),
-    .iCLK_28(iCLK_28),
-    .oTD1_RESET_N(oTD1_RESET_N),
-    .I2C_SDAT(I2C_SDAT),
-    .oI2C_SCLK(oI2C_SCLK),
-    .AUD_ADCLRCK(AUD_ADCLRCK),
-    .iAUD_ADCDAT(iAUD_ADCDAT),
-    .AUD_DACLRCK(AUD_DACLRCK),
-    .oAUD_DACDAT(oAUD_DACDAT),
-    .AUD_BCLK(AUD_BCLK),
-    .oAUD_XCK(oAUD_XCK),
-    // Para o sintetizador
-    .wsaudio_outL(wsaudio_outL),
-    .wsaudio_outR(wsaudio_outR),
-    // Barramento
-    .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
-    .wByteEnable(DByteEnable),
-    .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),
-    // Interrupcao
-    .audio_clock_flip_flop(audio_clock_flip_flop),
-    .audio_proc_clock_flip_flop(audio_proc_clock_flip_flop)
-);
+// AudioCODEC_Interface Audio0 (
+//     .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset), .iCLK_50_2(iCLK_50_2),
+//     .iCLK_28(iCLK_28),
+//     .oTD1_RESET_N(oTD1_RESET_N),
+//     .I2C_SDAT(I2C_SDAT),
+//     .oI2C_SCLK(oI2C_SCLK),
+//     .AUD_ADCLRCK(AUD_ADCLRCK),
+//     .iAUD_ADCDAT(iAUD_ADCDAT),
+//     .AUD_DACLRCK(AUD_DACLRCK),
+//     .oAUD_DACDAT(oAUD_DACDAT),
+//     .AUD_BCLK(AUD_BCLK),
+//     .oAUD_XCK(oAUD_XCK),
+//     // Para o sintetizador
+//     .wsaudio_outL(wsaudio_outL),
+//     .wsaudio_outR(wsaudio_outR),
+//     // Barramento
+//     .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
+//     .wByteEnable(DByteEnable),
+//     .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),
+//     // Interrupcao
+//     .audio_clock_flip_flop(audio_clock_flip_flop),
+//     .audio_proc_clock_flip_flop(audio_proc_clock_flip_flop)
+// );
 
 
 /* ************************* Teclado PS2 Interface ************************** */
@@ -514,78 +514,78 @@ TecladoPS2_Interface TEC0 (
 
 
 /* ***************************** LCD Interface ****************************** */
-LCD_Interface LCD0 (
-    .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
-    .LCD_D(LCD_D),            //    LCD Data bus 8 bits
-    .oLCD_ON(oLCD_ON),        //    LCD Power ON/OFF
-    .oLCD_BLON(oLCD_BLON),        //    LCD Back Light ON/OFF
-    .oLCD_RW(oLCD_RW),        //    LCD Read/Write Select, 0 = Write, 1 = Read
-    .oLCD_EN(oLCD_EN),        //    LCD Enable
-    .oLCD_RS(oLCD_RS),        //    LCD Command/Data Select, 0 = Command, 1 = Data
-    //  Barramento
-    .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
-    .wByteEnable(DByteEnable),
-    .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),
-    //  Mostrar PC e IR
-    .wDebug(iSW[12]),
-    .wPC(wPC),
-    .wInstr(wInstr)
-);
+// LCD_Interface LCD0 (
+//     .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
+//     .LCD_D(LCD_D),            //    LCD Data bus 8 bits
+//     .oLCD_ON(oLCD_ON),        //    LCD Power ON/OFF
+//     .oLCD_BLON(oLCD_BLON),        //    LCD Back Light ON/OFF
+//     .oLCD_RW(oLCD_RW),        //    LCD Read/Write Select, 0 = Write, 1 = Read
+//     .oLCD_EN(oLCD_EN),        //    LCD Enable
+//     .oLCD_RS(oLCD_RS),        //    LCD Command/Data Select, 0 = Command, 1 = Data
+//     //  Barramento
+//     .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
+//     .wByteEnable(DByteEnable),
+//     .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),
+//     //  Mostrar PC e IR
+//     .wDebug(iSW[12]),
+//     .wPC(wPC),
+//     .wInstr(wInstr)
+// );
 
 
 /* ************************ Sintetizador Interface ************************* */
 wire [15:0] wsaudio_outL, wsaudio_outR;
 wire        DReadEnableS;
 wire [31:0] DAddressS, DReadDataS;
-
-Sintetizador_Interface SINT0 (
-    .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
-    .AUD_DACLRCK(AUD_DACLRCK),
-    .AUD_BCLK(AUD_BCLK),
-    .wsaudio_outL(wsaudio_outL), .wsaudio_outR(wsaudio_outR),
-    //  Barramento Principal
-    .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
-    .wByteEnable(DByteEnable),
-    .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData)
-    //  Barramento do Sintetizador
-    //.wAddressS(DAddressS), .wReadDataS(DReadDataS)
-);
+//
+// Sintetizador_Interface SINT0 (
+//     .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
+//     .AUD_DACLRCK(AUD_DACLRCK),
+//     .AUD_BCLK(AUD_BCLK),
+//     .wsaudio_outL(wsaudio_outL), .wsaudio_outR(wsaudio_outR),
+//     //  Barramento Principal
+//     .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
+//     .wByteEnable(DByteEnable),
+//     .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData)
+//     //  Barramento do Sintetizador
+//     //.wAddressS(DAddressS), .wReadDataS(DReadDataS)
+// );
 
 
 /* **************************** Mouse Interface ***************************** */
 wire reg_mouse_keyboard, received_data_en_contador_enable;
-
-MousePS2_Interface MOUSE0 (
-    .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
-    .PS2_KBCLK(PS2_KBCLK),
-    .PS2_KBDAT(PS2_KBDAT),
-    //  Barramento
-    .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
-    .wByteEnable(DByteEnable),
-    .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),
-    // Interrupcao
-    .reg_mouse_keyboard(reg_mouse_keyboard),
-    .received_data_en_contador_enable(received_data_en_contador_enable)
-);
+//
+// MousePS2_Interface MOUSE0 (
+//     .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
+//     .PS2_KBCLK(PS2_KBCLK),
+//     .PS2_KBDAT(PS2_KBDAT),
+//     //  Barramento
+//     .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
+//     .wByteEnable(DByteEnable),
+//     .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData),
+//     // Interrupcao
+//     .reg_mouse_keyboard(reg_mouse_keyboard),
+//     .received_data_en_contador_enable(received_data_en_contador_enable)
+// );
 
 
 /* **************************** RS232 Interface ***************************** */
-RS232_Interface SERIAL0 (
-    .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
-    .oUART_TXD(oUART_TXD),              //    UART Transmitter
-    .iUART_RXD(iUART_RXD),              //    UART Receiver
-    .oUART_CTS(oUART_CTS),              //    UART Clear To Send
-    .iUART_RTS(iUART_RTS),              //    UART Request To Send
-    //  Barramento
-    .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
-    .wByteEnable(DByteEnable),
-    .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData)
-);
+// RS232_Interface SERIAL0 (
+//     .iCLK(CLK), .iCLK_50(iCLK_50), .Reset(Reset),
+//     .oUART_TXD(oUART_TXD),              //    UART Transmitter
+//     .iUART_RXD(iUART_RXD),              //    UART Receiver
+//     .oUART_CTS(oUART_CTS),              //    UART Clear To Send
+//     .iUART_RTS(iUART_RTS),              //    UART Request To Send
+//     //  Barramento
+//     .wReadEnable(DReadEnable), .wWriteEnable(DWriteEnable),
+//     .wByteEnable(DByteEnable),
+//     .wAddress(DAddress), .wWriteData(DWriteData), .wReadData(DReadData)
+// );
 
 
 /* *************************** SD Card Interface **************************** */
 SPI_Interface SDCARD (
-    .iCLK(CLK), .iCLK_50(iCLK_50_4), .Reset(Reset),
+    .iCLK(CLK), .iCLK_50(iCLK_50), .iCLK_100(iCLK_100), .Reset(Reset),
     .SD_CLK(oSD_CLK),                   // SPI SCK
     .SD_MOSI(SD_CMD),                   // SPI MOSI
     .SD_MISO(SD_DAT),                   // SPI MISO

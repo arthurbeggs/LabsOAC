@@ -31,8 +31,9 @@
 #                                                                               #
 #################################################################################
 
-.eqv SD_DATA_ADDR 0x003D0001            # GBA_24b_bit.txt com header. Addr = Offset + (137 * 512) = Offset + 0x00011200 (defasagem de setores lógicos/físicos * tamanho do setor)
+.eqv SD_DATA_ADDR 0x003D0000            # GBA_24b_bit.txt com header. Addr = Offset + (137 * 512) = Offset + 0x00011200 (defasagem de setores lógicos/físicos * tamanho do setor)
 .eqv VGA_INI_ADDR 0xFF000000
+.eqv USER_DATA    0x1001001C
 .eqv VGA_QTD_BYTE 76800                 # VGA Bytes
 
     .data
@@ -40,11 +41,28 @@
     .text
 main:
     la      $a0, SD_DATA_ADDR
-    la      $a1, VGA_INI_ADDR
+    la      $a1, USER_DATA              # Usado para verificação dos dados lidos
+    # la      $a1, VGA_INI_ADDR
     la      $a2, VGA_QTD_BYTE
 
     li      $v0, 49                     # Syscall 49 - SD Card Read
     syscall
 
+
+# Usado para verificar os dados lidos usando o In System Memory Content Editor
+    la      $t0, VGA_INI_ADDR
+    la      $t1, USER_DATA
+    li      $t3, VGA_QTD_BYTE
+
+writeVGA:
+    lw      $t2, 0($t1)
+    sw      $t2, 0($t0)
+    addi    $t0, $t0, 4
+    addi    $t1, $t1, 4
+    addi    $t3, $t3, -4
+    slti    $t4, $t3, 1
+    beq     $t4, $zero, writeVGA
+
+end:
     li      $v0, 10                     # Syscal 10 - exit
     syscall
