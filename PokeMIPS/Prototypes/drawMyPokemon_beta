@@ -397,10 +397,13 @@ cleanBackground:
 	addi $t3, $zero, 240	# Tamanho maximo da tela
 	sub $t3, $t3, $t2	# Quantidade de memorias a pular, por causa da largura
 	
-	li $t6, 0x01000000	# Altura 1 
+	addu $a0, $zero, $t2
 	sll $a0, $a0, 8
-	srl $a0, $a0, 8		# Contador
-	add $a0, $a0, $t6	# zerando 
+	addi  $a0, $a0, 1
+	sll $a0, $a0, 8
+	addu $a0, $a0, $t1
+	sll $a0, $a0, 8
+	addu $a0, $a0, $t0
 	
 	add $t6, $zero, $zero
 	
@@ -423,7 +426,7 @@ cleanBackground_label1:
  	lw $t5, 24($sp)
  	lw $t6, 28($sp)
  	addi $sp, $sp, 32
- 	
+ 	fim: j fim
  	jr $ra
  	
 draw_figure:
