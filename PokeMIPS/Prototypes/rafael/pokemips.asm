@@ -62,9 +62,6 @@
 ###############################################################################
 # Macro Segment - Often repeted Routines
 ###############################################################################
-.macro drawpixel %posX,%posY,%color
-.end_macro
-
 .macro drawbox %posX,%posY,%sizeX,%sizeY
     print_rectangle %posX,%posY,%sizeX,%sizeY,COLOR_BLACK
 .end_macro
@@ -75,9 +72,6 @@
 
 .macro drawDialogText %msg
        print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,88,COLOR_WHITE
-.end_macro
-
-.macro drawimage %posX,%posY,%sizeX,%sizeY, %adrImage
 .end_macro
 
 .macro printstr %str, %posx,%posy
@@ -126,14 +120,11 @@
     jal draw_rectangle
 .end_macro
 
-.macro print_figure %x,%y,%width,%height,%imageAddress
-    addi    $a0,$0,%x           # X left top corner
-    addi    $a1,$0,%y   # Y left top corner
-    la  $v0,%imageAddress       # Color
-    
-    addi    $a2,$0,%width       # width
-    addi    $a3,$0,%height      # height
-    jal draw_figure
+.macro drawFig %sizepos, %imagem
+    li   $a0,%sizepos
+    la   $a1,%imagem
+
+    jal  draw_figure
 .end_macro
 
 .macro draw_tile %x,%y,%imageAddress
@@ -144,11 +135,6 @@
     addi    $a2,$0,TILE_SIZE       # width
     addi    $a3,$0,TILE_SIZE      # height
     jal draw_figure
-.end_macro
-
-.macro drawGameBoyAdvance
-    print_rectangle 0,0,SCREEN_DIM_X,SCREEN_DIM_Y,COLOR_BLUE
-    print_rectangle GBA_SCREEN_X0,GBA_SCREEN_Y0,GBA_SCREEN_DIM_X,GBA_SCREEN_DIM_Y,COLOR_RED
 .end_macro
 
 .macro clear_screen
@@ -193,6 +179,10 @@
 .eqv   SCENE_BATTLE_OPPONENT_DEF     0x00090005 # Oponent Defeated
 .eqv   SCENE_BATTLE_PLAYER_DEF      0x00100005 # Player Defeated
 .eqv   SCENE_BATTLE_OVER            0x00110005
+
+.eqv   SCENE_BATTLE_BAG             0x00120005
+.eqv   SCENE_BATTLE_POKE            0x00130005
+.eqv   SCENE_BATTLE_FLEE            0x00140005
 
 
 .macro setstate %state
@@ -244,10 +234,11 @@ PREVIEWS_HERO_STATE:    .word       0
 
 # Player Data -----------------------------------------------------------------
 PLAYER_NAME:            .byte       0x00,0x00,0x00,0x00,0x00,0x00,0x00
-PLAYER_MONEY:           .word       0x00003000
+PLAYER_MONEY:           .word       0x00000300
 
-# Pokemon Data ----------------------------------------------------------------
-
+# Pokemons --------------------------------------------------------------------
+.include "img_pokemon_set.asm"
+.include "img_text_box.asm"
 
 ###############################################################################
 # Text Segment
@@ -263,15 +254,12 @@ gameInit:
     add     _CURRENT_HERO_STATE,$0,$0
     add     _CURRENT_GAME_STATE,$0,$0
 
-    # Draw GameBoy Advance
-    drawGameBoyAdvance
-
     # Load Images From SD Card
 
     # Load Openning Scene
-    #setstate SCENE_OPENING
+    setstate SCENE_OPENING
 
-    setstate SCENE_MAP
+    #setstate SCENE_MAP
 
     # Load Tile Set from SD Card
 gameLoop:
@@ -327,13 +315,15 @@ finishGameState:
 ##
 sceneOpening:
     # Load Game State
-    j       sceneOpeningInit
-    .include "test_sceneOpenning.asm"
+    #j       sceneOpeningInit
+    #.include "test_sceneOpenning.asm"
+    setstate SCENE_TUTORIAL
     jr      $ra
 
 sceneTutorial:
-    j       sceneTutorialInit
-    .include "test_tutorial.asm"
+    #j       sceneTutorialInit
+    #.include "test_tutorial.asm"
+    setstate SCENE_MAP
     jr      $ra
 
 sceneMap:
@@ -350,7 +340,8 @@ sceneBag:
 
 sceneBattle:
     j       sceneBattleInit
-    .include "test_battle.asm"
+    #.include "test_battle.asm"
+    .include "sceneBattle.asm"
     jr      $ra
 
 # Auxiliar Procedures ---------------------------------------------------------
@@ -443,183 +434,75 @@ end.draw_rectangle:
     add  $v0,$0,$0
     jr  $ra
 
+
 ##
-# Print a rectangle on the screen
-# 
-# Arguments:
-# $a0 x position
-# $a1 y position
-# $a2 width
-# $a3 height
-# $v0 color (format BBGG.GRRR.bbgg.grrr)
-#
-# Internal use:
-# $s0 x temp position
-# $s1 y temp position
-# $s2 color
-# $t3 counter
-# $t4 address to print
-# $t7 temporary
-# $s3 x end position
-# $s4 y end position
-#
-#
-# @TODO Verify bug : it dont't work well with some jump instruction before
-#                    no working, wrong calc for pixel position
-##
-draw_rectanglegba:
-    addi $sp, $sp, -52
-    sw $ra, 0($sp)
-    sw $a0, 4($sp)
-    sw $a1, 8($sp)
-    sw $a2, 12($sp)
-    sw $a3, 16($sp)
-    sw $s0, 20($sp)
-    sw $s1, 24($sp)
-    sw $s2, 28($sp)
-    sw $t3, 32($sp)
-    sw $t4, 36($sp)
-    sw $t7, 48($sp)
-    sw $s3, 52($sp)
-    sw $s4, 56($sp)
-
-draw_rectanglegba.init:
-    add   $s0,$0,$a0  # Start x
-    add   $s1,$0,$a1  # Start y
-    add   $s3,$s0,$a2 # end x
-    add   $s4,$s1,$a3 # end y
-    add   $s2,$0,$v0  # color
-
-draw_rectanglegba.loopY: 
-draw_rectanglegba.loopX:
-
-    # Calculate Pixel's Adress:
-    addi  $t3,$0,SCREEN_DIM_X
-    mul   $t3,$t3,$s1
-    add   $t3,$t3,$s0   # Y*SCREEN_X + X
-    add   $t4,$t3,GBA_SCREEN_PIXEL0
-
-draw_rectanglegba.drawPixel:
-    sb    $s2,0($t4)    # Draw a pixel
-
-draw_rectanglegba.nextPixel:
-    addi  $s0,$s0,1 # X++
-    slt   $t7,$s0,$s3   # lim x
-    bne   $t7,$0,draw_rectangle.loopX
-end.draw_rectanglegba.loopX:
-    add   $s0,$0,$a0    # X = X0
-    addi  $s1,$s1,1 # Y++
-    slt   $t7,$s1,$s4   # lim y
-    bne   $t7,$0,draw_rectangle.loopY
-end.draw_rectanglegba.loopY:
-end.draw_rectanglegba:
-    lw $ra, 0($sp)
-    lw $a0, 4($sp)
-    lw $a1, 8($sp)
-    lw $a2, 12($sp)
-    lw $a3, 16($sp)
-    lw $s0, 20($sp)
-    lw $s1, 24($sp)
-    lw $s2, 28($sp)
-    lw $t3, 32($sp)
-    lw $t4, 36($sp)
-    lw $t7, 48($sp)
-    lw $s3, 52($sp)
-    lw $s4, 56($sp)
-
-    addi $sp, $sp, 52
-    add  $v0,$0,$0
-    jr  $ra
-
-
-##x
 # Print a figure on the screen
 # 
 # Arguments:
-# $a0 x position
-# $a1 y position
-# $a2 width
-# $a3 height
-# $v0 color (format BBGG.GRRR.bbgg.grrr)
+# $a0 beginX,beginY
+# $a1 sizeX,sizeY
+# $a2 address image
 #
 # Internal use:
-# $s0 x temp position
-# $s1 y temp position
-# $s2 color
-# $t3 counter
-# $t4 address to print
-# $t7 temporary
-# $s3 x end position
-# $s4 y end position
+# $t0 
+# $t1 
+# $t2
+# $t3
+# $t4
+# $t5
+# $t6
 #
-#
-# @TODO Verify bug : it dont't work well with some jump instruction before
-#                    no working, wrong calc for pixel position
 ##
 draw_figure:
-    addi $sp, $sp, -52
-    sw $ra, 0($sp)
-    sw $a0, 4($sp)
-    sw $a1, 8($sp)
-    sw $a2, 12($sp)
-    sw $a3, 16($sp)
-    sw $s0, 20($sp)
-    sw $s1, 24($sp)
-    sw $s2, 28($sp)
-    sw $t3, 32($sp)
-    sw $t4, 36($sp)
-    sw $t7, 48($sp)
-    sw $s3, 52($sp)
-    sw $s4, 56($sp)
+    addi $sp, $sp, -28
+    sw $t0, 0($sp)
+    sw $t1, 4($sp)
+    sw $t2, 8($sp)
+    sw $t3, 12($sp)
+    sw $t4, 16($sp)
+    sw $t5, 22($sp)
+    sw $t6, 24($sp)
 
-draw_figure.init:
-    add   $s0,$0,$a0  # Start x
-    add   $s1,$0,$a1  # Start y
-    add   $s3,$s0,$a2 # end x
-    add   $s4,$s1,$a3 # end y
-    add   $s2,$0,$v0  # address colors
+    sll $t0, $a0, 24    # x inicial :calculo 1
+    srl $t0, $t0, 24    # x inicial :conclui
+    sll $t1, $a0, 16    # y inicial
+    srl $t1, $t1, 24    # y inicial :conclui
 
-draw_figure.loopY: 
-draw_figure.loopX:
-    # Calculate Pixel's Adress:
-    addi  $t3,$0,SCREEN_DIM_X
-    mul   $t3,$t3,$s1
-    add   $t3,$t3,$s0   # Y*SCREEN_X + X
-    add   $t4,$t3,SCREEN_PIXEL0
+    addi $t2, $zero, SCREEN_DIM_X    # 320
+    mul $t2, $t2, $t1   # Y*320
+    li $t1, GBA_SCREEN_PIXEL0  # Posição inical memoria
+    addu $t2, $t1, $t2  # Posição na memoria, para VGA, deslocamento apenas em Y
+    addu $t2, $t2, $t0  # Posição na memoria, para VGA, deslocamento Y e X
+    addu $t5, $a1, $zero# Posição memoria da figura
 
-    lw    $t7,0($s2)
-    addi  $t8,$0,NO_COLOR
-    beq   $t7,$t8,draw_figure.nextPixel
-
-draw_figure.drawPixel:
-    sb    $t7,0($t4)    # Draw a pixel
-
-draw_figure.nextPixel:
-    addi   $s2,$s2,4
-    addi  $s0,$s0,1 # X++
-    slt   $t7,$s0,$s3   # lim x
-    bne   $t7,$0,draw_figure.loopX
-end.draw_figure.loopX:
-    add   $s0,$0,$a0    # X = X0
-    addi  $s1,$s1,1 # Y++
-    slt   $t7,$s1,$s4   # lim y
-    bne   $t7,$0,draw_figure.loopY
-end.draw_figure.loopY:
-end.draw_figure:
-    lw $ra, 0($sp)
-    lw $a0, 4($sp)
-    lw $a1, 8($sp)
-    lw $a2, 12($sp)
-    lw $a3, 16($sp)
-    lw $s0, 20($sp)
-    lw $s1, 24($sp)
-    lw $s2, 28($sp)
-    lw $t3, 32($sp)
-    lw $t4, 36($sp)
-    lw $t7, 48($sp)
-    lw $s3, 52($sp)
-    lw $s4, 56($sp)
-
-    addi $sp, $sp, 52
-    add  $v0,$0,$0
+    sll $t1, $a0, 8     # Largura
+    srl $t1, $t1, 24    # Largura :conclui
+    srl $t0, $a0, 24    # Altura
+    
+    add $t3, $zero, $zero   # Zera $t3
+    add $t4, $zero, $zero   # Zera $t4
+    addiu $t2, $t2, -320    # Correção
+loop1_draw_fig:
+   beq $t4, $t1, fim_draw_fig   # Acabou de printar figura
+    sub $t2, $t2, $t3   # Volta para posição delta X = 0
+    addiu $t2, $t2, 320     # Posição na memoria, para VGA, deslocado em Y
+    addiu $t4, $t4, 1   # Contador Y
+    add  $t3, $zero, $zero  # Zera Contador X
+loop2_draw_fig: 
+   beq $t3, $t0, loop1_draw_fig # Acabou uma linha
+    lw $t6, 0($t5)      # Le word, da figura
+    sw $t6, 0($t2)      # Grava word, na VGA
+    addiu $t2, $t2, 4   # Desloca X, onde $t2 é posição da memoria na VGA
+    addiu $t5, $t5, 4   # Desloca leitura da figura
+    addiu $t3, $t3, 4   # Contador linha
+    j loop2_draw_fig
+fim_draw_fig:
+    lw $t0, 0($sp)
+    lw $t1, 4($sp)
+    lw $t2, 8($sp)
+    lw $t3, 12($sp)
+    lw $t4, 16($sp)
+    lw $t5, 22($sp)
+    lw $t6, 24($sp)
+    addi $sp, $sp, 28
     jr  $ra
