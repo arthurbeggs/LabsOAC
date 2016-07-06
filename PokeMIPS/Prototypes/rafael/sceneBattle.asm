@@ -264,13 +264,13 @@ sceneBattlePlayerDoMove:
 cleanAreaPokemon: 
     addi $sp, $sp, -4
     sw $ra, 0($sp)
-    li $a0, 0xf03c0000
+    li $a0, 0xf0440000
     la $a1, background
     jal draw_figure
     lw $ra, 0($sp)
     addi $sp, $sp, 4
     
-    animationEnemyDamage:
+animationEnemyDamage:
     addi $sp, $sp, -20
     sw $a0, 0($sp)
     sw $a1, 4($sp)
@@ -279,29 +279,25 @@ cleanAreaPokemon:
     sw $ra, 16($sp)
     la $t7, enemy
     la $t9, background
-    li $s0, 0x58020E10
+    li $s0, 0x302420a0
 animationEnemyDamage.nextPixelX:
 
     la $a1, enemy
     move $a0, $s0
     jal draw_figure
     jal cleanAreaPokemon
-    addiu $s0, $s0, 4   # Proxima Coluna
-    li $t0, 0x58020E20  # Foram todas as colunas
+    addiu $s0, $s0, 16   # Proxima Coluna
+    li $t0, 0x302420C0  # Foram todas as colunas
     bne $s0, $t0, animationEnemyDamage.nextPixelX# necessarias?
-    #Delay forçado###############
-    addiu $s0, $s0, -4  # Correção
-    jal draw_figure#drawFig 0x30244c40, backSquirtle
-    jal cleanAreaPokemon
-    #drawFig 0x30244c40, backSquirtle
-    #############################
+
 animationEnemyDamage.previousPixelX:
 #    cleanAreaPokemon $t9    # "Limpa" tela  
     move $a0, $s0
+    la $a1, enemy
     jal draw_figure   # Frame 1 Pokemon
     jal cleanAreaPokemon
-    addiu $s0, $s0, -4  # Volta um Coluna
-    li $t0, 0x58020E10  # Foram todas as colunas
+    addiu $s0, $s0, -16  # Volta um Coluna
+    li $t0, 0x30242080# Foram todas as colunas
     bne $s0, $t0, animationEnemyDamage.previousPixelX# necessarias?
 end.animationEnemyDamage:
     lw $a0, 0($sp)
@@ -608,7 +604,7 @@ animationPlayerPokemonWaiting:
     jal  draw_figure
     #Frame 1 Stats
     add $a1,$0,$t8
-    li $a0,0x68254A80
+    li $a0, 0x681d0E10 
     jal  draw_figure
     # "Limpa" tela
     addiu $a1, $t9, 23040

@@ -1,17 +1,24 @@
 .data
 .include "img_pokemon_set2.asm"
 .include "img_background_battle.asm"
+
 .eqv GBA_SCREEN_PIXEL0 0xff003228
 .eqv SCREEN_DIM_X 320
 
-.text
+.include "img_status_box.asm"
 
-    
-    li $a0, 0xf03c0000
-    la $a1, background
-    jal draw_figure
-    fim: j fim
-    
+.text
+drawEnemyPokemonHP:
+	addi $sp, $sp, -12
+	sw $a0, 0($sp)
+	sw $a1, 4($sp)
+	sw $ra, 8($sp)
+	la $a1, POKEMON_STATUS_BOX
+	#Frame Stats	
+	li $a0, 0x681d0E10 
+	jal draw_figure
+	lw $a0, 0($sp)
+    	lw $a1, 4($sp)
     draw_figure:
     addi $sp, $sp, -28
     sw $t0, 0($sp)
