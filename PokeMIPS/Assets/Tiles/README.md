@@ -316,3 +316,8 @@
 ## **Eventos**
 
 0. Interação com objeto
+0. Interação com npc's
+0. You Shall Not Pass!
+0. Oak (Lamar)
+0. Rival
+0. PokeBalls
