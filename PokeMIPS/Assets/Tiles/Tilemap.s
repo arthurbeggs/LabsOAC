@@ -2402,19 +2402,19 @@ TileMapMatrix:
     .word 0x01000071
     .word 0x01000071
     .word 0x01000071
-    .word 0x0100008F
-    .word 0x01000090
-    .word 0x01000095
-    .word 0x01000096
+    .word 0x0101008F
+    .word 0x01010090
+    .word 0x01010095
+    .word 0x01010096
     .word 0x010000B1
-    .word 0x010000A1
+    .word 0x010100A1
     .word 0x010000B4
     .word 0x010000B5
     .word 0x010000B1
-    .word 0x010000AF
+    .word 0x010100AF
     .word 0x010000B1
-    .word 0x0100009B
-    .word 0x0100009C
+    .word 0x0101009B
+    .word 0x0101009C
     .word 0x01000071
     .word 0x01000071
     .word 0x01000071
@@ -2428,7 +2428,7 @@ TileMapMatrix:
     .word 0x00000075
     .word 0x0000007A
     .word 0x00000077
-    .word 0x010000A3
+    .word 0x010100A3
     .word 0x00000077
     .word 0x0000007B
     .word 0x00000075
@@ -2575,7 +2575,7 @@ TileMapMatrix:
     .word 0x00000075
     .word 0x00000075
     .word 0x0000007C
-    .word 0x00000078
+    .word 0x000000FD
     .word 0x00000078
     .word 0x00000078
     .word 0x00000078
@@ -2659,7 +2659,7 @@ TileMapMatrix:
     .word 0x00000075
     .word 0x00000075
     .word 0x0000007A
-    .word 0x00000087
+    .word 0x010200FE
     .word 0x01000083
     .word 0x01000084
     .word 0x00000088
