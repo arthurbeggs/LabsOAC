@@ -1,436 +1,7 @@
 .data
-
-imagem:
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x5a5a5aa4
-.word 0xc75a5a5a
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xa4a4c7c7
-.word 0xf4f4f4f4
-.word 0x5af4f4f4
-.word 0xc7c7c75a
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf5f5a4c7
-.word 0xf4f4f4f5
-.word 0xf4f4f4f4
-.word 0xc7c75af4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf5f5f5a4
-.word 0xf4f4f5f5
-.word 0xf4f4f4f4
-.word 0xc75af4f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xa4c7c7c7
-.word 0xf5f5f5f5
-.word 0xf4f4f5f5
-.word 0xf4f4f4f4
-.word 0x5af4f4f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf5a4c7c7
-.word 0xf5f5f5f5
-.word 0xf4f4f4f5
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0xc7c7c75a
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf45ac7c7
-.word 0xf5f5f5f5
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0xf5a4f4f4
-.word 0xc7c7c75a
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf4f4a4c7
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0xff5af4f4
-.word 0xc7c75af4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf4f45ac7
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0x005af4f4
-.word 0xc7c700f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf4f400c7
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0x005af4f4
-.word 0xc7c700f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf4f400c7
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0x0e5af4f4
-.word 0xc7c700f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xa4c7c7c7
-.word 0x5a5a5aa4
-.word 0xf4f45a5a
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0x5aa4f4f4
-.word 0xc7c700f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xffa4c7c7
-.word 0xffffffff
-.word 0x5a5affff
-.word 0xf4f4f4f4
-.word 0xa4a4a4f4
-.word 0xf4f4f4f4
-.word 0xc75af4f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x0b0bc7c7
-.word 0x0b0b0b0b
-.word 0xffffffff
-.word 0xa4f40000
-.word 0xa4a4a4a4
-.word 0xf4f4f4a4
-.word 0xc700f4f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x66660b1d
-.word 0x1d661d0b
-.word 0xffff0b0b
-.word 0xa400ffff
-.word 0xa4a4a4a4
-.word 0x5af4a4a4
-.word 0xc700f4f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x0bc7c7c7
-.word 0x0b666666
-.word 0x661d661d
-.word 0x0b0b661d
-.word 0x00ffffff
-.word 0xa4a4a4a4
-.word 0xa4a4a4a4
-.word 0xc7000000
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x660bc7c7
-.word 0x0b0b1d1d
-.word 0x1d661d66
-.word 0x1d661d66
-.word 0xffffff0b
-.word 0xa4a4a400
-.word 0xa4a4a4a4
-.word 0xc7c700a4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x0b0b00c7
-.word 0x0b666666
-.word 0x661d661d
-.word 0x661d661d
-.word 0xffff0b1d
-.word 0xa45a5a00
-.word 0x00a4a4a4
-.word 0xc7c7c700
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x66666600
-.word 0x66666666
-.word 0x1d661d0b
-.word 0x1d661d66
-.word 0xffff0b66
-.word 0x5aa400ff
-.word 0xc7005a5a
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x00c7c7c7
-.word 0x6666660b
-.word 0x66666666
-.word 0x661d0b66
-.word 0x661d661d
-.word 0xff0b0b0b
-.word 0xa4a400ff
-.word 0x5af4f4a4
-.word 0x005a5a5a
-.word 0xc7c7c700
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x00c7c7c7
-.word 0x66666666
-.word 0x66666666
-.word 0x1d0b0b66
-.word 0x0b0b0b66
-.word 0x0b1d1d66
-.word 0xa400ffff
-.word 0xf4f4f4f4
-.word 0xf4f4f4f4
-.word 0xc7c7c700
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x0b0bc7c7
-.word 0x66666666
-.word 0x66666666
-.word 0x000b1d66
-.word 0x66666600
-.word 0x0b1d1d1d
-.word 0xa400ffff
-.word 0xf4f4f4f4
-.word 0x00f4f4f4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x6600c7c7
-.word 0x66666666
-.word 0x66666666
-.word 0x66001d66
-.word 0x1d1d6666
-.word 0x0b1d1d1d
-.word 0xa4a45aff
-.word 0xf4f4a4a4
-.word 0xf4f4f4f4
-.word 0xc7c7c75a
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x6600c7c7
-.word 0x66666666
-.word 0x66666666
-.word 0x66001d1d
-.word 0x1d1d1d1d
-.word 0xff0b1d1d
-.word 0xa4a400ff
-.word 0xa4a4a4a4
-.word 0xa45aa4a4
-.word 0xc7c7c700
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x660b0bc7
-.word 0x66666666
-.word 0x66666666
-.word 0x1d66001d
-.word 0x1d1d1d1d
-.word 0xff0b1d1d
-.word 0xa4a400ff
-.word 0xa4a4a4a4
-.word 0x0000a4a4
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x0b6600c7
-.word 0x66666666
-.word 0x1d1d1d66
-.word 0x1d66001d
-.word 0x1d1d1d1d
-.word 0xff0b1d1d
-.word 0xa4a400ff
-.word 0x0000a4a4
-.word 0xc7c75a00
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x006600c7
-.word 0x1d1d1d1d
-.word 0x1d1d1d1d
-.word 0x1d1d1d0b
-.word 0x1d1d1d1d
-.word 0x0b1d1d1d
-.word 0x0000ffff
-.word 0xc7c75a00
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0x5a5a5aa4
-.word 0x0b1d00c7
-.word 0x1d1d1d0b
-.word 0x000b0b1d
-.word 0x1d1d1d00
-.word 0x1d1d1d1d
-.word 0x0b1d1d1d
-.word 0x7700ffff
-.word 0xc7c7c700
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xa4a4c7c7
-.word 0xf4f4f5f5
-.word 0x661d5aa4
-.word 0x0b000000
-.word 0x6666660b
-.word 0x1d1d001d
-.word 0x1d1d1d1d
-.word 0x0b1d1d1d
-.word 0x7700ffff
-.word 0xc7c7c700
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf5f5a4c7
-.word 0xf4f5f5f5
-.word 0x1d5af4f4
-.word 0x66661d0b
-.word 0x1d1d1d1d
-.word 0x1d001d1d
-.word 0x1d1d1d1d
-.word 0xff0b1d1d
-.word 0x776f00ff
-.word 0xc7c7c70b
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf5f55ac7
-.word 0xf4f4f5f5
-.word 0x00f4f4f4
-.word 0x1d1d1d0b
-.word 0x1d1d1d1d
-.word 0x0b0b1d1d
-.word 0x1d1d1d1d
-.word 0xff0b1d1d
-.word 0x006f00ff
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf4f4f45a
-.word 0xf4f4f4f4
-.word 0xa4f4f4f4
-.word 0x1d1d1d00
-.word 0x1d1d1d1d
-.word 0x001d1d1d
-.word 0x1d1d1d1d
-.word 0xffff0b1d
-.word 0x005aa400
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xc7c7c7c7
-.word 0xf4f4a400
-.word 0x5af4f4f4
-.word 0xa4a4f4f4
-.word 0x1d0000a4
-.word 0x1d1d1d1d
-.word 0x1d1d1d1d
-.word 0x1d1d1d00
-.word 0x00ffff0b
-.word 0xf4a4a4a4
-	
+	.include "background.s"
+	.eqv SCREEN_DIM_X 320
+	.eqv GBA_SCREEN_PIXEL0 0xff003228
 .macro drawEnemyPokemonHP %dadosPokemon
 	addi $sp, $sp, -12
 	sw $t8, 0($sp)
@@ -592,7 +163,7 @@ fim_draw_fig:
 .end_macro
 .macro actMyPokemonWaiting %endereçoPokemon, %dadosPokemon, %background
 	addi $sp, $sp, -20
-	sw $a0, 0($sp)
+	sw $at, 0($sp)
 	sw $a1, 4($sp)
 	sw $a2, 8($sp)
 	sw $a3, 12($sp)
@@ -770,20 +341,143 @@ actDamageMy_label3:
     	lw $v1, 20($sp)
     	lw $ra, 24($sp)
 .end_macro
+.macro drawFig %sizepos, %imagem
+    move   $a0, %sizepos
+    move   $a1, %imagem
 
+    jal  draw_figure
+.end_macro
+
+#############################################################################################
 .text	
-	la $a0, imagem
-	move $s5, $a0
+	#la $a0, imagem
+	#move $s5, $a0
 	#drawEnemyPokemonHP $a0
-	#li $a1, 0x000E0094
-	#li $a2, 0x00300050
-	#drawFig $a1, $a2, $a0
-desenha:
-	#la $s3, imagem
-	#la $s1, imagem
-	#la $a3, background
-	actDamageMy $a0, $a0, $s5, $s5
-	#actMyPokemonWaiting $a0, $a0, $a0
-	#actMyPokemonWaiting $a0, $a0, $a0
-	#actMyPokemonAttacking $a0, $a0
-FIM1: j desenha
+	li $a1, 0x00000000
+	li $a2, 0x00A000f0
+	la $a3, background
+	li $a0, 0x48A03030
+	#drawFig $a1, $a2, $a3
+	#fim: j fim
+cleanBackground:
+	addi $sp, $sp, -32
+	sw $a0, 0($sp)
+    	sw $t1, 4($sp)
+    	sw $t2, 8($sp)
+    	sw $t3, 12($sp)
+    	sw $t4, 16($sp)
+ 	sw $t5, 24($sp)
+ 	sw $t6, 28($sp)
+ 	
+	sll $t0, $a0, 24 	# x inicial :calculo 1
+	srl $t0, $t0, 24	# x inicial :conclui
+	sll $t1, $a0, 16	# y inicial
+	srl $t1, $t1, 24	# y inicial :conclui
+	sll $t2, $a0, 8		# Largura
+	srl $t2, $t2, 24	# Largura :conclui
+	srl $t3, $a0, 24	# Altura
+	
+	####### Parte que esta sendo usada apenas para integração de funções e que será modificada
+	#add $t7, $zero, $t1
+	#sll $t7, $t7, 16
+	#addu $t7, $t7, $t0
+	
+	#addi $t8, $zero, 1	#linha a linha
+	#sll $t8, $t8, 16
+	#addu $t8, $t8, $t2
+	#######
+	
+	addiu $t4, $zero, 240	# 320
+	mul $t4, $t4, $t1	# Y*320
+	add $t4, $t4, $t0	# Y*320 + X
+	la $t5, background	# Background
+	add $t4, $t4, $t5	# Background + (Y*320 + X)*4 = endereço correto
+	
+	add $t1, $zero, $t3	# Y final, acabou utilidade de saber a altura
+	addi $t3, $zero, 240	# Tamanho maximo da tela
+	sub $t3, $t3, $t2	# Quantidade de memorias a pular, por causa da largura
+	
+	li $t6, 0x01000000	# Altura 1 
+	sll $a0, $a0, 8
+	srl $a0, $a0, 8		# Contador
+	add $a0, $a0, $t6	# zerando 
+	
+	add $t6, $zero, $zero
+	
+cleanBackground_label1:
+	####### Intrução a baixo deverá ser substituida
+	drawFig $a0, $t4 			# "Limpa uma linha onde o nosso pokemon esta na tela
+	add $t4, $t4, $t2			# Endereço do background "+linha impressa"
+	
+	add $t4, $t4, $t3			# Endereço do background "+valor até proxima linha"
+	li $t5, 0x00000100			# Pula para proxima linha
+	add $a0, $a0, $t5			#####
+	addi $t6, $t6, 1
+	bne $t1, $t6, cleanBackground_label1	# necessarias?
+	
+	lw $a0, 0($sp)
+    	lw $t1, 4($sp)
+    	lw $t2, 8($sp)
+    	lw $t3, 12($sp)
+    	lw $t4, 16($sp)
+ 	lw $t5, 24($sp)
+ 	lw $t6, 28($sp)
+ 	addi $sp, $sp, 32
+ 	
+ 	jr $ra
+ 	
+draw_figure:
+    addi $sp, $sp, -28
+    sw $t0, 0($sp)
+    sw $t1, 4($sp)
+    sw $t2, 8($sp)
+    sw $t3, 12($sp)
+    sw $t4, 16($sp)
+    sw $t5, 20($sp)
+    sw $t6, 24($sp)
+
+    sll $t0, $a0, 24    # x inicial :calculo 1
+    srl $t0, $t0, 24    # x inicial :conclui
+    sll $t1, $a0, 16    # y inicial
+    srl $t1, $t1, 24    # y inicial :conclui
+
+    addi $t2, $zero, SCREEN_DIM_X    # 320
+    mul $t2, $t2, $t1   # Y*320
+    li $t1, GBA_SCREEN_PIXEL0  # Posição inical memoria
+    addu $t2, $t1, $t2  # Posição na memoria, para VGA, deslocamento apenas em Y
+    addu $t2, $t2, $t0  # Posição na memoria, para VGA, deslocamento Y e X
+    addu $t5, $a1, $zero# Posição memoria da figura
+
+    sll $t1, $a0, 8     # Largura
+    srl $t1, $t1, 24    # Largura :conclui
+    srl $t0, $a0, 24    # Altura
+    
+    add $t3, $zero, $zero   # Zera $t3
+    add $t4, $zero, $zero   # Zera $t4
+    addiu $t2, $t2, -320    # Correção
+loop1_draw_fig:
+   beq $t4, $t1, fim_draw_fig   # Acabou de printar figura
+    sub $t2, $t2, $t3   # Volta para posição delta X = 0
+    addiu $t2, $t2, 320     # Posição na memoria, para VGA, deslocado em Y
+    addiu $t4, $t4, 1   # Contador Y
+    add  $t3, $zero, $zero  # Zera Contador X
+loop2_draw_fig: 
+   beq $t3, $t0, loop1_draw_fig # Acabou uma linha
+    lw $t6, 0($t5)      # Le word, da figura
+    sw $t6, 0($t2)      # Grava word, na VGA
+    addiu $t2, $t2, 4   # Desloca X, onde $t2 é posição da memoria na VGA
+    addiu $t5, $t5, 4   # Desloca leitura da figura
+    addiu $t3, $t3, 4   # Contador linha
+    j loop2_draw_fig
+fim_draw_fig:
+    lw $t0, 0($sp)
+    lw $t1, 4($sp)
+    lw $t2, 8($sp)
+    lw $t3, 12($sp)
+    lw $t4, 16($sp)
+    lw $t5, 20($sp)
+    lw $t6, 24($sp)
+    addi $sp, $sp, 28
+    jr  $ra
+	
+FIM1: j cleanBackground
