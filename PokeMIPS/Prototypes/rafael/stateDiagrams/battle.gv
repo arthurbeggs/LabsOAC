@@ -1,0 +1,48 @@
+digraph finite_state_machine {
+   rankdir=LR;
+//    size="8,5"
+
+    node [shape = point ]; qi
+    node [shape = circle];
+
+    qi -> StartBattle;
+    Start  -> Dialog;
+    Dialog -> PlayerTurn;
+    PlayerTurn -> SelectOption;
+    SelectOption -> {Atack Poke Bag Flee};
+    Flee -> MsgFlee -> SelectOption
+    {rank=same; Start Dialog PlayerTurn SelectOption}
+
+    Atack -> SelectAtack;
+    Bag -> OpenBagScene
+    Poke -> OpenPokeSelectScene
+    
+    {rank=same; Poke, Bag, Atack}
+
+    SelectAtack -> {Atack1,Atack2,Atack3,Atack4};
+    Atack1 -> AtackResult;
+    Atack2 -> AtackResult;
+    Atack3 -> AtackResult;
+    Atack4 -> AtackResult;
+
+    AtackResult->IsOponentPokemonAlive;
+
+    {rank=same;AtackResult IsOponentPokemonAlive}
+    
+    IsOponentPokemonAlive ->  OponentTurn [label="Pokemon Alive"]
+    IsOponentPokemonAlive ->  OponentDefeated [label="Pokemon Dead"]
+
+    {rank=same;PlayerDefeated OponentDefeated}
+
+    OponentTurn -> OponentSelectAtack;
+    OponentSelectAtack -> OponentResultAtack
+
+    {rank=same;OponentSelectAtack OponentResultAtack IsPlayerPokemonAlive}
+
+    OponentResultAtack -> IsPlayerPokemonAlive
+    IsPlayerPokemonAlive ->  PlayerTurn [label="Pokemon Alive"]
+    IsPlayerPokemonAlive ->  PlayerDefeated [label="Pokemon Dead"]
+
+    OponentDefeated -> BattleOver
+    PlayerDefeated -> BattleOver
+}

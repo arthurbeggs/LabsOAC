@@ -812,6 +812,8 @@ test.alu.mult:
     nop
     nop
     jal     error
+    nop
+    nop
 
 test.alu.mth:
     addi    $s0,$0,3
@@ -822,6 +824,8 @@ test.alu.mth:
     nop
     nop
     jal     error
+    nop
+    nop
 
 test.alu.mtl:
     addi    $s0,$0,4
@@ -832,6 +836,8 @@ test.alu.mtl:
     nop
     nop
     jal     error
+    nop
+    nop
 
 test.alu.div:
     addi    $a0,$0,3
@@ -845,6 +851,8 @@ test.alu.div:
     nop
     nop
     jal     error
+    nop
+    nop
 
 test.alu.sll:
     addi    $t5,$0,2
@@ -855,6 +863,8 @@ test.alu.sll:
     nop
     nop
     jal     error
+    nop
+    nop
 
 test.alu.srl:
     addi    $t5,$0,11
@@ -922,23 +932,7 @@ test.syscall.exit:
 
 end.main:
     j      end.main       # If don't finish it run a infinty loop
-
-##
-# Clear Screen
-##
-clearscreen:
-    addi   $t0,$0,MEM_SCREEN
-    addi   $t9,$0,MEM_SCREEN_END
-    addi   $t1,$0,COLOR_BLUE
-clearscreen.L1:
-    sw     $t1,0($t0)        # Plot pixel
-    addi   $t0,$t0,4         # Jump to next pixel
-    slt    $t7,$t0,$t9
-    beq    $t7,$0,clearscreen.L1
     nop
-    nop
-end.clearscreen.L1:
-    jr     $ra
 
 ##
 # Default Error
@@ -952,3 +946,5 @@ error:
 end.error:
      # play_MIDI   69,500,MIDI_DRUM
     j       end.error
+    nop
+    nop
