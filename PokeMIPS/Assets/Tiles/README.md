@@ -263,12 +263,10 @@
 0. bkgInsideLabPokeballTableDR
 0. bkgInsideLabShelfDarkFloorUL
 0. bkgInsideLabShelfDarkFloorDL
-
 0. PADDING
 0. objPokeballInTableL
 0. objPokeballInTableC
 0. objPokeballInTableR
-
 0. PADDING
 0. npcMomU
 0. npcMomD
@@ -276,7 +274,6 @@
 0. npcDaisyD
 0. npcRivalFrontU
 0. npcRivalFrontD
-
 0. npcRivalBackU
 0. npcRivalBackD
 0. npcRivalLeftU
@@ -289,7 +286,6 @@
 0. npcOakBrightGrassFrontD
 0. npcOakBrightGrassRightU
 0. npcOakBrightGrassRightD
-
 0. npcSnorlaxUL
 0. npcSnorlaxUR
 0. npcSnorlaxDL
