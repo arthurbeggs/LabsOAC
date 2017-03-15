@@ -1,0 +1,3 @@
+The code presented in this repository is purely for academic purposes and has no standard license (yet, maybe). It's usage is free for academic uses (as long as file headers are appended with new information, but never overwritten or deleted) and extremely forbidden for comercial use.
+
+This repository uses IP files provided by Altera, controller interfaces written by a lot of different authors and there are sprites in PokéMIPS subfolder (an academic implementation of Pokémon FireRed running on a MIPS processor) that belongs to GameFreak and Nitendo. All this material was used only for academic purposes and their rights belongs to their authors.
